@@ -1,0 +1,289 @@
+body {
+    background: #170804 url("../img/page_bg.jpg") repeat-x left top;
+    font-family: Palatino, Times, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.45em;
+    background-attachment: fixed;
+    overflow-y: scroll;
+}
+#page {
+    width: 1000px;
+    margin: 0 auto;
+    position: relative;
+}
+#title, #title .label, #content, .tools {
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+#title {
+    width: 500px;
+    background: #e6e6c6 url("../img/title_bg.jpg") repeat -20px -20px;
+    margin: 40px auto 20px auto;
+    padding: 30px;
+    border: 20px solid rgba(0,0,0,0.25);
+    cursor: pointer; /* Until we click to start. */
+}
+#title .label {
+    width: 300px;
+    background: #e6e6c6 url("../img/text_bg.jpg") repeat left top;
+    padding: 50px;
+    margin: auto;
+    -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    position: relative;
+}
+#title h1 {
+    font-size: 28px;
+    line-height: 38px;
+    letter-spacing: 3px;
+    font-weight: normal;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #321;
+}
+#title h2 {
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    margin: 20px 0 0 0;
+}
+#title h1, #title h2 {
+    color: rgba(33,17,0,0.9);
+    text-shadow: rgba(255,255,255,0.5) 2px 2px 2px,
+    rgba(0,0,0,0.1) -1px -1px 2px;
+}
+#title h1 span.fancy {
+    font-size: 60px;
+    line-height: 0;
+    font-family: Tangerine, serif;
+    font-style: italic;
+    margin: 0 -4px;
+}
+#title .click_message {
+    margin: 0 auto;
+    bottom: 0;
+    position: absolute;
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+    width: 300px;
+    color: #987;
+}
+
+#content {
+    width: 500px;
+    background: #e6e6c6 url("../img/text_bg.jpg") repeat left top;
+    margin: 10px auto 20px auto;
+    padding: 50px;
+    display: none; /* Shown by Javascript */
+    overflow: auto;
+}
+span.drop + p {
+    text-indent: -8px;
+}
+p {
+    margin: 0;
+    transition: text-indent 0.25s ease;
+    -moz-transition: text-indent 0.25s ease;
+    -webkit-transition: text-indent 0.25s ease;
+}
+p + p, p + img + p {
+    text-indent: 1.4em;
+}
+#content h1 + p:first-line,
+#content h1 + img + p:first-line {
+    font-weight: bold;
+    color: rgba(0,0,0,0.85);
+}
+#content h1 + p:first-letter,
+#content h1 + img + p:first-letter {
+    position: relative;
+    padding-top:4px;
+    display: block;
+    float: left;
+    font-weight: normal;
+    font-size: 64px;
+    line-height: 48px;
+    color: #210;
+}
+h1 {
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 40px 0 20px 0;
+    color: #210;
+    text-align: center;
+}
+h1:first-child {
+    margin-top: 0;
+}
+a {
+    color: #900;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+a:hover {
+    border-bottom: 1px dotted #900;
+}
+
+img.float_right {
+    float: right;
+    margin: 10px 0 10px 10px;
+}
+img.float_left {
+    float: left;
+    margin: 10px 10 10px 0px;
+}
+
+#tools_wrapper {
+    position: fixed;
+    margin: 0 auto;
+    width: 1000px;
+    display: none; /* Shown by Javascript */
+}
+.tools {
+    padding: 10px;
+    width: 160px;
+    background: #cec3ae url("../img/tools_bg.jpg") repeat left top;
+    position: absolute;
+}
+.tools p {
+    font-size: 14px;
+    line-height: 1.5em;
+}
+.tools.left {
+    left: 0;
+}
+.tools.right {
+    right: 0;
+}
+.tools h1 {
+    font-size: 16px;
+    font-weight: normal;
+    border-bottom: 1px solid #321;
+    margin-bottom: 10px;
+}
+.buttons {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #321;
+}
+.buttons button {
+    width: 77px;
+    background: #876;
+    color: #e6e6c6;
+    border: none;
+    padding: 6px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.buttons button:hover {
+    background: #987;
+}
+.buttons button + button {
+    margin-left: 5px;
+}
+.buttons button[disabled], .buttons button[disabled]:hover {
+    background: #ba9;
+    color: #dcb;
+    cursor: default;
+}
+
+#legal {
+    color: #654;
+    width: 600px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+    display: none; /* Shown by Javascript */
+}
+#legal p {
+    font-size: x-small;
+    line-height: 1.3em;
+    margin-bottom: 0.5em;
+}
+#legal p + p {
+    text-indent: 0;
+}
+
+#character {
+    font-size: 16px;
+    line-height: 22px;
+}
+#qualities .quality, #character_text {
+    position: relative;
+    clear: both;
+    overflow: hidden;
+    margin: 0 -4px;
+    padding: 0 4px;
+}
+#character_text {
+    margin-bottom: 0.5em;
+}
+#character_text_content {
+    position: relative;
+    z-index: 100;
+}
+#qualities span {
+    position: relative;
+    z-index: 100;
+}
+#qualities span.name {
+    float: left;
+}
+#qualities span.value {
+    float: right;
+}
+.highlight {
+    background: rgba(255, 255, 0, 0.75);
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 0;
+    bottom: 0;
+}
+#qualities h2 {
+    margin: 0.5em 0 0.25em 0;
+    font-size: 16px;
+    border-bottom: 1px solid #321;
+}
+
+.progress_bar_section {
+    position: relative;
+    overflow: hidden;
+    margin: 10px 0;
+}
+.progress_bar_wrapper {
+    z-index: 100;
+    background: rgba(255,255,255,0.25);
+    border: 2px solid #876;
+    height: 12px;
+    width: 496px;
+    clear: both;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.progress_bar {
+    background: #987;
+    width: 0;
+    height: 12px;
+}
+.progress_bar_section span {
+    z-index: 100;
+}
+.progress_bar_section .name {
+    font-weight: bold;
+}
+.progress_bar_section .value {
+    font-weight: bold;
+    float: right;
+}
+.progress_bar_section .left_label {
+    float: left;
+}
+.progress_bar_section .right_label {
+    float: right;
+}
