@@ -122,7 +122,7 @@ go through the source code (no matter how well documented it is).
 ## Undum
 
 The name `undum` came from a little project that preceded this code
-base. In 1998 I put together a simple browser based game. It was
+base. In 2008 I put together a simple browser based game. It was
 narrative, but used the grind-based mechanics of games such as
 Farmville and Mafia Wars. Because of the grinding, I called it
 Carborundum, which I found I couldn't type at speed, so it became
