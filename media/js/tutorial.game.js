@@ -14,7 +14,7 @@ var FUDGE_WORDS = [
 /* The situations that the game can be in. Each has a unique ID. */
 undum.game.situations = {
     start: new undum.SimpleSituation(
-        "<img src='media/tutorial/woodcut.png' class='float_right'>\
+        "<img src='media/tutorial/woodcut1.png' class='float_right'>\
          <p>Welcome to the Undum tutorial. Undum is a tool for writing\
          hypertext interactive fiction. It has some unique features\
          and a look and feel designed to make it easy to write narrative\
@@ -95,6 +95,7 @@ undum.game.situations = {
          and can be applied to paragraphs, <em>div</em>s, or just\
          <em>span</em>s<span class='transient'> (such as this one)</span>.</p>\
          \
+         <img src='media/tutorial/woodcut2.png' class='float_left'>\
          <p>You may also have noticed that, when you move situations, all the\
          links in the previous situation turn into regular text. This is to\
          stop you backtracking and trying previous options when you've already\
@@ -139,7 +140,10 @@ undum.game.situations = {
          <a href='qualities'>leave this situation</a>, you'll notice the BBC\
          link stays active. This can allow you to have options that stay\
          valid throughout the narrative, for example, such as a spell to\
-         teleport home.</p>"
+         teleport home.</p>",
+         {
+             heading: "Links"
+         }
      ),
      qualities: new undum.ActionSituation(
          "<p>That's enough about situations. Let's talk about the character.\
@@ -175,6 +179,7 @@ undum.game.situations = {
          words (based on the FUDGE RPG), and 'Novice' is using just a tick.\
          </p>\
          \
+         <img src='media/tutorial/woodcut3.png' class='float_right'>\
          <p>To see how 'Luck' changes, try using\
          <a href='./luck-boost'>luck-boosting action</a> or a \
          <a href='./luck-reduce'>luck-reducing action</a> to see that\
@@ -219,6 +224,7 @@ undum.game.situations = {
          character text. Notice that it is highlighted, just the same as\
          when a quality is altered.</p>",
          { 
+             heading: "The Character Text",
              exit: function(character, system, to) {
                  system.setCharacterText(
                      "<p>We're nearing the end of the road.</p>"
@@ -235,12 +241,13 @@ undum.game.situations = {
          way in the character panel. But you will also see a progress\
          bar appear and animate below.</p>",
          {
-            exit: function(character, system, to) {
-                system.animateQuality(
-                    'stamina', character.qualities.stamina+1
-                );
-                return true;
-            }
+             heading: "Progress Bars",
+             exit: function(character, system, to) {
+                 system.animateQuality(
+                     'stamina', character.qualities.stamina+1
+                 );
+                 return true;
+             }
          }
      ),
      "boost-stamina": new undum.SimpleSituation(
@@ -301,7 +308,10 @@ undum.game.situations = {
          games to the server, and access them via a unique id.</p>\
          \
          <p class='transient'>Time for the <a href='last'>last section</a>.\
-         </p>"
+         </p>",
+         {
+             heading: "Saving"
+         }
      ),
      "last": new undum.SimpleSituation(
          "<p>So that's it. We've covered all of Undum. This situation is the \
@@ -313,12 +323,13 @@ undum.game.situations = {
          crack open the game file and write your own story.</p>\
          <h1>The End</h1>",
          {
-            enter: function(character, system, from) {
-                system.setQuality("inspiration", 1);
-                system.setCharacterText(
-                    "<p>You feel all inspired, why not have a go?</p>"
-                );
-            }
+             heading: "Conclusion",
+             enter: function(character, system, from) {
+                 system.setQuality("inspiration", 1);
+                 system.setCharacterText(
+                     "<p>You feel all inspired, why not have a go?</p>"
+                 );
+             }
         }
      )
 };

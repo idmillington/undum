@@ -129,11 +129,11 @@ a:hover {
 
 img.float_right {
     float: right;
-    margin: 10px 0 10px 10px;
+    margin: 20px 0 20px 20px;
 }
 img.float_left {
     float: left;
-    margin: 10px 10 10px 0px;
+    margin: 20px 20px 20px 0px;
 }
 
 #tools_wrapper {
