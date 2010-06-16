@@ -339,14 +339,12 @@
      * chunks in one go, and it would be annoying to scroll to the
      * bottom of those. */
     System.prototype.scrollHere = function() {
-        setTimeout(function() {
-            var body = $("body,html");
-            var content = $("#content");
-            body.animate(
-                {scrollTop:content.scrollTop() + content.height()},
-                500
-            );
-        }, 0);
+        var body = $("body,html");
+        var content = $("#content");
+        body.animate(
+            {scrollTop:content.scrollTop() + content.height()},
+            500
+        );
     };
 
     /* Begins a new heading on the page. You could write headings

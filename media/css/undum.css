@@ -2,7 +2,7 @@ body {
     background: #170804 url("../img/page_bg.jpg") repeat-x left top;
     font-family: Palatino, Times, "Times New Roman", serif;
     font-size: 18px;
-    line-height: 1.45em;
+    line-height: 30px;
     background-attachment: fixed;
     overflow-y: scroll;
 }
@@ -89,7 +89,7 @@ p {
     -webkit-transition: text-indent 0.25s ease;
 }
 p + p, p + img + p {
-    text-indent: 1.4em;
+    text-indent: 30px;
 }
 #content h1 + p:first-line,
 #content h1 + img + p:first-line {
@@ -150,7 +150,7 @@ img.float_left {
 }
 .tools p {
     font-size: 14px;
-    line-height: 1.5em;
+    line-height: 20px;
 }
 .tools.left {
     left: 0;
@@ -220,7 +220,7 @@ img.float_left {
     padding: 0 4px;
 }
 #character_text {
-    margin-bottom: 0.5em;
+    margin-bottom: 10px;
 }
 #character_text_content {
     position: relative;
@@ -278,7 +278,6 @@ img.float_left {
     font-weight: bold;
 }
 .progress_bar_section .value {
-    font-weight: bold;
     float: right;
 }
 .progress_bar_section .left_label {
