@@ -6,7 +6,9 @@
 
 (function() {
     // -----------------------------------------------------------------------
-    // Infrastructure Implementations
+    // Internal Infrastructure Implementations [NB: These have to be
+    // at the top, because we use them below, but you can safely
+    // ignore them and skip down to the next section.]
     // -----------------------------------------------------------------------
 
     /* Crockford's inherit function */
@@ -40,10 +42,42 @@
     }
 
     // -----------------------------------------------------------------------
-    // Types for user instantiation.
+    // Types for Author Use
     // -----------------------------------------------------------------------
 
-    /* The game is split into situations. */
+    /* The game is split into situations, which respond to user
+     * choices. Situation is the base type. It has three methods:
+     * enter, act and exit, which you implement to perform any
+     * processing and output any content. The default implementations
+     * do nothing.
+     *
+     * You can either create your own type of Situation, and add
+     * enter, act and/or exit functions to the prototype (see
+     * SimpleSituation or ActionSituation in this file for examples of
+     * that), or you can give those functions in the opts
+     * parameter. The opts parameter is an object. So you could write:
+     *
+     *    var situation = Situation({
+     *        enter: function(character, system, from) {
+     *            ... your implementation ...
+     *        }
+     *    });
+     *
+     * If you pass in enter, act and/or exit through these options,
+     * then they should have the same function signature as the full
+     * function definitions, below.
+     *
+     * Note that the derived types of Situation (SimpleSituation and
+     * ActionSituation), call passed in functions AS WELL AS their
+     * normal action. This is most often what you want: the normal
+     * behavior plus a little extra custom behavior. If you want to
+     * override the behavior of a SimpleSituation or ActionSituation,
+     * you'll have to create a derived type and set the enter, act
+     * and/or exit function on their prototypes. In most cases,
+     * however, if you want to do something completely different, it
+     * is better to derive your type from this type: Situation, rather
+     * than one of its children.
+     */
     var Situation = function(opts) {
         if (opts) {
             if (opts.enter) this._enter = opts.enter;
@@ -74,8 +108,15 @@
         else return true;
     };
 
-    /* A simple situation just displays its text when the situation is
-     * entered. The heading is optional. */
+    /* A simple situation has a block of content that it displays when
+     * the situation is entered. The content must be valid "Display
+     * Content" (see `System.prototype.write` for a definition). It
+     * has an optional `heading` (in the opts parameter) that will be
+     * used as a section title before the content is displayed. The
+     * heading can be any HTML string, it doesn't need to be "Display
+     * Content". The remaining options in the opts parameter are the
+     * same as for Situation.
+     */
     var SimpleSituation = function(content, opts) {
         Situation.call(this, opts);
         this.content = content;
@@ -89,11 +130,18 @@
     };
 
     /* An action situation is just like a simple situation, only it
-     * has a number of fixed responses to internal actions. The
-     * actions parameter should be an object mapping the action id to
-     * the text response. Responses can be either a
-     * function(character, system, action) that returns a string of
-     * content, or just the raw string of content. */
+     * has a number of responses to internal actions that can occur
+     * without leaving the situation. The actions parameter should be
+     * an object mapping the action id to a response. Responses can be
+     * either a function(character, system, action) that returns a
+     * string of content, or just the raw string of content. In either
+     * case the content must be valid "Display Content" (see
+     * `System.prototype.write` for a definition). If you give a
+     * function, then the function may return null if it has no output
+     * to send (e.g. it could use system.prototype.write internally to
+     * write its output). Valid options in the opts parameter are the
+     * same as for SimpleSituation.
+     */
     var ActionSituation = function(content, actions, opts) {
         SimpleSituation.call(this, content, opts);
         this.actions = actions;
@@ -105,21 +153,42 @@
             response = response(character, system, action);
         } catch (err) {
         }
-        system.write(response);
+        if (response) system.write(response);
         if (this._act) this._act(character, system, action);
     };
 
 
     /* Instances of this class define the qualities that characters
      * may possess. The title should be a string, and can contain
-     * HTML. The priority, if given, is a string used to sort
-     * qualities within their groups. If you don't give a priority,
-     * then the title will be used. Normally you either don't give a
-     * priority, or else use a priority string containing 0-padded
-     * numbers (e.g. "00001"), because numbers sort before
-     * letters. The group parameter allows you to specify that
-     * this definition sits within a particular group. All qualities
-     * without a group are placed at the end of the list. */
+     * HTML. Options are passed in in the opts parameter. The
+     * following options are available.
+     *
+     * priority - A string used to sort qualities within their
+     *     groups. When the system displays a list of qualities they
+     *     will be sorted by this string. If you don't give a
+     *     priority, then the title will be used, so you'll get
+     *     alphabetic order. Normally you either don't give a
+     *     priority, or else use a priority string containing 0-padded
+     *     numbers (e.g. "00001").
+     *
+     * group - The Id of a group in which to display this
+     *     parameter. If a group is given, then it must be defined in
+     *     your `undum.game.qualityGroups` property. If no group is
+     *     given, then the quality will be placed at the end of the
+     *     list.
+     *
+     * extraClasses - These classes will be attached to the <div> tag
+     *     that surrounds the quality when it is displayed. A common
+     *     use for this is to add icons representing the quality. In
+     *     your CSS define a class for each icon, then pass those
+     *     classes into the appropriate quality definitions.
+     *
+     * One key purpose of QualityDefinition is to format the quality
+     * value for display. Quality values are always stored as numeric
+     * values, but may be displayed in words or symbols. A number of
+     * sub-types of QualityDefinition are given that format their
+     * values in different ways.
+     */
     var QualityDefinition = function(title, opts) {
         var myOpts = $.extend({
             priority: title,
@@ -140,8 +209,9 @@
         return value.toString();
     };
 
-    /* A Quality that is always displayed as the floor of the current
-     * value. */
+    /* A quality that is always displayed as the nearest integer of
+     * the current value, rounded down. Options (in the opts
+     * parameter) are the same as for QualityDefinition. */
     var IntegerQuality = function(title, opts) {
         QualityDefinition.call(this, title, opts);
     };
@@ -152,23 +222,35 @@
 
     /* A quality that displays its full numeric value, including
      * decimal component. This is actually a trivial wrapper around
-     * the QualityDefinition class, which formats in the same way. */
+     * the QualityDefinition class, which formats in the same
+     * way. Options (in the opts parameter) are the same as for
+     * QualityDefinition. */
     var NumericQuality = function(title, opts) {
         QualityDefinition.call(this, title, opts);
     };
     NumericQuality.inherits(QualityDefinition);
 
     /* A quality that displays its values as one of a set of
-     * words. These map to the integer component of the corresponding
-     * quality value. With offset=0 (the default), then a value of 0
-     * will map to the first word, and so on. If offset is non-zero
-     * then the value given will correspond to the first word in the
-     * list. So if offset=4, then the first word in the list will be
-     * used for value=4. Words outside the range of the values given
-     * will be constructed from the limits of the values given and an
-     * integer modifier. So if the words are 'low', 'high' with no
-     * offset, a value of 2 will be 'high+1' and -2 will be
-     * 'low-2'. */
+     * words. The quality value is first rounded down to the nearest
+     * integer, then this value is used to select a word to
+     * display. The offset parameter (optionally passed in as part of
+     * the opts object) controls what number maps to what word.
+     *
+     * The following options (in the opts parameter) are available:
+     *
+     * offset - With offset=0 (the default), the quantity value of 0
+     *     will map to the first word, and so on. If offset is
+     *     non-zero then the value given will correspond to the first
+     *     word in the list. So if offset=4, then the first word in
+     *     the list will be used for value=4.
+     *
+     * Other options are the same as for QualityDefinition.
+     *
+     * Words outside the range of the values given will be constructed
+     * from the limits of the values given and an integer modifier. So
+     * if the words are 'low', 'high' with no offset, a value of 2
+     * will be 'high+1' and -2 will be 'low-2'.
+     */
     var WordScaleQuality = function(title, values, opts) {
         var myOpts = $.extend({
             offset: null
@@ -192,7 +274,11 @@
     };
 
     /* An on/off quality that removes itself from the quality list if
-     * it is not present. */
+     * it has a zero value. If it has a non-zero value, its value
+     * field is usually left empty, but you can specify your own
+     * string to display as the `onValue` parameter of the opts
+     * object. Other options (in the opts parameter) are the same as
+     * for QualityDefinition. */
     var OnOffQuality = function(title, opts) {
         var myOpts = $.extend({
             onValue: ""
@@ -207,7 +293,8 @@
     };
 
     /* Defines a group of qualities that should be displayed together,
-     * before any miscellaneous qualities. */
+     * before any miscellaneous qualities. These should be defined in
+     * the `undum.game.qualityGroups` parameter. */
     var QualityGroup = function(title, opts) {
         var myOpts = $.extend({
             priority: title,
@@ -218,30 +305,66 @@
         this.extraClasses = myOpts.extraClasses;
     };
 
+
     // -----------------------------------------------------------------------
-    // Internal Types.
+    // Types Passed to Situations
     // -----------------------------------------------------------------------
 
-    /* The interface from Undum to situations. */
+    /* A system object is passed into the enter, act and exit
+     * functions of each situation. It is used to interact with the
+     * UI. */
     var System = function () {
     };
-    /* Outputs regular content to the page. The content supplied MUST
-     * begin and end with HTML start/end tags. You could have several
-     * paragraphs, however, as long as the content starts with the <p>
-     * of the first paragraph, and ends with the </p> of the last. */
+
+    /* Outputs regular content to the page. The content supplied must
+     * be valid "Display Content".
+     *
+     * "Display Content" is any HTML string that begins with a HTML
+     * start tag, ends with either an end or a closed tag, and is a
+     * valid and self-contained snippet of HTML. Note that the string
+     * doesn't have to consist of only one HTML tag. You could have
+     * several paragraphs, for example, as long as the content starts
+     * with the <p> of the first paragraph, and ends with the </p> of
+     * the last. So "<p>Foo</p><img src='bar'>" is valid, but "foo<img
+     * src='bar'>" is not.
+     */
     System.prototype.write = function(content) {
         var output = augmentLinks(content);
-        $('#content').append(output);
+        var content = $('#content').append(output);
     };
+
+    /* Call this method before doing a chunk of writing, so that the
+     * client will elegantly scroll to that location. This doesn't
+     * happen automatically, because you may want to write several
+     * chunks in one go, and it would be annoying to scroll to the
+     * bottom of those. */
+    System.prototype.scrollHere = function() {
+        setTimeout(function() {
+            var body = $("body,html");
+            var content = $("#content");
+            body.animate(
+                {scrollTop:content.scrollTop() + content.height()},
+                500
+            );
+        }, 0);
+    };
+
     /* Begins a new heading on the page. You could write headings
      * using write, manually wrapping them in the appropriate
-     * HTML. But it is strongly recommended that you use this method,
-     * as in the future headings may receive additional processing for
-     * indexing and javascript hooks. Do not wrap the content you pass
-     * into this function in a HTML heading tag. That will be done for
-     * you. The extraClasses parameter is there if you need to give
-     * the resulting heading additional CSS classes; it should be an
-     * array of strings. */
+     * HTML. But it is strongly recommended that you use this method.
+     * In the future headings may receive additional processing for
+     * indexing and javascript hooks.
+     *
+     * There is no need to return "Display Cotnent" from this method,
+     * any content will do. Do not wrap the content you pass into this
+     * function in a HTML heading tag. That will be done for you. You
+     * can, however, use other tags, such as <em> and <span> in your
+     * heading.
+     *
+     * The extraClasses parameter is there if you need to give the
+     * resulting heading additional CSS classes; it should be an array
+     * of strings.
+     */
     System.prototype.writeHeading = function(content, extraClasses) {
         var h = $("<h1>").html(content);
         if (extraClasses) {
@@ -253,13 +376,15 @@
     };
 
     /* Call this to change the character text: the text in the right
-     * toolbar before the qualities list. The value you give can
-     * contain links to situations.
+     * toolbar before the qualities list. This text is designed to be
+     * a short description of the current state of your character. The
+     * content you give should be "Display Content" (see
+     * `System.prototype.write` for the definition).
      */
     System.prototype.setCharacterText = function(content) {
         var block = $("#character_text_content");
         var oldContent = block.html();
-        var newContent = augmentLinks($("<div>").html(content));
+        var newContent = augmentLinks(content);
         if (block.is(':visible')) {
             block.fadeOut(250, function() {
                 block.html(newContent);
@@ -271,10 +396,10 @@
         }
     };
 
-    /* Call this to change the value of a character quality. Don't do
-     * this by directly changing the quality, because that will not
-     * update the UI. Because the character's sandbox isn't displayed,
-     * you can modify that directly. */
+    /* Call this to change the value of a character quality. Don't
+     * directly change quality values, because that will not update
+     * the UI. (You can change any data in the character's sandbox
+     * directly, however, since that isn't displayed). */
     System.prototype.setQuality = function(quality, newValue) {
         var oldValue = character.qualities[quality];
         character.qualities[quality] = newValue;
@@ -315,9 +440,42 @@
         }
         showHighlight(qualityBlock);
     };
-    /* Changes a quality to a new value, but also shows an animation
-     * of the change. This probably only makes sense for qualities
-     * that are numeric. */
+
+    /* Changes a quality to a new value, but also shows a progress bar
+     * animation of the change. This probably only makes sense for
+     * qualities that are numeric, especially ones that the player is
+     * grinding to increase. The quality and newValue parameters are
+     * as for setQuality. The progress bar is controlled by the
+     * following options in the opts parameter:
+     *
+     * from - The proportion along the progress bar where the
+     *     animation starts. Defaults to 0, valid range is 0-1.
+     *
+     * to - The proportion along the progress bar where the
+     *     animation ends. Defaults to 1, valid range is 0-1.
+     *
+     * showValue - If true (the default) then the new value of the
+     *     quality is displayed above the progress bar.
+     *
+     * displayValue - If this is given, and showValue is true, then
+     *     the displayValue is used above the progress bar. If this
+     *     isn't given, and showValue is true, then the display value
+     *     will be calculated from the QualityDefinition, as
+     *     normal. This option is useful for qualities that don't have
+     *     a definition, because they don't normally appear in the UI.
+     *
+     * title - The title of the progress bar. If this is not given,
+     *     then the title of the quality is used. As for displayValue
+     *     this is primarily used when the progress bar doesn't have a
+     *     QualityDefinition, and therefore doesn't have a title.
+     *
+     * leftLabel, rightLabel - Underneath the progress bar you can
+     *     place two labels at the left and right extent of the
+     *     track. These can help to give scale to the bar. So if the
+     *     bar signifies going from 10.2 to 10.5, you might label the
+     *     left and right extents with "10" and "11" respectively. If
+     *     these are not given, then the labels will be omitted.
+     */
     System.prototype.animateQuality = function(quality, newValue, opts) {
         // Overload default options.
         var myOpts = $.extend({
@@ -391,12 +549,124 @@
         this.setQuality(quality, newValue);
     };
 
-    /* Constructor for character data. */
+    /* The character that is passed into each situation is of this
+     * form.
+     *
+     * The `qualities` data member maps the Ids of each quality to its
+     * current value. When implementing enter, act or exit functions,
+     * you should consider this to be read-only. Make all
+     * modifications through `System.prototype.setQuality`, or
+     * `System.prototype.animateQuality`. In your `init` function, you
+     * can set these values directly.
+     *
+     * The `sandbox` data member is designed to allow your code to
+     * track any data it needs to. The only proviso is that the data
+     * structure should be serializable into JSON (this means it must
+     * only consist of primitive types [objects, arrays, numbers,
+     * booleans, strings], and it must not contain circular series of
+     * references). The data in the sandbox is not displayed in the
+     * UI, although you are free to use it to create suitable output
+     * for the player..
+     */
     var Character = function() {
         this.qualities = {};
         this.sandbox = {};
     };
 
+    /* The data structure holding the content for the game. By default
+     * this holds nothing. It is this data structure that is populated
+     * in the `.game.js` file. Each element in the structure is
+     * commented, below.
+     *
+     * This should be static data that never changes through the
+     * course of the game. It is never saved, so anything that might
+     * change should be stored in the character.
+     */
+    var game = {
+
+        // Situations
+
+        /* An object mapping from the unique id of each situation, to
+         * the situation object itself. This is the heart of the game
+         * specification. */
+        situations: {},
+
+        /* The unique id of the situation to enter at the start of a
+         * new game. */
+        start: "start",
+
+
+        // Quality display definitions
+
+        /* An object mapping the unique id of each quality to its
+         * QualityDefinition. You don't need definitions for every
+         * quality, but only qualities in this mapping will be
+         * displayed in the character box of the UI. */
+        qualities: {},
+
+        /* Qualities can have an optional group Id. This maps those
+         * Ids to the group definitions that says how to format its
+         * qualities.
+         */
+        qualityGroups: {},
+
+
+        // Hooks
+
+        /* This function is called at the start of the game. It is
+         * normally overridden to provide initial character creation
+         * (setting initial quality values, setting the
+         * character-text. This is optional, however, as set-up
+         * processing could also be done by the first situation's
+         * enter function. If this function is given it should have
+         * the signature function(character, system).
+         */
+        init: null,
+
+        /* This function is called before entering any new
+         * situation. It is called before the corresponding situation
+         * has its `enter` method called. It can be used to implement
+         * timed triggers, but is totally optional. If this function
+         * is given it should have the signature:
+         *
+         * function(character, system, oldSituationId, newSituationId);
+         */
+        enter: null,
+
+        /* This function is called before carrying out any action in
+         * any situation. It is called before the corresponding
+         * situation has its `act` method called. If this optional
+         * function is given it should have the signature:
+         *
+         * function(character, system, situationId, actionId);
+         */
+        beforeAction: null,
+
+        /* This function is called after carrying out any action in
+         * any situation. It is called after the corresponding
+         * situation has its `act` method called. If this optional
+         * function is given it should have the signature:
+         *
+         * function(character, system, situationId, actionId);
+         */
+        afterAction: null,
+
+        /* This function is called after leaving any situation. It is
+         * called after the corresponding situation has its `exit`
+         * method called. Like that method, it shoudld return true if
+         * it wants the transition to go ahead, or false to stop
+         * it. If this optional function is given it should have the
+         * signature:
+         *
+         * function(character, system, oldSituationId, newSituationId);
+         */
+        exit: null
+    };
+
+    // =======================================================================
+
+    // Code below doesn't form part of the public API for UNDUM, so
+    // you shouldn't find you need to use it.
 
     // -----------------------------------------------------------------------
     // Internal Data Structures
@@ -404,20 +674,6 @@
 
     /* The global system object. */
     var system = new System();
-
-    /* The data structure holding the content for the game. This
-     * should be static data. Anything that might change should be
-     * stored in the character. */
-    var game = {
-        start: "start",
-        situations: {},
-        /* We can define these functions to do global processing. */
-        init: null,
-        enter: null,
-        beforeAction: null,
-        afterAction: null,
-        exit: null
-    };
 
     /* This is the character data that gets saved. It isn't the
      * character that the situations see, it holds other internal data
@@ -569,7 +825,17 @@
         if (action) {
             var situation = getCurrentSituation();
             if (situation) {
+                if (game.beforeAction) {
+                    game.beforeAction(
+                        character, system, sysChar.current, action
+                    );
+                }
                 situation.act(character, system, action);
+                if (game.afterAction) {
+                    game.afterAction(
+                        character, system, sysChar.current, action
+                    );
+                }
             }
         }
 
@@ -585,9 +851,13 @@
 
         // Notify the exiting situation, exit if we've finished or if
         // we're not allowed to enter the new situation.
-        if (!oldSituation || !oldSituation.exit(
-            character, system, newSituationId
-        )) return;
+        if (!oldSituation) return;
+        if (!oldSituation.exit(character, system, newSituationId)) return;
+        if (game.exit) {
+            if (!game.exit(character, system, oldSituationId, newSituationId)){
+                return;
+            }
+        }
 
         //  Remove links and transient sections.
         $('#content a').each(function (index, element) {
@@ -602,6 +872,9 @@
 
         // Notify the incoming situation, unless we're ending.
         if (newSituation) {
+            if (game.enter) {
+                game.enter(character, system, oldSituationId, newSituationId);
+            }
             newSituation.enter(character, system, oldSituationId);
         }
     };
@@ -660,6 +933,9 @@
         var situation = getCurrentSituation();
 
         // assert(situation);
+        if (game.enter) {
+            game.enter(character, system, null, sysChar.current);
+        }
         situation.enter(character, system, null);
         showQualities();
     };
@@ -693,7 +969,7 @@
     };
 
     // -----------------------------------------------------------------------
-    // Setup and API
+    // Setup
     // -----------------------------------------------------------------------
 
     /* Export our API. */
