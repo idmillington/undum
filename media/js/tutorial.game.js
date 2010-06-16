@@ -14,7 +14,8 @@ var FUDGE_WORDS = [
 /* The situations that the game can be in. Each has a unique ID. */
 undum.game.situations = {
     start: new undum.ActionSituation(
-        "<p>Welcome to the UNDUM tutorial. All interaction \
+        "<img src='media/tutorial/woodcut.png' class='float_right'>\
+         <p>Welcome to the UNDUM tutorial. All interaction \
          takes place in a situation. You can think of it either as a 'Room' in\
          regular IF (although it is less flexible than that), or as a 'Page'\
          in a Choose Your Own Adventure book (though it is more flexible than\
