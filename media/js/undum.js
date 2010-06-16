@@ -124,6 +124,7 @@
     }
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
+        system.scrollHere();
         if (this.heading) system.writeHeading(this.heading);
         system.write(this.content);
         if (this._enter) this._enter(character, system, from);
@@ -148,6 +149,7 @@
     };
     ActionSituation.inherits(SimpleSituation);
     ActionSituation.prototype.act = function(character, system, action) {
+        system.scrollHere();
         response = this.actions[action];
         try {
             response = response(character, system, action);
@@ -884,11 +886,16 @@
         output.find("a").each(function(index, element) {
             var element = $(element);
             if (!element.hasClass("raw")) {
-                element.click(function (event) {
-                    event.preventDefault();
-                    processClick(element.attr('href'));
-                    return false;
-                });
+                var href = element.attr('href');
+                if (href.match(linkRe)) {
+                    element.click(function (event) {
+                        event.preventDefault();
+                        processClick(href);
+                        return false;
+                    });
+                } else {
+                    element.addClass("raw");
+                }
             }
         });
         return output;
