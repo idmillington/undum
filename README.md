@@ -62,8 +62,7 @@ development. It also has excellent Javascript debugging tools.
 
 2. Unzip Undum somewhere on your hard-drive.
 
-3. Open tutorial.html in your browser, and play through the tutorial
-   (see Progress, below).
+3. Open tutorial.html in your browser, and play through the tutorial.
 
 4. Copy tutorial.html to a file that reflects your game name.
 
@@ -106,15 +105,7 @@ For example, if you had 3 games: `episode1`, `episode2`, and
 
 ## Progress
 
-My plan (if I get some time) is to make the very, very terse example
-game into something that acts as a real tutorial as well as a
-smoke-test. For now, I apologise that the "tutorial" is nothing of the
-kind, just a shell used to test all major functions of the
-code. Still, I think if you look at the code you'll see how just about
-everything works. If you're interested in helping me put together
-something on that front, let me know.
-
-Also on my plan is some reference documentation. So you don't have to
+On my plan is some reference documentation. So you don't have to
 go through the source code (no matter how well documented it is).
 
 
