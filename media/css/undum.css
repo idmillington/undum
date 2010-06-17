@@ -88,7 +88,14 @@ p {
     -moz-transition: text-indent 0.25s ease;
     -webkit-transition: text-indent 0.25s ease;
 }
-p + p, p + img + p {
+hr {
+    border: none;
+    background-color: rgba(0,0,0,0.25);
+    margin: -1px 0 -1px -50px;
+    width: 20px;
+    height: 2px;
+}
+p + p, p + img + p, p + hr + p {
     text-indent: 30px;
 }
 #content h1 + p:first-line,
@@ -99,11 +106,11 @@ p + p, p + img + p {
 #content h1 + p:first-letter,
 #content h1 + img + p:first-letter {
     position: relative;
-    padding-top:4px;
+    padding-top:8px;
     display: block;
     float: left;
     font-weight: normal;
-    font-size: 64px;
+    font-size: 66px;
     line-height: 48px;
     color: #210;
 }
@@ -123,17 +130,21 @@ a {
     text-decoration: none;
     border-bottom: 1px solid transparent;
 }
+a.raw {
+    padding-right: 14px;
+    background: transparent url("../img/external_link.png") no-repeat right 4px;
+}
 a:hover {
     border-bottom: 1px dotted #900;
 }
 
 img.float_right {
     float: right;
-    margin: 10px 0 10px 10px;
+    margin: 20px 0 20px 20px;
 }
 img.float_left {
     float: left;
-    margin: 10px 10 10px 0px;
+    margin: 20px 20px 20px 0px;
 }
 
 #tools_wrapper {

@@ -4,21 +4,18 @@
 // undum.game.qualities, and undum.game.init.
 // ---------------------------------------------------------------------------
 
-/* Definitions and aliases for data used below. */
+/* A unique id for your game. This is never displayed. I use a UUID,
+ * but you can use anything that is guaranteed unique (a URL you own,
+ * or a variation on your email address, for example). */
+undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce072";
 
-var FUDGE_WORDS = [
-    'terrible','bad','poor','mediocre','fair','good','great','superb','awesome'
-];
-
-// ---------------------------------------------------------------------------
 /* The situations that the game can be in. Each has a unique ID. */
 undum.game.situations = {
     start: new undum.SimpleSituation(
         "<img src='media/tutorial/woodcut1.png' class='float_right'>\
         <p>Welcome to the Undum tutorial. Undum is a tool for writing\
         hypertext interactive fiction. It has some unique features\
-        and a look and feel designed to make it easy to write narrative\
-        games.</p>\
+        and a visual design that encourages narrative games.</p>\
         \
         <p>Hypertext interactive fiction is the digital equivalent of the\
         Choose Your Own Adventure (CYOA) books that were popular in the\
@@ -84,7 +81,14 @@ undum.game.situations = {
                           action again.</p>"}
     ),
     links: new undum.SimpleSituation(
-        "<p>If you've been watching carefully, you will have noticed that\
+        "<p>Between each chunk of new text, Undum inserts a discrete line\
+        in the margin. This allows you to see at a glance everything that\
+        has been output. It is particularly useful for small devices, or when\
+        lots of content has appeared. The window also scrolls so the start\
+        of the new content is as near to the top of the window as possible.\
+        This is also designed to help you read more naturally.</p>\
+        \
+        <p>If you've been watching carefully, you will have noticed that\
         parts of the text have been disappearing when you move between\
         situations. This isn't a bug! One of the aims of Undum is to give\
         game designers the ability to make the transcript of\
@@ -127,12 +131,12 @@ undum.game.situations = {
         above, then Undum will guess that you have a normal hyperlink. As\
         <a href='http://news.bbc.co.uk' class='sticky'>in this link</a>.\
         If you have a link that <em>does</em> look like an Undum link, you\
-        can force Undum not to interpret it as an action or situation move,\
-        by adding the CSS style <em>raw</em> to the HTML <em>a</em> tag.\
+        can still force Undum not to interpret it as an action or situation\
+        move, by adding the CSS style <em>raw</em> to the HTML <em>a</em> tag.\
         links that don't have the <em>raw</em> class, but that are considered\
         to be non-Undum links (like the BBC example), will have <em>raw</em>\
         added to them before display. This could allow you to style external\
-        links differently, for example.</p>\
+        links differently, as we have done here.</p>\
         \
         <p>In the last situation I said you can prevent links from being\
         turned into regular text when you move situations. This is done\
@@ -140,7 +144,10 @@ undum.game.situations = {
         <a href='qualities'>leave this situation</a>, you'll notice the BBC\
         link stays active. This can allow you to have options that stay\
         valid throughout the narrative, for example, such as a spell to\
-        teleport home.</p>"
+        teleport home.</p>",
+        {
+            heading: "Links"
+        }
     ),
     qualities: new undum.ActionSituation(
         "<p>That's enough about situations. Let's talk about the character.\
@@ -165,7 +172,6 @@ undum.game.situations = {
             heading: "Qualities",
             exit: function(character, system, to) {
                 system.setQuality("stamina", character.qualities.stamina+1);
-                return true;
             }
         }
     ),
@@ -173,12 +179,12 @@ undum.game.situations = {
         "<p>Not all the qualities in the character panel are displayed as\
         numeric. Internally they are all numeric, but different qualities\
         get to choose how to display themselves. So 'Luck', for example, is\
-        words (based on the FUDGE RPG), and 'Novice' is using just a tick.\
-        </p>\
+        displayed as words (based on the FUDGE RPG's adjective scale),\
+        and 'Novice' is using just a check-mark.</p>\
         \
-        <p>To see how 'Luck' changes, try using\
-        <a href='./luck-boost'>luck-boosting action</a> or a\
-        <a href='./luck-reduce'>luck-reducing action</a> to see that\
+        <p>To see how Luck changes, try using this\
+        <a href='./luck-boost'>luck-boosting action</a> or this\
+        <a href='./luck-reduce'>luck-reducing action</a>. Notice that\
         luck uses a numeric bonus when it runs out of words. There are a\
         of different display types provided with Undum, and you can easily\
         add your own too.</p>\
@@ -203,7 +209,6 @@ undum.game.situations = {
         {
             exit: function(character, system, to) {
                 system.setQuality("novice", 0);
-                return true;
             }
         }
     ),
@@ -220,27 +225,37 @@ undum.game.situations = {
         character text. Notice that it is highlighted, just the same as\
         when a quality is altered.</p>",
         {
+            heading: "Character Text",
             exit: function(character, system, to) {
                 system.setCharacterText(
                     "<p>We're nearing the end of the road.</p>"
-                    );
-                return true;
+                );
             }
         }
     ),
-    progress: new undum.SimpleSituation(
+    progress: new undum.ActionSituation(
         "<p>Sometimes you want to make a change in quality a more\
         significant event. You can do this by animating the change in\
-        quality. If you <a href='boost-stamina'>boost your stamina</a>,\
-        you will see the stamina change in the normal\
+        quality. If you <a href='./boost-stamina-action'>boost your\
+        stamina</a>, you will see the stamina change in the normal\
         way in the character panel. But you will also see a progress\
         bar appear and animate below.</p>",
         {
+            // I'm going indirect here - the link carries out an
+            // action, which then uses doLink to directly change the
+            // situation.  This isn't the recommended way (I could
+            // have just changed situation in the link), but it
+            // illustrates the use of doLink.
+            "boost-stamina-action": function(character, system, action) {
+                system.doLink("boost-stamina");
+            }
+        },
+        {
+            heading: "Showing Progress",
             exit: function(character, system, to) {
                 system.animateQuality(
                     'stamina', character.qualities.stamina+1
                 );
-                return true;
             }
         }
     ),
@@ -293,17 +308,11 @@ undum.game.situations = {
         'Load' button, the game loads when the page loads. There is also\
         no way to save multiple games, and select which one you want to play.\
         </p>\
-        \
-        <p>More seriously, because of the limitation in the storage capacity\
-        provided by browsers, you only get one save, even if you have lots\
-        of different games. So if you save from one game, then open a\
-        different game file, chances are things will crash. You'll have to\
-        Erase your file first. This is a limitation I'll address if I have\
-        time. I also want, at some point, to add the ability to save\
-        games to the server, and access them via a unique id.</p>\
-        \
         <p class='transient'>Time for the <a href='last'>last section</a>.\
-        </p>"
+        </p>",
+        {
+            heading: "Saving and Loading"
+        }
     ),
     "last": new undum.SimpleSituation(
         "<p>So that's it. We've covered all of Undum. This situation is the\
@@ -316,6 +325,7 @@ undum.game.situations = {
         crack open the game file and write your own story.</p>\
         <h1>The End</h1>",
         {
+            heading: "Where to Go Now",
             enter: function(character, system, from) {
                 system.setQuality("inspiration", 1);
                 system.setCharacterText(
@@ -341,15 +351,16 @@ undum.game.qualities = {
     stamina: new undum.NumericQuality(
         "Stamina", {priority:"0002", group:'stats'}
     ),
-    luck: new undum.WordScaleQuality(
-        "Luck", FUDGE_WORDS, {offset:-4, priority:"0003", group:'stats'}
+    luck: new undum.FudgeAdjectivesQuality( // Fudge as in the FUDGE RPG
+        "<span title='Skill, Stamina and Luck are reverently borrowed from the Fighting Fantasy series of gamebooks. The words representing Luck are from the FUDGE RPG. This tooltip is illustrating that you can use any HTML in the label for a quality (in this case a span containing a title attribute).'>Luck</span>",
+        {priority:"0003", group:'stats'}
     ),
 
     inspiration: new undum.IntegerQuality(
         "Inspiration", {priority:"0001", group:'progress'}
     ),
     novice: new undum.OnOffQuality(
-        "Novice", {priority:"0002", group:'progress', onValue:"&#10003;"}
+        "Novice", {priority:"0002", group:'progress', onDisplay:"&#10003;"}
     )
 };
 

@@ -39,7 +39,19 @@
 
     var hasLocalStorage = function() {
         return ('localStorage' in window) && window['localStorage'] !== null;
-    }
+    };
+
+    var AssertionError = function(message) {
+        this.message = message;
+        this.name = AssertionError;
+    };
+    AssertionError.inherits(Error);
+
+    var assert = function(expression, message) {
+        if (!expression) {
+            throw new AssertionError(message);
+        }
+    };
 
     // -----------------------------------------------------------------------
     // Types for Author Use
@@ -99,13 +111,9 @@
         if (this._act) this._act(character, system, action);
     };
     /* A function that takes action when we exit a situation. The last
-     * parameter indicates the situation we are going to. This method
-     * should return true if the exit is allowed, and false to keep
-     * the character in this situation. If the character isn't allowed
-     * to leave, then there should be some explanation. */
+     * parameter indicates the situation we are going to. */
     Situation.prototype.exit = function(character, system, to) {
-        if (this._exit) return this._exit(character, system, to);
-        else return true;
+        if (this._exit) this._exit(character, system, to);
     };
 
     /* A simple situation has a block of content that it displays when
@@ -124,7 +132,6 @@
     }
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
-        system.scrollHere();
         if (this.heading) system.writeHeading(this.heading);
         system.write(this.content);
         if (this._enter) this._enter(character, system, from);
@@ -149,7 +156,6 @@
     };
     ActionSituation.inherits(SimpleSituation);
     ActionSituation.prototype.act = function(character, system, action) {
-        system.scrollHere();
         response = this.actions[action];
         try {
             response = response(character, system, action);
@@ -246,6 +252,13 @@
      *     word in the list. So if offset=4, then the first word in
      *     the list will be used for value=4.
      *
+     * useBonuses - If this is true (the default), then values outside
+     *     the range of words will be construced from the word and a
+     *     numeric bonus. So with offset=0 and five words, the last of
+     *     which is 'amazing', a score of six would give 'amazing+1'.
+     *     if this is false, then the bonus would be omitted, so
+     *     anything beyond 'amazing' is still 'amazing'.
+     *
      * Other options are the same as for QualityDefinition.
      *
      * Words outside the range of the values given will be constructed
@@ -255,11 +268,13 @@
      */
     var WordScaleQuality = function(title, values, opts) {
         var myOpts = $.extend({
-            offset: null
+            offset: null,
+            useBonuses: true
         }, opts);
         QualityDefinition.call(this, title, opts);
         this.values = values;
         this.offset = myOpts.offset;
+        this.useBonuses = myOpts.useBonuses;
     };
     WordScaleQuality.inherits(QualityDefinition);
     WordScaleQuality.prototype.format = function(character, value) {
@@ -272,26 +287,67 @@
             mod = "+"+(val-this.values.length+1).toString();
             val = this.values.length-1;
         }
+        if (!this.useBonuses) mod = "";
         return this.values[val]+mod;
     };
 
-    /* An on/off quality that removes itself from the quality list if
+    /* A specialization of WordScaleQuality that uses the FUDGE RPG's
+     * adjective scale (from 'terrible' at -3 to 'superb' at +3). The
+     * options are as for WordScaleQuality. In particular you can use
+     * the offset option to control where the scale starts. So you
+     * could model a quality that everyone starts off as 'terrible'
+     * (such as Nuclear Physics) with an offset of 0, while another that
+     * is more common (such as Health) could have an offset of -5 so
+     * everyone starts with 'great'.
+     */
+    var FudgeAdjectivesQuality = function(title, opts) {
+        WordScaleQuality.call(this, title, [
+            "terrible", "poor", "mediocre", "fair", "good", "great", "superb"
+        ], opts);
+        if (!('offset' in opts)) this.offset = -3;
+    };
+    FudgeAdjectivesQuality.inherits(WordScaleQuality);
+
+    /* An boolean quality that removes itself from the quality list if
      * it has a zero value. If it has a non-zero value, its value
      * field is usually left empty, but you can specify your own
-     * string to display as the `onValue` parameter of the opts
+     * string to display as the `onDisplay` parameter of the opts
      * object. Other options (in the opts parameter) are the same as
      * for QualityDefinition. */
     var OnOffQuality = function(title, opts) {
         var myOpts = $.extend({
-            onValue: ""
+            onDisplay: ""
         }, opts);
         QualityDefinition.call(this, title, opts);
-        this.onValue = myOpts.onValue;
+        this.onDisplay = myOpts.onDisplay;
     };
     OnOffQuality.inherits(QualityDefinition);
     OnOffQuality.prototype.format = function(character, value) {
-        if (value) return this.onValue;
+        if (value) return this.onDisplay;
         else return null;
+    };
+
+    /* A boolean quality that has different output text for zero or
+     * non-zero quality values. Unlike OnOffQuality, this definition
+     * doesn't remove itself from the list when it is 0. The options
+     * are as for QualityDefinition, with the addition of options
+     * 'yesDisplay' and 'noDisplay', which contain the HTML fragments
+     * used to display true and false values. If not given, these
+     * default to 'yes' and 'no'.
+     */
+    var YesNoQuality = function(title, opts) {
+        var myOpts = $.extend({
+            yesDisplay: "yes",
+            noDisplay: "no"
+        }, opts);
+        QualityDefinition.call(this, title, opts);
+        this.yesDisplay = myOpts.yesDisplay;
+        this.noDisplay = myOpts.noDisplay;
+    };
+    YesNoQuality.inherits(QualityDefinition);
+    YesNoQuality.prototype.format = function(character, value) {
+        if (value) return this.yesDisplay;
+        else return this.noDisplay;
     };
 
     /* Defines a group of qualities that should be displayed together,
@@ -331,22 +387,19 @@
      * src='bar'>" is not.
      */
     System.prototype.write = function(content) {
+        continueOutputTransaction();
         var output = augmentLinks(content);
         var content = $('#content').append(output);
     };
 
-    /* Call this method before doing a chunk of writing, so that the
-     * client will elegantly scroll to that location. This doesn't
-     * happen automatically, because you may want to write several
-     * chunks in one go, and it would be annoying to scroll to the
-     * bottom of those. */
-    System.prototype.scrollHere = function() {
-        var body = $("body,html");
-        var content = $("#content");
-        body.animate(
-            {scrollTop:content.scrollTop() + content.height()},
-            500
-        );
+    /* Carries out the given situation change or action, as if it were
+     * in a link that has been clicked. This allows you to do
+     * procedural transitions. You might have an action that builds up
+     * the character's strength, and depletes their magic. When the
+     * magic is all gone, you can force a situation change by calling
+     * this method. */
+    System.prototype.doLink = function(code) {
+        processClick(code);
     };
 
     /* Begins a new heading on the page. You could write headings
@@ -366,6 +419,7 @@
      * of strings.
      */
     System.prototype.writeHeading = function(content, extraClasses) {
+        continueOutputTransaction();
         var h = $("<h1>").html(content);
         if (extraClasses) {
             for (var i = 0; i < extraClasses.length; i++) {
@@ -653,10 +707,8 @@
 
         /* This function is called after leaving any situation. It is
          * called after the corresponding situation has its `exit`
-         * method called. Like that method, it shoudld return true if
-         * it wants the transition to go ahead, or false to stop
-         * it. If this optional function is given it should have the
-         * signature:
+         * method called. If this optional function is given it should
+         * have the signature:
          *
          * function(character, system, oldSituationId, newSituationId);
          */
@@ -789,7 +841,7 @@
         var groupId = qualityDefinition.group;
         if (groupId) {
             var group = game.qualityGroups[groupId];
-            // assert(group);
+            assert(group, "Couldn't find a group definition for "+groupId+".");
             var groupBlock = $("#g_"+groupId);
             if (groupBlock.size() <= 0) {
                 groupBlock = addGroupBlock(groupId);
@@ -802,14 +854,46 @@
         return qualityBlock;
     };
 
+    /* Output events are tracked, so we can make sure we scroll
+     * correctly. We do this in a stack because one click might cause
+     * a chain reaction. Of output events, only when we return to the
+     * top level will we do the scroll.
+     */
+    var scrollStack = [];
+    var pendingFirstWrite = false;
+    var startOutputTransaction = function() {
+        if (scrollStack.length == 0) {
+            pendingFirstWrite = true;
+        }
+        scrollStack.push(
+            $("#content").height() + $("#title").height() + 60
+        );
+    };
+    var continueOutputTransaction = function() {
+        if (pendingFirstWrite) {
+            pendingFirstWrite = false;
+            $("#content").append($("<hr>"));
+        }
+    };
+    var endOutputTransaction = function() {
+        var scrollPoint = scrollStack.pop();
+        if (scrollStack.length == 0 && scrollPoint) {
+            $("body, html").animate({scrollTop:scrollPoint}, 500);
+            scrollPoint = null;
+        }
+    };
+
     /* This gets called when the user clicks on a link. */
     var linkRe = /^([-a-z0-9]+|.)(\/([-0-9a-z]+))?$/;
     var processClick = function(code) {
         var match = code.match(linkRe);
-        // assert(match);
+        assert(match, "The link '"+code+"' doesn't appear to be valid.");
 
         var situation = match[1];
         var action = match[3];
+
+        // Track where we're about to add new content.
+        startOutputTransaction();
 
         // Change the situation
         if (situation != '.') {
@@ -818,7 +902,9 @@
             }
         } else {
             // We should have an action if we have no situation change.
-            // assert(action);
+            assert(
+                action, "A link with a situation of '.', must have an action."
+            );
         }
 
         // Carry out the action
@@ -839,6 +925,9 @@
             }
         }
 
+        // Scroll to the top of the new content.
+        endOutputTransaction();
+
         // We're no longer disabled.
         $("#save").attr('disabled', false);
     };
@@ -849,23 +938,27 @@
         var oldSituation = getCurrentSituation();
         var newSituation = game.situations[newSituationId];
 
-        // Notify the exiting situation, exit if we've finished or if
-        // we're not allowed to enter the new situation.
-        if (!oldSituation) return;
-        if (!oldSituation.exit(character, system, newSituationId)) return;
-        if (game.exit) {
-            if (!game.exit(character, system, oldSituationId, newSituationId)){
-                return;
+        assert(
+            newSituation,
+            "You can't move to an unknown situation: "+newSituationId+"."
+        );
+        // We might not have an old situation if this is the start of
+        // the game.
+        if (oldSituation) {
+            // Notify the exiting situation.
+            oldSituation.exit(character, system, newSituationId);
+            if (game.exit) {
+                game.exit(character, system, oldSituationId, newSituationId);
             }
-        }
 
-        //  Remove links and transient sections.
-        $('#content a').each(function (index, element) {
-            var a = $(element);
-            if (a.hasClass('sticky')) return;
-            a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
-        });
-        $('#content .transient').fadeOut(2000);
+            //  Remove links and transient sections.
+            $('#content a').each(function (index, element) {
+                var a = $(element);
+                if (a.hasClass('sticky')) return;
+                a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
+            });
+            $('#content .transient').fadeOut(2000);
+        }
 
         // Move the character.
         sysCharacter.current = newSituationId;
@@ -906,7 +999,7 @@
         // Collect the data to save.
         sysCharacter.storySoFar = $("#content").html();
         sysCharacter.characterText = $("#character_text_content").html();
-        localStorage['undum_character'] = JSON.stringify(sysCharacter);
+        localStorage['undum_'+game.id] = JSON.stringify(sysCharacter);
         delete sysCharacter.storysoFar;
         delete sysCharacter.characterText;
 
@@ -921,9 +1014,9 @@
         var message =
             "This will permanently delete this character. Are you sure?";
 
-        if (localStorage['undum_character']) {
+        if (localStorage['undum_'+game.id]) {
             if (force || confirm(message)) {
-                delete localStorage['undum_character'];
+                delete localStorage['undum_'+game.id];
                 $("#erase").attr('disabled', true);
                 startGame();
             }
@@ -937,7 +1030,10 @@
         $("#content").empty();
         var situation = getCurrentSituation();
 
-        // assert(situation);
+        assert(
+            situation,
+            "I can't display, because we don't have a current situation."
+        );
         if (game.enter) {
             game.enter(character, system, null, sysChar.current);
         }
@@ -987,7 +1083,9 @@
         IntegerQuality: IntegerQuality,
         NumericQuality: NumericQuality,
         WordScaleQuality: WordScaleQuality,
+        FudgeAdjectivesQuality: FudgeAdjectivesQuality,
         OnOffQuality: OnOffQuality,
+        YesNoQuality: YesNoQuality,
 
         QualityGroup: QualityGroup,
 
@@ -1003,7 +1101,7 @@
             });
             var save = $("#save").click(doSave);
 
-            var storedCharacter = localStorage['undum_character'];
+            var storedCharacter = localStorage['undum_'+game.id];
             if (storedCharacter) {
                 save.attr('disabled', true);
                 erase.attr("disabled", false);
@@ -1013,7 +1111,7 @@
                     doErase(true);
                 }
             } else {
-                save.attr('disabled', false);
+                save.attr('disabled', true);
                 erase.attr("disabled", true);
                 startGame();
             }
