@@ -65,9 +65,9 @@
      *
      * You can either create your own type of Situation, and add
      * enter, act and/or exit functions to the prototype (see
-     * SimpleSituation or ActionSituation in this file for examples of
-     * that), or you can give those functions in the opts
-     * parameter. The opts parameter is an object. So you could write:
+     * SimpleSituation in this file for an example of that), or you
+     * can give those functions in the opts parameter. The opts
+     * parameter is an object. So you could write:
      *
      *    var situation = Situation({
      *        enter: function(character, system, from) {
@@ -80,10 +80,10 @@
      * function definitions, below.
      *
      * Note that the derived types of Situation (SimpleSituation and
-     * ActionSituation), call passed in functions AS WELL AS their
+     * DOMDataSituation), call passed in functions AS WELL AS their
      * normal action. This is most often what you want: the normal
      * behavior plus a little extra custom behavior. If you want to
-     * override the behavior of a SimpleSituation or ActionSituation,
+     * override the behavior of a SimpleSituation or DOMDataSituation,
      * you'll have to create a derived type and set the enter, act
      * and/or exit function on their prototypes. In most cases,
      * however, if you want to do something completely different, it
@@ -118,17 +118,29 @@
 
     /* A simple situation has a block of content that it displays when
      * the situation is entered. The content must be valid "Display
-     * Content" (see `System.prototype.write` for a definition). It
-     * has an optional `heading` (in the opts parameter) that will be
-     * used as a section title before the content is displayed. The
-     * heading can be any HTML string, it doesn't need to be "Display
-     * Content". The remaining options in the opts parameter are the
-     * same as for Situation.
+     * Content" (see `System.prototype.write` for a definition). This
+     * constructor has options that control its behavior:
+     *
+     * heading: The optional `heading` will be used as a section title
+     *     before the content is displayed. The heading can be any
+     *     HTML string, it doesn't need to be "Display Content". If
+     *     the heading is not given, no heading will be displayed.
+     *
+     * actions: This should be an object mapping action Ids to a
+     *     response. The response should either be "Display Content"
+     *     to display if this action is carried out, or it should be a
+     *     function(character, system, action) that can return such
+     *     content. If the function returns nothing, then no output
+     *     will be sent.
+     *
+     * The remaining options in the opts parameter are the same as for
+     * the base Situation.
      */
     var SimpleSituation = function(content, opts) {
         Situation.call(this, opts);
         this.content = content;
         this.heading = opts && opts.heading;
+        this.actions = opts && opts.actions;
     }
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
@@ -136,35 +148,17 @@
         system.write(this.content);
         if (this._enter) this._enter(character, system, from);
     };
-
-    /* An action situation is just like a simple situation, only it
-     * has a number of responses to internal actions that can occur
-     * without leaving the situation. The actions parameter should be
-     * an object mapping the action id to a response. Responses can be
-     * either a function(character, system, action) that returns a
-     * string of content, or just the raw string of content. In either
-     * case the content must be valid "Display Content" (see
-     * `System.prototype.write` for a definition). If you give a
-     * function, then the function may return null if it has no output
-     * to send (e.g. it could use system.prototype.write internally to
-     * write its output). Valid options in the opts parameter are the
-     * same as for SimpleSituation.
-     */
-    var ActionSituation = function(content, actions, opts) {
-        SimpleSituation.call(this, content, opts);
-        this.actions = actions;
-    };
-    ActionSituation.inherits(SimpleSituation);
-    ActionSituation.prototype.act = function(character, system, action) {
+    SimpleSituation.prototype.act = function(character, system, action) {
         response = this.actions[action];
         try {
             response = response(character, system, action);
         } catch (err) {
         }
-        if (response) system.write(response);
+        if (response) {
+            system.write(response);
+        }
         if (this._act) this._act(character, system, action);
     };
-
 
     /* Instances of this class define the qualities that characters
      * may possess. The title should be a string, and can contain
@@ -370,9 +364,29 @@
 
     /* A system object is passed into the enter, act and exit
      * functions of each situation. It is used to interact with the
-     * UI. */
+     * UI.
+     */
     var System = function () {
     };
+
+    /* An object derived from Random, which allows your game to make
+     * random number requests in a way that allows the game to
+     * replayed exactly. This is essential if you want saves to
+     * work. It will also be used in future for automated regression
+     * testing.
+     */
+    System.prototype.__defineGetter__("rnd", function() {
+        return rnd;
+    });
+
+    /* The time, in seconds, that has elapsed since the player started
+     * this game. Do not directly query time for time-related actions,
+     * because that invalidates the saved game (remember we load a
+     * saved game by playing through it from the start).
+     */
+    System.prototype.__defineGetter__("time", function() {
+        return gameTime;
+    });
 
     /* Outputs regular content to the page. The content supplied must
      * be valid "Display Content".
@@ -399,34 +413,18 @@
      * magic is all gone, you can force a situation change by calling
      * this method. */
     System.prototype.doLink = function(code) {
-        processClick(code);
+        processLink(code);
     };
 
-    /* Begins a new heading on the page. You could write headings
-     * using write, manually wrapping them in the appropriate
-     * HTML. But it is strongly recommended that you use this method.
-     * In the future headings may receive additional processing for
-     * indexing and javascript hooks.
-     *
-     * There is no need to return "Display Cotnent" from this method,
-     * any content will do. Do not wrap the content you pass into this
-     * function in a HTML heading tag. That will be done for you. You
-     * can, however, use other tags, such as <em> and <span> in your
-     * heading.
-     *
-     * The extraClasses parameter is there if you need to give the
-     * resulting heading additional CSS classes; it should be an array
-     * of strings.
-     */
-    System.prototype.writeHeading = function(content, extraClasses) {
-        continueOutputTransaction();
-        var h = $("<h1>").html(content);
-        if (extraClasses) {
-            for (var i = 0; i < extraClasses.length; i++) {
-                h.addClass(extraClasses[i]);
-            }
-        }
-        $('#content').append(augmentLinks(h));
+    /* Turns any links that target the given href into plain
+     * text. This can be used to remove action options when an action
+     * is no longer available. It is used automatically when you give
+     * a link the 'once' class. */
+    System.prototype.clearLinks = function(code) {
+        $("a[href='"+code+"']").each(function(index, element) {
+            var a = $(element);
+            a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
+        });
     };
 
     /* Call this to change the character text: the text in the right
@@ -439,7 +437,7 @@
         var block = $("#character_text_content");
         var oldContent = block.html();
         var newContent = augmentLinks(content);
-        if (block.is(':visible')) {
+        if (interactive && block.is(':visible')) {
             block.fadeOut(250, function() {
                 block.html(newContent);
                 block.fadeIn(750);
@@ -457,6 +455,7 @@
     System.prototype.setQuality = function(quality, newValue) {
         var oldValue = character.qualities[quality];
         character.qualities[quality] = newValue;
+        if (!interactive) return;
 
         // Work out how to display the values.
         var newDisplay = newValue.toString();
@@ -476,16 +475,21 @@
 
             // Change the value.
             if (newDisplay === null) {
-                // Remove the block.
-                qualityBlock.fadeOut(1000, function() {
-                    var groupBlock = qualityBlock.parents('.quality_group');
-                    qualityBlock.remove();
-                    if (groupBlock.find('.quality').size() <= 0) {
-                        groupBlock.remove();
-                    }
+                // Remove the block, and possibly the whole group, if
+                // it is the last quality in the group.
+                var toRemove = null;
+                var groupBlock = qualityBlock.parents('.quality_group');
+                if (groupBlock.find('.quality').size() <= 1) {
+                    toRemove = groupBlock;
+                } else {
+                    toRemove = qualityBlock;
+                }
+
+                toRemove.fadeOut(1000, function() {
+                    toRemove.remove();
                 });
             } else {
-                var valBlock = qualityBlock.find(".value");
+                var valBlock = qualityBlock.find("[data-attr='value']");
                 valBlock.fadeOut(250, function() {
                     valBlock.html(newDisplay);
                     valBlock.fadeIn(750);
@@ -531,6 +535,10 @@
      *     these are not given, then the labels will be omitted.
      */
     System.prototype.animateQuality = function(quality, newValue, opts) {
+        // Change the base UI.
+        this.setQuality(quality, newValue);
+        if (!interactive) return;
+
         // Overload default options.
         var myOpts = $.extend({
             from: 0,
@@ -558,49 +566,55 @@
             }
         }
 
-        // Add the animated bar.
+        // Create the animated bar.
         var totalWidth = 496;
-        var bar = $("<div>").addClass('progress_bar');
-        bar.css('width', myOpts.from*totalWidth);
-        var wrap = $("<div>").addClass('progress_bar_wrapper').html(bar);
-        var section = $("<div>").addClass('progress_bar_section').html(wrap);
-        $('#content').append(section);
+        var bar = $("#ui_library #progress_bar").clone();
+        bar.removeAttr("id");
+        var widthElement = bar.find("[data-attr='width']");
+        widthElement.css('width', myOpts.from*totalWidth);
 
-        // Add labels
+        // Configure its labels
+        var titleLabel = bar.find("[data-attr='name']");
+        var valueLabel = bar.find("[data-attr='value']");
+        var leftLabel = bar.find("[data-attr='left_label']");
+        var rightLabel = bar.find("[data-attr='right_label']");
         if (myOpts.title) {
-            section.prepend($("<span>").addClass('name').html(myOpts.title));
+            titleLabel.html(myOpts.title);
+        } else {
+            titleLabel.remove();
         }
         if (myOpts.showValue && myOpts.displayValue !== null) {
-            section.prepend(
-                $("<span>").addClass('value').html(myOpts.displayValue)
-            );
+            valueLabel.html(myOpts.displayValue);
+        } else {
+            valueLabel.remove();
         }
         if (myOpts.leftLabel) {
-            var l = $("<span>").addClass('left_label');
-            l.html(myOpts.leftLabel);
-            section.append(l);
+            leftLabel.html(myOpts.leftLabel);
+        } else {
+            leftLabel.remove();
         }
         if (myOpts.rightLabel) {
-            var l = $("<span>").addClass('right_label');
-            l.html(myOpts.rightLabel);
-            section.append(l);
+            rightLabel.html(myOpts.rightLabel);
+        } else {
+            rightLabel.remove();
         }
+        $('#content').append(bar);
 
         // Start the animation
         setTimeout(function() {
-            bar.animate({'width': myOpts.to*totalWidth}, 1000, function() {
-                // After a moment to allow the bar to be read, we can
-                // remove it.
-                setTimeout(function() {
-                    section.slideUp(1000, function() {
-                        section.remove();
-                    });
-                }, 2000);
-            });
+            widthElement.animate(
+                {'width': myOpts.to*totalWidth}, 1000,
+                function() {
+                    // After a moment to allow the bar to be read, we can
+                    // remove it.
+                    setTimeout(function() {
+                        bar.slideUp(1000, function() {
+                            bar.remove();
+                        });
+                    }, 2000);
+                }
+            );
         }, 500);
-
-        // Change the base UI.
-        this.setQuality(quality, newValue);
     };
 
     /* The character that is passed into each situation is of this
@@ -721,30 +735,50 @@
     // you shouldn't find you need to use it.
 
     // -----------------------------------------------------------------------
-    // Internal Data Structures
+    // Internal Data
     // -----------------------------------------------------------------------
 
     /* The global system object. */
     var system = new System();
 
-    /* This is the character data that gets saved. It isn't the
-     * character that the situations see, it holds other internal data
-     * too. */
-    var sysCharacter = {
-        // The id of the current situation.
-        current: null,
-        // The character that the situations see and can manipulate.
-        character: null
+    /* This is the data on the player's progress that gets saved. */
+    var progress = {
+        // A random seed string, used internally to make random
+        // sequences predictable.
+        seed: null,
+        // Keeps track of the links clicked, and when.
+        sequence: [],
+        // The time when the progress was saved.
+        saveTime: null
     };
-    var character = null; // Convenience alias.
+
+    /* The Id of the current situation the player is in. */
+    var current = null;
+
+    /* This is the current character. It should be reconstructable
+     * from the above progress data. */
+    var character = null;
+
+    /* Tracks whether we're in interactive mode or batch mode. */
+    var interactive = true;
+
+    /* The random number generator that the game can use to
+     * derministically generate random possibilities. */
+    var rnd;
+
+    /* The system time when the game was initialized. */
+    var startTime;
+
+    /* The current game time, in seconds. */
+    var gameTime;
 
     // -----------------------------------------------------------------------
     // Utility Functions
     // -----------------------------------------------------------------------
 
     var getCurrentSituation = function() {
-        if (sysCharacter.current) {
-            return game.situations[sysCharacter.current];
+        if (current) {
+            return game.situations[current];
         } else {
             return null;
         }
@@ -793,18 +827,22 @@
         var groupDefinition = game.qualityGroups[groupId];
 
         // Build the group div with appropriate heading.
-        var groupBlock = $("<div>").addClass("quality_group");
-        groupBlock.attr("data-priority", groupDefinition.priority);
+        var groupBlock = $("#ui_library #quality_group").clone();
         groupBlock.attr("id", "g_"+groupId);
+        groupBlock.attr("data-priority", groupDefinition.priority);
+
+        var titleElement = groupBlock.find("[data-attr='title']");
         if (groupDefinition.title) {
-            groupBlock.append($("<h2>").html(groupDefinition.title));
+            titleElement.html(groupDefinition.title);
+        } else {
+            titleElement.remove();
         }
+
         if (groupDefinition.extraClasses) {
             for (var i = 0; i < groupDefinition.extraClasses.length; i++) {
                 groupBlock.addClass(groupDefinition.extraClasses[i]);
             }
         }
-        groupBlock.append($("<div>").addClass("qualities_in_group"));
 
         // Add the block to the correct place.
         var qualities = $("#qualities");
@@ -826,11 +864,11 @@
         if (val === null) return;
 
         // Create the quality output.
-        var qualityBlock = $("<div>").addClass('quality');
-        qualityBlock.attr("data-priority", qualityDefinition.priority);
+        var qualityBlock = $("#ui_library #quality").clone();
         qualityBlock.attr("id", "q_"+qualityId);
-        qualityBlock.append($("<span>").addClass("name").html(name));
-        qualityBlock.append($("<span>").addClass("value").html(val));
+        qualityBlock.attr("data-priority", qualityDefinition.priority);
+        qualityBlock.find("[data-attr='name']").html(name);
+        qualityBlock.find("[data-attr='value']").html(val);
         if (qualityDefinition.extraClasses) {
             for (var i = 0; i < qualityDefinition.extraClasses.length; i++) {
                 qualityBlock.addClass(qualityDefinition.extraClasses[i]);
@@ -872,20 +910,25 @@
     var continueOutputTransaction = function() {
         if (pendingFirstWrite) {
             pendingFirstWrite = false;
-            $("#content").append($("<hr>"));
+            var separator = $("#ui_library #turn_separator").clone();
+            separator.removeAttr("id");
+            $("#content").append(separator);
         }
     };
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
         if (scrollStack.length == 0 && scrollPoint) {
-            $("body, html").animate({scrollTop:scrollPoint}, 500);
+            if (interactive) {
+                $("body, html").animate({scrollTop:scrollPoint}, 500);
+            }
             scrollPoint = null;
         }
     };
 
-    /* This gets called when the user clicks on a link. */
+    /* This gets called when a link needs to be followed, regardless
+     * of whether it was user action that initiated it. */
     var linkRe = /^([-a-z0-9]+|.)(\/([-0-9a-z]+))?$/;
-    var processClick = function(code) {
+    var processLink = function(code) {
         var match = code.match(linkRe);
         assert(match, "The link '"+code+"' doesn't appear to be valid.");
 
@@ -897,7 +940,7 @@
 
         // Change the situation
         if (situation != '.') {
-            if (situation != sysCharacter.current) {
+            if (situation != current) {
                 doTransitionTo(situation);
             }
         } else {
@@ -932,9 +975,18 @@
         $("#save").attr('disabled', false);
     };
 
+    /* This gets called when the user clicks a link to carry out an
+     * action. */
+    var processClick = function(code) {
+        var now = (new Date).getTime() * 0.001;
+        gameTime = now - startTime;
+        progress.sequence.push({link:code, when:gameTime});
+        processLink(code);
+    };
+
     /* Transitions between situations. */
     var doTransitionTo = function(newSituationId) {
-        var oldSituationId = sysCharacter.current;
+        var oldSituationId = current;
         var oldSituation = getCurrentSituation();
         var newSituation = game.situations[newSituationId];
 
@@ -961,15 +1013,13 @@
         }
 
         // Move the character.
-        sysCharacter.current = newSituationId;
+        current = newSituationId;
 
-        // Notify the incoming situation, unless we're ending.
-        if (newSituation) {
-            if (game.enter) {
-                game.enter(character, system, oldSituationId, newSituationId);
-            }
-            newSituation.enter(character, system, oldSituationId);
+        // Notify the incoming situation.
+        if (game.enter) {
+            game.enter(character, system, oldSituationId, newSituationId);
         }
+        newSituation.enter(character, system, oldSituationId);
     };
 
     /* Returns HTML from the given content with the non-raw links
@@ -984,6 +1034,13 @@
                     element.click(function (event) {
                         event.preventDefault();
                         processClick(href);
+
+                        // If we're a once-click, remove all matching
+                        // links after we're clicked.
+                        if (element.hasClass("once")) {
+                            system.clearLinks(href);
+                        }
+
                         return false;
                     });
                 } else {
@@ -994,25 +1051,12 @@
         return output;
     };
 
-    /* Saves the character to local storage. */
-    var doSave = function() {
-        // Collect the data to save.
-        sysCharacter.storySoFar = $("#content").html();
-        sysCharacter.characterText = $("#character_text_content").html();
-        localStorage['undum_'+game.id] = JSON.stringify(sysCharacter);
-        delete sysCharacter.storysoFar;
-        delete sysCharacter.characterText;
-
-        // Switch the button highlights.
-        $("#erase").attr('disabled', false);
-        $("#save").attr('disabled', true);
-    };
-
     /* Erases the character in local storage. This is permanent! TODO:
      * Perhaps give a warning. */
     var doErase = function(force) {
         var message =
-            "This will permanently delete this character. Are you sure?";
+            "This will permanently delete this character and immediately "+
+            "return you to the start of the game. Are you sure?";
 
         if (localStorage['undum_'+game.id]) {
             if (force || confirm(message)) {
@@ -1028,44 +1072,82 @@
     var initGameDisplay = function() {
         // Transition into the first situation,
         $("#content").empty();
-        var situation = getCurrentSituation();
 
+        var situation = getCurrentSituation();
         assert(
             situation,
             "I can't display, because we don't have a current situation."
         );
-        if (game.enter) {
-            game.enter(character, system, null, sysChar.current);
-        }
-        situation.enter(character, system, null);
+
         showQualities();
     };
 
     /* Clear the current game output and start again. */
     var startGame = function() {
-        // Create the character.
-        character = sysCharacter.character = new Character();
-        sysCharacter.current = game.start;
-        if (game.init) game.init(character, system);
+        progress.seed = new Date().toString();
 
-        initGameDisplay();
+        character = new Character();
+        rnd = new Random(progress.seed);
+        progress.sequence = [{link:game.start, when:0}];
+
+        // Empty the display
+        $("#content").empty();
+
+        // Start the game
+        startTime = new Date().getTime() * 0.001;
+        gameTime = 0;
+        if (game.init) game.init(character, system);
+        showQualities();
+
+        // Do the first state.
+        doTransitionTo(game.start);
+    };
+
+    /* Saves the character to local storage. */
+    var saveGame = function() {
+        // Store when we're saving the game, to avoid exploits where a
+        // player loads their file to gain extra time.
+        var now = (new Date).getTime() * 0.001;
+        progress.saveTime = now - startTime;
+
+        // Save the game.
+        localStorage['undum_'+game.id] = JSON.stringify(progress);
+
+        // Switch the button highlights.
+        $("#erase").attr('disabled', false);
+        $("#save").attr('disabled', true);
     };
 
     /* Loads the game from the given data */
     var loadGame = function(characterData) {
-        sysCharacter = characterData;
-        character = sysCharacter.character;
+        progress = characterData;
 
-        $("#content").html(
-            augmentLinks(sysCharacter.storySoFar)
-        );
-        delete sysCharacter.storysoFar;
+        character = new Character();
+        rnd = new Random(progress.seed);
 
-        $("#character_text_content").html(
-            augmentLinks(sysCharacter.characterText)
-        );
-        delete sysCharacter.characterText;
+        // Empty the display
+        $("#content").empty();
+        showQualities();
 
+        // Now play through the actions so far:
+        if (game.init) game.init(character, system);
+
+        // Run through all the player's history.
+        interactive = false;
+        for (var i = 0; i < progress.sequence.length; i++) {
+            var step = progress.sequence[i];
+            // The action must be done at the recorded time.
+            gameTime = step.when;
+            processLink(step.link);
+        }
+        interactive = true;
+
+        // Reverse engineer the start time.
+        var now = new Date().getTime() * 0.001;
+        startTime = now - progress.saveTime;
+
+        // Because we did the run through non-interactively, now we
+        // need to update the UI.
         showQualities();
     };
 
@@ -1077,7 +1159,6 @@
     window.undum = {
         Situation: Situation,
         SimpleSituation: SimpleSituation,
-        ActionSituation: ActionSituation,
 
         QualityDefinition: QualityDefinition,
         IntegerQuality: IntegerQuality,
@@ -1099,14 +1180,14 @@
             var erase = $("#erase").click(function () {
                 doErase();
             });
-            var save = $("#save").click(doSave);
+            var save = $("#save").click(saveGame);
 
             var storedCharacter = localStorage['undum_'+game.id];
             if (storedCharacter) {
-                save.attr('disabled', true);
-                erase.attr("disabled", false);
                 try {
                     loadGame(JSON.parse(storedCharacter));
+                    save.attr('disabled', true);
+                    erase.attr("disabled", false);
                 } catch(err) {
                     doErase(true);
                 }
@@ -1127,5 +1208,211 @@
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
         });
-    })
+    });
+
+
+    // -----------------------------------------------------------------------
+    // Contributed Code
+    // -----------------------------------------------------------------------
+
+    // Random Number generation based on seedrandom.js code by David Bau.
+    // Copyright 2010 David Bau, all rights reserved.
+    //
+    // Redistribution and use in source and binary forms, with or
+    // without modification, are permitted provided that the following
+    // conditions are met:
+    //
+    //   1. Redistributions of source code must retain the above
+    //      copyright notice, this list of conditions and the
+    //      following disclaimer.
+    //
+    //   2. Redistributions in binary form must reproduce the above
+    //      copyright notice, this list of conditions and the
+    //      following disclaimer in the documentation and/or other
+    //      materials provided with the distribution.
+    //
+    //   3. Neither the name of this module nor the names of its
+    //      contributors may be used to endorse or promote products
+    //      derived from this software without specific prior written
+    //      permission.
+    //
+    // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+    // CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    // INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+    // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    // DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+    // CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    // NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    // LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    // HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+    // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+    // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    var Random = (function() {
+        // Within this closure function the code is basically
+        // David's. Undum's custom extensions are added to the
+        // prototype outside of this function.
+        var width = 256;
+        var chunks = 6;
+        var significance = 52;
+        var startdenom = Math.pow(width, chunks);
+        var significance = Math.pow(2, significance);
+        var overflow = significance * 2;
+
+        var Random = function(seed) {
+            this.random = null;
+            this.setSeed(seed);
+        };
+        Random.prototype.setSeed = function seedrandom(seed) {
+            if (!seed) return;
+            var key = [];
+            mixkey(seed, key);
+            var arc4 = new ARC4(key);
+            this.random = function() {
+                var n = arc4.g(chunks);
+                var d = startdenom;
+                var x = 0;
+                while (n < significance) {
+                    n = (n + x) * width;
+                    d *= width;
+                    x = arc4.g(1);
+                }
+                while (n >= overflow) {
+                    n /= 2;
+                    d /= 2;
+                    x >>>= 1;
+                }
+                return (n + x) / d;
+            };
+        };
+
+        // Helper type.
+        var ARC4 = function(key) {
+            var t, u, me = this, keylen = key.length;
+            var i = 0, j = me.i = me.j = me.m = 0;
+            me.S = [];
+            me.c = [];
+            if (!keylen) { key = [keylen++]; }
+            while (i < width) { me.S[i] = i++; }
+            for (i = 0; i < width; i++) {
+                t = me.S[i];
+                j = lowbits(j + t + key[i % keylen]);
+                u = me.S[j];
+                me.S[i] = u;
+                me.S[j] = t;
+            }
+            me.g = function getnext(count) {
+                var s = me.S;
+                var i = lowbits(me.i + 1); var t = s[i];
+                var j = lowbits(me.j + t); var u = s[j];
+                s[i] = u;
+                s[j] = t;
+                var r = s[lowbits(t + u)];
+                while (--count) {
+                    i = lowbits(i + 1); t = s[i];
+                    j = lowbits(j + t); u = s[j];
+                    s[i] = u;
+                    s[j] = t;
+                    r = r * width + s[lowbits(t + u)];
+                }
+                me.i = i;
+                me.j = j;
+                return r;
+            };
+            me.g(width);
+        }
+        // Helper functions.
+        function mixkey(seed, key) {
+            seed += '';
+            var smear = 0;
+            for (var j = 0; j < seed.length; j++) {
+                var lb = lowbits(j);
+                smear ^= key[lb];
+                key[lb] = lowbits(smear*19 + seed.charCodeAt(j));
+            }
+            seed = '';
+            for (j in key) {
+                seed += String.fromCharCode(key[j]);
+            }
+            return seed;
+        }
+        function lowbits(n) { return n & (width - 1); }
+
+        return Random;
+    })();
+    /* Returns a random floating point number between zero and one. NB:
+     * The prototype implementation below just throws an error, it will be
+     * overridden in each Random instance object by a correct function
+     * when the object's setSeed method is called. */
+    Random.prototype.random = function() {
+        throw new {
+            name:"RandomError",
+            message:"Initialize the Random with a non-empty seed before use."
+        };
+    };
+    /* Returns an integer between the given min and max values,
+     * inclusive. */
+    Random.prototype.randomInt = function(min, max) {
+        return min + parseInt((max-min+1)*this.random());
+    };
+    /* Returns the result of rolling n dice with dx sides, and adding
+     * plus. */
+    Random.prototype.dice = function(n, dx, plus) {
+        var result = 0;
+        for (var i = 0; i < n; i++) {
+            result += this.randomInt(1, dx);
+        }
+        if (plus) result += plus;
+        return result;
+    };
+    /* Returns the result of rolling n averaging dice (i.e. 6 sided dice
+     * with sides 2,3,3,4,4,5). And adding plus. */
+    Random.prototype.aveDice = (function() {
+        var mapping = [2,3,3,4,4,5];
+        return function(n, plus) {
+            var result = 0;
+            for (var i = 0; i < n; i++) {
+                result += mapping[this.randomInt(0, 5)];
+            }
+            if (plus) result += plus;
+            return result;
+        }
+    })();
+    /* Returns a dice-roll result from the given string dice
+     * specification. The specification should be of the form xdy+z, where
+     * the x compnent and z component are optional. This rolls x dice of
+     * with y sides, and adds z to the result, the z component can also be
+     * negative: xdy-z. The y component can be either a number of sides,
+     * or can be the special values 'F', for a fudge die (with 3 sides,
+     * +,0,-), or 'A' for an averaging die (with sides 2,3,3,4,4,5).
+     */
+    Random.prototype.diceString = (function() {
+        var diceRe = /^([1-9][0-9]*)?d([FA]|[1-9][0-9]*)([+-][1-9][0-9]*)?$/;
+        return function(def) {
+            var match = def.match(diceRe);
+            if (!match) {
+                throw new Error(
+                    "Couldn't interpret your dice string: '"+def+"'."
+                );
+            }
+
+            var num = match[1]?parseInt(match[1]):1;
+            var sides;
+            var bonus = match[3]?parseInt(match[3]):0;
+
+            switch (match[2]) {
+            case 'A':
+                return this.aveDice(num, bonus);
+            case 'F':
+                sides = 3;
+                bonus -= num*2;
+                break;
+            default:
+                sides = parseInt(match[2]);
+                break;
+            }
+            return this.dice(num, sides, bonus);
+        };
+    })();
 })();

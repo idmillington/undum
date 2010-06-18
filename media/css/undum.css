@@ -261,12 +261,12 @@ img.float_left {
     border-bottom: 1px solid #321;
 }
 
-.progress_bar_section {
+.progress_bar {
     position: relative;
     overflow: hidden;
     margin: 10px 0;
 }
-.progress_bar_wrapper {
+.progress_bar_track {
     z-index: 100;
     background: rgba(255,255,255,0.25);
     border: 2px solid #876;
@@ -277,23 +277,26 @@ img.float_left {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
 }
-.progress_bar {
+.progress_bar_color {
     background: #987;
     width: 0;
     height: 12px;
 }
-.progress_bar_section span {
+.progress_bar span {
     z-index: 100;
 }
-.progress_bar_section .name {
+.progress_bar .name {
     font-weight: bold;
 }
-.progress_bar_section .value {
+.progress_bar .value {
     float: right;
 }
-.progress_bar_section .left_label {
+.progress_bar .left_label {
     float: left;
 }
-.progress_bar_section .right_label {
+.progress_bar .right_label {
     float: right;
+}
+#content_library, #ui_library {
+    display: none;
 }
