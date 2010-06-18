@@ -356,21 +356,21 @@ undum.game.start = "start";
  * that quality will never show up in the character bar in the UI. */
 undum.game.qualities = {
     skill: new undum.IntegerQuality(
-        "Skill", {priority:"0001", group:'stats'}
+        "Навык", {priority:"0001", group:'stats'}
     ),
     stamina: new undum.NumericQuality(
-        "Stamina", {priority:"0002", group:'stats'}
+        "Усталость", {priority:"0002", group:'stats'}
     ),
     luck: new undum.FudgeAdjectivesQuality( // Fudge as in the FUDGE RPG
-        "<span title='Skill, Stamina and Luck are reverently borrowed from the Fighting Fantasy series of gamebooks. The words representing Luck are from the FUDGE RPG. This tooltip is illustrating that you can use any HTML in the label for a quality (in this case a span containing a title attribute).'>Luck</span>",
+        "<span title='Skill, Stamina and Luck are reverently borrowed from the Fighting Fantasy series of gamebooks. The words representing Luck are from the FUDGE RPG. This tooltip is illustrating that you can use any HTML in the label for a quality (in this case a span containing a title attribute).'>Удача</span>",
         {priority:"0003", group:'stats'}
     ),
 
     inspiration: new undum.IntegerQuality(
-        "Inspiration", {priority:"0001", group:'progress'}
+        "Вдохновение", {priority:"0001", group:'progress'}
     ),
     novice: new undum.OnOffQuality(
-        "Novice", {priority:"0002", group:'progress', onDisplay:"&#10003;"}
+        "Новичок", {priority:"0002", group:'progress', onDisplay:"&#10003;"}
     )
 };
 
@@ -382,7 +382,7 @@ undum.game.qualities = {
  * non-existent group. */
 undum.game.qualityGroups = {
     stats: new undum.QualityGroup(null, {priority:"0001"}),
-    progress: new undum.QualityGroup('Progress', {priority:"0002"})
+    progress: new undum.QualityGroup('Прогресс', {priority:"0002"})
 };
 
 // ---------------------------------------------------------------------------
@@ -393,5 +393,5 @@ undum.game.init = function(character, system) {
     character.qualities.stamina = 12;
     character.qualities.luck = 0;
     character.qualities.novice = 1;
-    system.setCharacterText("<p>You are starting on an exciting journey.</p>");
+    system.setCharacterText("<p>Вы начинаете захватывающее путешествие.</p>");
 };

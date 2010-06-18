@@ -296,7 +296,7 @@
      */
     var FudgeAdjectivesQuality = function(title, opts) {
         WordScaleQuality.call(this, title, [
-            "terrible", "poor", "mediocre", "fair", "good", "great", "superb"
+            "ужасно", "бедно", "средненько", "нормально", "хорошо", "прекрасно", "великолепно"
         ], opts);
         if (!('offset' in opts)) this.offset = -3;
     };
