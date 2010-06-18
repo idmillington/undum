@@ -48,30 +48,28 @@ undum.game.situations = {
         <p>Когда вы создаёте свою игру, используйте ситуации, чтобы отразить\
         изменения в том, что може сделать персонаж. Так, вы можете изменить ситуацию если персонаж\
         тянет рычаг, чтобы открыть люк, например. Действия\
-        are intended for situations where the character can examine things\
-        more closely, or maybe top up their magic by drinking a potion.\
-        Things that don't affect the state of the world around them.</p>\
+        предназначены для ситуаций, где персонаж может изучать вещи более пристально\
+        , а может быть улучшить свою магию, выпив зелья.\
+        Это вещи, которые не влияют на мир вокруг них.</p>\
         \
-        <p>Situations generate content when they are <em>enter</em>ed,\
-        <em>exit</em>ed, and when they receive an <em>act</em>ion (the\
-        italicised words are the names of the three methods that do this).\
-        You can write code to generate content in any way you like, so the\
-        content that is displayed can be totally dynamic: taking into\
-        account the current state of the character.\
-        Content is just plain HTML, so you use regular HTML tags to make\
-        things <strong>bold</strong> or <em>italic</em>, or to include\
-        images. This gives you a lot of flexibility. For example, since Undum\
-        targets HTML5 browsers, you could use the <em>audio</em> or\
-        <em>video</em> tags to include rich media.</p>\
+        <p>Ситуации генерируют содержимое, когда в них входят (метод <em>enter</em>),\
+        выходят (<em>exit</em>), и когда они получают действие (<em>act</em>).\
+        Вы можете написать код, который будет генерировать текст любым удобным вам способом, \
+        чтобы отображаемое содержимое могло быть полностью динамичным, \
+        принимая во внимание текущее состояние персонажа.</p><p>\
+        Содержимое - это обычный HTML, поэтому вы можете использовать все HTML теги, чтобы выделить\
+        что-то в тексте или добавить иллюстрации.Это даёт вам огромную гибкость. Например, так как Undum\
+        нацелен на HTML 5, вы можете использовать теги <em>audio</em> или\
+        <em>video</em>, чтобы вставить музыкальное или видео оформление.</p>\
         \
-        <p class='transient'>Make sure you've carried out the action above,\
-        then <a href='links'>continue</a>.</p>",
+        <p class='transient'>Убедитесь в том, что вы выполнили действие выше,\
+        а затем <a href='links'>продолжайте</a>.</p>",
         {
             actions: {
-                'do-something': "<p>You carried out the action, well done.\
-                                 You'll notice that the links for this\
-                                 situation are still active. This means you\
-                                 can click to perform the action again.</p>"
+                'do-something': "<p>Браво, вы выполнили действие.\
+                                 Заметьте, что ссылки для этой ситуации всё ещё активны.\
+                                 Это означает,что вы можете нажать на них, чтобы\
+                                 выполнить действие ещё раз.</p>"
             }
         }
     ),
