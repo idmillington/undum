@@ -1009,7 +1009,11 @@
                 if (a.hasClass('sticky')) return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
-            $('#content .transient').fadeOut(2000);
+            if (interactive) {
+                $('#content .transient').fadeOut(2000);
+            } else {
+                $('#content .transient').hide();
+            }
         }
 
         // Move the character.
