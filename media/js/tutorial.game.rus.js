@@ -74,35 +74,33 @@ undum.game.situations = {
         }
     ),
     links: new undum.SimpleSituation(
-        "<h1>Changing Content</h1>\
-        <p>Between each chunk of new text, Undum inserts a discrete line\
-        in the margin. This allows you to see at a glance everything that\
-        has been output as a result of your last click.\
-        It is particularly useful for small devices, or when\
-        lots of content has appeared. The window also scrolls so the start\
-        of the new content is as near to the top of the window as possible.\
-        This is also designed to help you read more naturally.</p>\
+        "<h1>Смена наполнения</h1>\
+        <p>Между каждым кусочком нового текста Undum вставляет отчётливую линию\
+        на полях. Она позволяет вам быстро увидеть всё, что было выдано\
+        в качестве результата вашего последнего клика.\
+        Это очень удобно для маленьких устройств, или когда появилось\
+        очень много текста. Также окно перемещается таким образом, что начало\
+        нового содержимого приходится настолько близко к верхнему краю окна, насколько возможно.\
+        Это также сделано для того, чтобы помочь вам читать натуральнее.</p>\
         \
-        <p>If you've been watching carefully, you will have noticed that\
-        parts of the text have been disappearing when you move between\
-        situations. This isn't a bug! One of the aims of Undum is to give\
-        game designers the ability to make the transcript of\
-        the game read as a coherent piece of narrative. However, you often\
-        need chunks of text that do nothing but offer the reader choices.\
-        Undum defines a special CSS class to add to your HTML for this\
-        (remember generated content is just HTML). It is <em>transient</em>,\
-        and can be applied to paragraphs, <em>div</em>s, or just\
-        <em>span</em>s<span class='transient'> (such as this one)</span>.</p>\
+        <p>Если вы внимательно смотрели, вы заметили, что некоторые части\
+        текста исчезали, когда вы выходили из ситуаций. Это не баг!\
+        Одна из целей Undum - это дать геймдизайнерам возможность сделать\
+        запись игры связным рассказом.\
+        Тем не менее, вам часто нужны кусочки текста, которые ничего не делают, но просто\
+        предлагают читателю выбор.\
+        Для этого Undum определяет специальный CSS класс для добавления в ващ HTML\
+        (помните, сгенерированное содержимое - это просто HTML). Этот класс называется <em>transient</em>\
+        и может быть применён к параграфам, div'ам или просто\
+        span'ам<span class='transient'> (как вот этот)</span>.</p>\
         \
-        <p>You may also have noticed that, when you move situations, all the\
-        links in the previous situation turn into regular text. This is to\
-        stop you backtracking and trying previous options when you've already\
-        committed to one. In other H-IF systems, this is\
-        done by completely removing the content from previous pages.\
-        That prevents you going back and reading your story, however.</p>\
+        <p>также вы могли заметить, что, когда вы перемещаетесь в другую ситуацию, все ссылки\
+        в предыдущей превращаются в обычный текст. Это сделано для того, чтобы не дать вам\
+        отступить и попробовать предыдущие варианты ответа, когда вы уже выбрали один из них.\
+        В других H-IF системах это делается при помощи полной очистки предыдущих страниц.\
+        Но это не позволяет вам вернуться и перечитать вашу историю.</p>\
         \
-        <p class='transient'>Let's learn more about these links, and\
-        see how to <a href='sticky'>change that</a> behaviour.</p>"
+        <p class='transient'>Давайте узнаем больше о ссылках и посмотри, как <a href='sticky'>изменить</a> это поведение.</p>"
     ),
     sticky: new undum.SimpleSituation(
         "<h1>Links</h1>\
@@ -248,7 +246,7 @@ undum.game.situations = {
         {
             exit: function(character, system, to) {
                 system.setCharacterText(
-                    "<p>We're nearing the end of the road.</p>"
+                    "<p>Мы приближаемся к концу дороги.</p>"
                 );
             }
         }
