@@ -13,7 +13,7 @@ undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce072";
 undum.game.situations = {
     start: new undum.SimpleSituation(
         "<h1>Starting Out with Undum</h1>\
-        <img src='media/tutorial/woodcut1.png' class='float_right'>\
+        <img src='media/games/tutorial/woodcut1.png' class='float_right'>\
         <p>Welcome to the Undum tutorial. Undum is a tool for writing\
         hypertext interactive fiction. It has some unique features\
         and a visual design that encourages narrative games.</p>\
@@ -123,7 +123,7 @@ undum.game.situations = {
         character is already in that situation, then the situation's\
         <em>enter</em> method won't be called again.</p>\
         \
-        <img src='media/tutorial/woodcut2.png' class='float_left'>\
+        <img src='media/games/tutorial/woodcut2.png' class='float_left'>\
         <p>The third type of link, then, is a general hyperlink. If your\
         link doesn't consist of a single element or pair of elements, as\
         above, then Undum will guess that you have a normal hyperlink. As\
@@ -288,7 +288,7 @@ undum.game.situations = {
         the character's level, for example, you might want to show a progress\
         bar to indicate how near the character is to levelling up.</p>\
         \
-        <img src='media/tutorial/woodcut3.png' class='float_right'>\
+        <img src='media/games/tutorial/woodcut3.png' class='float_right'>\
         <p>After a few seconds, the progress bar disappears, to keep the\
         focus on the text. Undum isn't designed for games where a lot of\
         statistic management is needed. If you want a change to be part\

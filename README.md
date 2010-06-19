@@ -62,9 +62,9 @@ development. It also has excellent Javascript debugging tools.
 
 2. Unzip Undum somewhere on your hard-drive.
 
-3. Open tutorial.html in your browser, and play through the tutorial.
+3. Open games/tutorial.html in your browser, and play through the tutorial.
 
-4. Copy tutorial.html to a file that reflects your game name.
+4. Copy games/tutorial.html to a file that reflects your game name.
 
 5. Edit your HTML file and add the title, author and description of
    the game you want to write. At the bottom of the file change the
@@ -104,10 +104,20 @@ For example, if you had 3 games: `episode1`, `episode2`, and
         js/
             jquery-1.4.2.min.js
             undum.js
-            episode1.game.js
-            episode2.game.js
-            christmas-special.game.js
+        games/
+            episode1/
+                episode1.game.js
+                ... media for episode 1 ...
+            episode2/
+                episode2.game.js
+                ... media for episode 1 ...
+            christmas-special/
+                christmas-special.game.js
+                ... media for christmas special ...
 
+This assumes you use the same directory lay out that I do. You are
+welcome to change things around, of course, as long as you work and
+change the references.
 
 ## Progress
 
