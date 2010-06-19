@@ -183,27 +183,23 @@ undum.game.situations = {
         }
     ),
     "quality-types": new undum.SimpleSituation(
-        "<p>Not all the qualities in the character panel are displayed as\
-        numeric. Internally they are all numeric, but different qualities\
-        get to choose how to display themselves. So 'Luck', for example, is\
-        displayed as words (based on the FUDGE RPG's adjective scale),\
-        and 'Novice' is using just a check-mark.</p>\
+        "<p>Не все качества в панели персонажа отображаются как числа. Внутри они\
+        все числовые, но разные качества могут выбирать, как отображать себя. Например,\
+        Удача отображается словами (на основе шкалы прилагательных FUDGE RPG)\
+        ,а «Новичок» использует лишь галочку.</p>\
         \
-        <p>To see how Luck changes, try using this\
-        <a href='./luck-boost'>luck-boosting action</a> or this\
-        <a href='./luck-reduce'>luck-reducing action</a>. Notice that\
-        luck uses a numeric bonus when it runs out of words. There are a range\
-        of different display types provided with Undum, and you can easily\
-        add your own too.</p>\
+        <p>Чтобы увидеть, как изменяется Удача, попробуйте использовать это\
+        <a href='./luck-boost'>удачное действие</a> или это\
+        <a href='./luck-reduce'>неудачное действие.</a> Заметьте, как Удача\
+        использует числовой бонус, когда у неё заканчиваются слова. В Undum\
+        существует несколько различных видов отображения, и вы можете легко добавить своё.</p>\
         \
-        <p>When you <a href='character-text'>leave this situation</a>,\
-        I'll set 'Novice' to zero. Watch\
-        the character panel, and you'll see that Novice decides it doesn't\
-        need to be displayed any more and will be removed. You will also see\
-        that when the last\
-        quality in a group is removed ('Novice' is in the 'Progress' group),\
-        then the group heading is also removed. You can tell Undum what\
-        group each quality belongs to, and what order they should be listed.\
+        <p>Когда вы <a href='character-text'>покинете эту ситуацию,</a>\
+        я поставлю «Новичок» на ноль. Смотрите на панель персонажа, и вы\
+        увидите, что Новичок решает, что ему более не нужно быть видимым, и удаляет себя.\
+        Вы также увидите,что,когда последнее качество в группе удаляется(а «Новичок» находится в группе «Прогресс»),\
+        тогда заголовок группы также удаляется. Вы можете сообщить Undum, какой группе\
+        принадлежит каждое из качеств, и в каком порядке они должны стоять.\
         <p>",
         {
             actions: {
