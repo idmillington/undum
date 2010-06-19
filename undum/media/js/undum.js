@@ -79,16 +79,16 @@
      * then they should have the same function signature as the full
      * function definitions, below.
      *
-     * Note that the derived types of Situation (SimpleSituation and
-     * DOMDataSituation), call passed in functions AS WELL AS their
+     * Note that the derived types of Situation (current
+     * SimpleSituation), call passed in functions AS WELL AS their
      * normal action. This is most often what you want: the normal
      * behavior plus a little extra custom behavior. If you want to
-     * override the behavior of a SimpleSituation or DOMDataSituation,
-     * you'll have to create a derived type and set the enter, act
-     * and/or exit function on their prototypes. In most cases,
-     * however, if you want to do something completely different, it
-     * is better to derive your type from this type: Situation, rather
-     * than one of its children.
+     * override the behavior of a SimpleSituation, you'll have to
+     * create a derived type and set the enter, act and/or exit
+     * function on their prototypes. In most cases, however, if you
+     * want to do something completely different, it is better to
+     * derive your type from this type: Situation, rather than one of
+     * its children.
      */
     var Situation = function(opts) {
         if (opts) {
@@ -129,9 +129,8 @@
      * actions: This should be an object mapping action Ids to a
      *     response. The response should either be "Display Content"
      *     to display if this action is carried out, or it should be a
-     *     function(character, system, action) that can return such
-     *     content. If the function returns nothing, then no output
-     *     will be sent.
+     *     function(character, system, action) that will process the
+     *     action.
      *
      * The remaining options in the opts parameter are the same as for
      * the base Situation.
@@ -145,17 +144,15 @@
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
         if (this.heading) system.writeHeading(this.heading);
-        system.write(this.content);
+        if (this.content) system.write(this.content);
         if (this._enter) this._enter(character, system, from);
     };
     SimpleSituation.prototype.act = function(character, system, action) {
         var response = this.actions[action];
         try {
-            response = response(character, system, action);
+            response(character, system, action);
         } catch (err) {
-        }
-        if (response) {
-            system.write(response);
+            if (response) system.write(response);
         }
         if (this._act) this._act(character, system, action);
     };
@@ -254,11 +251,6 @@
      *     anything beyond 'amazing' is still 'amazing'.
      *
      * Other options are the same as for QualityDefinition.
-     *
-     * Words outside the range of the values given will be constructed
-     * from the limits of the values given and an integer modifier. So
-     * if the words are 'low', 'high' with no offset, a value of 2
-     * will be 'high+1' and -2 will be 'low-2'.
      */
     var WordScaleQuality = function(title, values, opts) {
         var myOpts = $.extend({
@@ -345,8 +337,8 @@
     };
 
     /* Defines a group of qualities that should be displayed together,
-     * before any miscellaneous qualities. These should be defined in
-     * the `undum.game.qualityGroups` parameter. */
+     * under the given optional title. These should be defined in the
+     * `undum.game.qualityGroups` parameter. */
     var QualityGroup = function(title, opts) {
         var myOpts = $.extend({
             priority: title,
@@ -535,12 +527,15 @@
      *     these are not given, then the labels will be omitted.
      */
     System.prototype.animateQuality = function(quality, newValue, opts) {
+        var currentValue = character.qualities[quality];
+        if (!currentValue) currentValue = 0;
+
         // Change the base UI.
         this.setQuality(quality, newValue);
         if (!interactive) return;
 
         // Overload default options.
-        var myOpts = $.extend({
+        var myOpts = {
             from: 0,
             to: 1,
             title: null,
@@ -548,7 +543,12 @@
             displayValue: null,
             leftLabel: null,
             rightLabel: null
-        }, opts);
+        };
+        if (newValue < currentValue) {
+            myOpts.from = 1;
+            myOpts.to = 0;
+        }
+        $.extend(myOpts, opts);
 
         // Run through the quality definition.
         var qualityDefinition = game.qualities[quality];
@@ -1263,10 +1263,11 @@
 
         var Random = function(seed) {
             this.random = null;
-            this.setSeed(seed);
-        };
-        Random.prototype.setSeed = function seedrandom(seed) {
-            if (!seed) return;
+
+            if (!seed) throw {
+                name: "RandomSeedError",
+                message: "You must provide a valid random seed."
+            };
             var key = [];
             mixkey(seed, key);
             var arc4 = new ARC4(key);
@@ -1344,10 +1345,10 @@
 
         return Random;
     })();
-    /* Returns a random floating point number between zero and one. NB:
-     * The prototype implementation below just throws an error, it will be
-     * overridden in each Random instance object by a correct function
-     * when the object's setSeed method is called. */
+    /* Returns a random floating point number between zero and
+     * one. NB: The prototype implementation below just throws an
+     * error, it will be overridden in each Random object when the
+     * seed has been correctly configured. */
     Random.prototype.random = function() {
         throw new {
             name:"RandomError",
@@ -1383,15 +1384,16 @@
         };
     })();
     /* Returns a dice-roll result from the given string dice
-     * specification. The specification should be of the form xdy+z, where
-     * the x compnent and z component are optional. This rolls x dice of
-     * with y sides, and adds z to the result, the z component can also be
-     * negative: xdy-z. The y component can be either a number of sides,
-     * or can be the special values 'F', for a fudge die (with 3 sides,
-     * +,0,-), or 'A' for an averaging die (with sides 2,3,3,4,4,5).
+     * specification. The specification should be of the form xdy+z,
+     * where the x component and z component are optional. This rolls
+     * x dice of with y sides, and adds z to the result, the z
+     * component can also be negative: xdy-z. The y component can be
+     * either a number of sides, or can be the special values 'F', for
+     * a fudge die (with 3 sides, +,0,-), '%' for a 100 sided die, or
+     * 'A' for an averaging die (with sides 2,3,3,4,4,5).
      */
     Random.prototype.diceString = (function() {
-        var diceRe = /^([1-9][0-9]*)?d([FA]|[1-9][0-9]*)([-+][1-9][0-9]*)?$/;
+        var diceRe = /^([1-9][0-9]*)?d([%FA]|[1-9][0-9]*)([-+][1-9][0-9]*)?$/;
         return function(def) {
             var match = def.match(diceRe);
             if (!match) {
@@ -1411,6 +1413,8 @@
                 sides = 3;
                 bonus -= num*2;
                 break;
+            case '%':
+                sides = 100;
             default:
                 sides = parseInt(match[2], 10);
                 break;

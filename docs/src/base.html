@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+      font: 100%/1.5 sans-serif;
+      margin: 20px;
+      }
+      div#content {
+      margin: 0 auto;
+      width: 960px;
+      overflow: hidden;
+      }
+      #title {
+      padding: 0 10px;
+      }
+      #title h1 {
+      font-weight: normal;
+      text-align: center;
+      margin-bottom: 0.5em;
+      font-size: 2em;
+      }
+      #toc {
+      float: left;
+      width: 220px;
+      padding: 0 10px;
+      }
+      #body {
+      float: left;
+      width: 700px;
+      padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+      color: #777;
+      margin: 1em 0 0 0;
+      }
+      h1 { font-size: 1.6em; }
+      h2 { font-size: 1.4em; }
+      h3 { font-size: 1.3em; }
+      h4 { font-size: 1.2em; }
+      ul.toc {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9em;
+      }
+      div.header {
+      position: relative;
+      }
+      div.top {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      }
+      div.top a {
+      text-decoration: none;
+      }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+      margin: 0 0 0.75em 0;
+      }
+      code {
+      font-size: 1.1em;
+      }
+      pre {
+      padding: 10px;
+      background: #fed;
+      }
+      a {
+      color: #900;
+      }
+      #legal {
+      float: left;
+      font-size: 0.75em;
+      padding-left: 250px;
+      }
+      #legal p {
+      margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: {{title}}</h1>
+      </div>
+      <div id="toc">
+        <h1>Contents</h1>
+        <ul class='toc'>
+        {% for level,id,text in toc %}
+        <li class='level_{{level}}'><a href='{{id}}'>{{text}}</a></li>
+        {% endfor %}
+        </ul>
+      </div>
+      <div id="body">
+        {{ content }}
+      </div>
+      <div id="legal">
+        <p>
+          Documentation copyright &copy; 2010 IDM. Undum is available
+          <a href="http://github.com/idmillington/undum">here</a>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
