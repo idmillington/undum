@@ -103,42 +103,36 @@ undum.game.situations = {
         <p class='transient'>Давайте узнаем больше о ссылках и посмотри, как <a href='sticky'>изменить</a> это поведение.</p>"
     ),
     sticky: new undum.SimpleSituation(
-        "<h1>Links</h1>\
-        <p>There are three types of link in Undum. The first two we've seen:\
-        links to change situation and links to carry out an action. When you\
-        include a link in your output, Undum parses it and wires it up\
-        correctly. If you create a link with a HTML <em>href</em> attribute\
-        containing just a name ('ballroom', for\
-        example) this will send the character to the situation with that\
-        name. Links\
-        with two components ('ballroom/view-painting', for example) send\
-        the character to a new situation <em>and then</em> carry out the\
-        named action ('view-painting' in this case). To carry out an action\
-        in the current situation, you can replace the situation name with a\
-        dot (so it would be './view-painting'). In all cases, if the\
-        character is already in that situation, then the situation's\
-        <em>enter</em> method won't be called again.</p>\
+        "<h1>Ссылки</h1>\
+        <p>В undum существует три типа ссылок. Мы уже видели первые два:\
+        ссылки смены ситцаций и ссылки, вызывающие действие. Когда вы\
+        включаете ссылку в ваш текст, undum распознаёт её и оформляет\
+        подобающим образом. Если вы создаёте ссылку с атрибутом HTML <em>href</em>,\
+        содержащим только имя ('зал', например), то она отправит персонажа\
+        в ситуацию с этим именем. Ссылки с двумя компонентами ('зал/посмотреть-картину')\
+        отправят персонажа в новую ситуацию <em>и тогда</em> вызовут действие в\
+        текущей ситуации. Вы можете заменить имя ситуации точкой ('./посмотреть-картину'). В\
+        любом случае, если персонаж уже находится в этой ситуации, то её метод <em>enter</em>\
+        ещё раз вызываться не будет.</p>\
         \
         <img src='media/tutorial/woodcut2.png' class='float_left'>\
-        <p>The third type of link, then, is a general hyperlink. If your\
-        link doesn't consist of a single element or pair of elements, as\
-        above, then Undum will guess that you have a normal hyperlink. As\
-        <a href='http://news.bbc.co.uk' class='sticky'>in this link</a>.\
-        If you have a link that <em>does</em> look like an Undum link, you\
-        can still force Undum not to interpret it as an action or situation\
-        move, by adding the CSS class <em>raw</em> to the HTML <em>a</em> tag.\
-        links that don't have the <em>raw</em> class, but that are considered\
-        to be non-Undum links (like the link above), will have <em>raw</em>\
-        added to them before display. This could allow you to style external\
-        links differently, as we have done here.</p>\
+        <p>Наконец, третий тип ссылок - это обычная гиперссылка. Если ваша\
+        ссылка не состоит из одного элемента или пары элементов, как описано выше, то\
+        Undum догадается, что вы имели в виду обычную гиперссылку. Например, \
+        <a href='http://news.bbc.co.uk' class='sticky'>как в этом случае.</a>\
+        Если ваша ссылка всё-таки <em>выглядит</em> как ссылка Undum, то вы\
+        всё ещё можете заставить Undum не интерпретировать её как ситуацию или действие, добавив\
+        CSS класс <em>raw</em> к тегу HTML <em>a.</em>\
+        Ссылкам, которые не относятся к классу <em>raw</em>, но угадываются как\
+        не-Undum, класс <em>raw</em> добавится автоматически перед отображением.\
+        Это позволит вам выделить внешние ссылки особым образом, как мы сделали в этой игре.</p>\
         \
-        <p>In the last situation I said you can prevent links from being\
-        turned into regular text when you move situations. This is done\
-        by another CSS class: <em>sticky</em>. When you\
-        <a href='oneshot'>leave this situation</a>, you'll notice the\
-        external link stays active. This can allow you to have options that\
-        stay valid throughout the narrative, for example, such as a spell to\
-        teleport home.</p>"
+        <p>В последней ситуации я сказал, что вы можете остановить ссылки от превращения в обычный текст, когда\
+        вы меняете ситуацию. Это делается при помощи другого класса\
+        CSS: <em>sticky</em>. Когда вы\
+        <a href='oneshot'>покинете эту ситуацию</a>, вы заметите, что внешняя ссылка осталась активной.\
+        Это позволяет вам предлагать ссылки, которые останутся рабочими в течение всего рассказа,\
+        например, ссылка заклинания телепортации домой.</p>"
     ),
     oneshot: new undum.SimpleSituation(
         "<p>There is one final option for links. If you give a link\
@@ -159,11 +153,10 @@ undum.game.situations = {
         <a href='qualities'>move on</a>.</p>",
         {
             actions: {
-                "one-time-action": "<p>As I said, one time actions are\
-                                   mostly used to describe something in\
-                                   more detail, where you don't want the\
-                                   same descriptive text repeated over and\
-                                   over</p>"
+                "one-time-action": "<p>Как я уже говорил, неповторяющиеся действия\
+                                   в большинстве своём используются для описания\
+                                   чего-то в деталях, когда вы не хотите повторять\
+                                   один и тот же текст описания в разных местах рассказа.</p>"
             }
         }
     ),
@@ -358,7 +351,7 @@ undum.game.qualities = {
         "Усталость", {priority:"0002", group:'stats'}
     ),
     luck: new undum.FudgeAdjectivesQuality( // Fudge as in the FUDGE RPG
-        "<span title='Skill, Stamina and Luck are reverently borrowed from the Fighting Fantasy series of gamebooks. The words representing Luck are from the FUDGE RPG. This tooltip is illustrating that you can use any HTML in the label for a quality (in this case a span containing a title attribute).'>Удача</span>",
+        "<span title='Навык, Усталоть и Удача с почтением позаимствованы из книг-игр серии Fighting Fantasy. Слова, описывающие Удачу, взяты из FUDGE RPG. Эта подсказка иллюстрирует то, что вы можете использовать любой HTML в качестве описания качества (в этом случае, тег span, содержащий атрибут названия).'>Удача</span>",
         {priority:"0003", group:'stats'}
     ),
 
