@@ -119,12 +119,6 @@ This assumes you use the same directory lay out that I do. You are
 welcome to change things around, of course, as long as you work and
 change the references.
 
-## Progress
-
-On my plan is some reference documentation. So you don't have to
-go through the source code (no matter how well documented it is).
-
-
 
 ## Undum
 
