@@ -284,20 +284,20 @@ undum.game.situations = {
         one</a> or <a href='two'>option two</a>.</span></p>"
     ),
     one: new undum.SimpleSituation(
-        "<h1>Option One</h1>\
-        <p>You chose option one, which is probably for the best, since\
-        option two is written in badly rhyming Coptic.\
+        "<h1>Вариант Один</h1>\
+        <p>Вы выбрали первый вариант, и возможно, он лучший, так как вариант два\
+        написан на плохо зарифмованном коптском.\
         </p>\
-        <p>From here it is just a <a href='saving'>short step</a> to the\
-        final bits of content in this tutorial.</p>"
+        <p>Отсюда остался всего лишь <a href='saving'>маленький шаг</a> до последних\
+        кусочков текста в этом обучении.</p>"
     ),
     "two": new undum.SimpleSituation(
-        "<h1>Option Two</h1>\
-        <p>You chose option two, which is my favourite option as well.\
-        I find the photographs accompanying option one to be too disturbing.\
-        Finger nails just shouldn't bend that way...</p>\
-        <p>From here it is just a <a href='saving'>short step</a> to the\
-        final bits of content in this tutorial.</p>"
+        "<h1>Вариант Два</h1>\
+        <p>Вы выбрали второй вариант, и он также мой любимый. \
+        Я нахожу раздражительными фотографии, сопровождающие первый выбор.\
+        Ногти на пальцах не должны гнуться таким образом...</p>\
+        <p>Отсюда остался всего лишь <a href='saving'>маленький шаг</a> до последних\
+        кусочков текста в этом обучении.</p>"
     ),
     // Again, we'll retrieve the text we want from the HTML file.
     "saving": new undum.Situation({
@@ -306,21 +306,19 @@ undum.game.situations = {
         }
     }),
     "last": new undum.SimpleSituation(
-        "<h1>Where to Go Now</h1>\
-        <p>So that's it. We've covered all of Undum. This situation is the\
-        end, because it has no further links. The 'The End' message is\
-        just in the HTML output of this situation, it isn't anything special\
-        to Undum</p>\
+        "<h1>Куда теперь</h1>\
+        <p>Итак, это всё. Мы показали весь Undum. Эта ситуация - конечная, поскольку\
+        в ней нет дальнейших ссылок. Сообщение «Конец» - это просто HTML вывод ситуации.\
+        В нём нет ничего особенного для Undum.</p>\
         \
-        <p>I've added an\
-        inspiration quality to your character list. Its time for you to\
-        crack open the game file and write your own story.</p>\
-        <h1>The End</h1>",
+        <p>Я добавил качество вдохновления в ваш листок персонажа.\
+        Настало время для вас вскрыть файл с игрой и написать свою собственную историю.</p>\
+        <h1>Конец</h1>",
         {
             enter: function(character, system, from) {
                 system.setQuality("inspiration", 1);
                 system.setCharacterText(
-                    "<p>You feel all inspired, why not have a go?</p>"
+                    "<p>Вы чувствуете себя вдохновлённым, почему бы не попробовать?</p>"
                 );
             }
         }
