@@ -62,9 +62,9 @@ development. It also has excellent Javascript debugging tools.
 
 2. Unzip Undum somewhere on your hard-drive.
 
-3. Open tutorial.html in your browser, and play through the tutorial.
+3. Open games/tutorial.html in your browser, and play through the tutorial.
 
-4. Copy tutorial.html to a file that reflects your game name.
+4. Copy games/tutorial.html to a file that reflects your game name.
 
 5. Edit your HTML file and add the title, author and description of
    the game you want to write. At the bottom of the file change the
@@ -74,17 +74,23 @@ development. It also has excellent Javascript debugging tools.
 6. Copy `tutorial.game.js` to the file name you chose in the last
    step. Open it and begin creating your game.
 
-The source code for all the files is heavily commented, so if you get
-stuck, go in and read it.
+
+Reference documentation, including full API details, is at
+http://undum.com/docs/API.html, and is also included in the
+repository.
+
+The source code for all the files is also heavily commented, so if you
+get stuck, go in and read it.
 
 
 ## Deploying
 
-To deploy your game, just upload the `index.html` and the `media`
-folder to your webserver. You can serve several games with the same
-look and feel from the same directory. Just rename `index.html` to a
-different name for each game, and have each HTML file load the correct
-`.game.js` file at the end. The remaining files will be reused.
+To deploy your game, just upload your HTML file and the `media` folder
+to your webserver. You can serve several games with the same look and
+feel from the same directory. You need a different HTML file for each
+game, and each one should load the correct `.game.js` file at the
+end. Add any media you need for your game (images, audio, video), and
+the remaining files will be reused.
 
 For example, if you had 3 games: `episode1`, `episode2`, and
 `christmas-special`. You'd have a directory structure:
@@ -98,16 +104,20 @@ For example, if you had 3 games: `episode1`, `episode2`, and
         js/
             jquery-1.4.2.min.js
             undum.js
-            episode1.game.js
-            episode2.game.js
-            christmas-special.game.js
+        games/
+            episode1/
+                episode1.game.js
+                ... media for episode 1 ...
+            episode2/
+                episode2.game.js
+                ... media for episode 1 ...
+            christmas-special/
+                christmas-special.game.js
+                ... media for christmas special ...
 
-
-## Progress
-
-On my plan is some reference documentation. So you don't have to
-go through the source code (no matter how well documented it is).
-
+This assumes you use the same directory lay out that I do. You are
+welcome to change things around, of course, as long as you work and
+change the references.
 
 
 ## Undum

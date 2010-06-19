@@ -12,11 +12,11 @@
     // -----------------------------------------------------------------------
 
     /* Crockford's inherit function */
-    Function.prototype.inherits = function (parent) {
-        var d = {}, p = (this.prototype = new parent());
-        this.prototype.uber = function (name) {
+    Function.prototype.inherits = function(Parent) {
+        var d = {}, p = (this.prototype = new Parent());
+        this.prototype.uber = function(name) {
             if (!(name in d)) d[name] = 0;
-            var f, r, t = d[name], v = parent.prototype;
+            var f, r, t = d[name], v = Parent.prototype;
             if (t) {
                 while (t) {
                     v = v.constructor.prototype;
@@ -38,7 +38,7 @@
     };
 
     var hasLocalStorage = function() {
-        return ('localStorage' in window) && window['localStorage'] !== null;
+        return ('localStorage' in window) && window.localStorage !== null;
     };
 
     var AssertionError = function(message) {
@@ -79,16 +79,16 @@
      * then they should have the same function signature as the full
      * function definitions, below.
      *
-     * Note that the derived types of Situation (SimpleSituation and
-     * DOMDataSituation), call passed in functions AS WELL AS their
+     * Note that the derived types of Situation (current
+     * SimpleSituation), call passed in functions AS WELL AS their
      * normal action. This is most often what you want: the normal
      * behavior plus a little extra custom behavior. If you want to
-     * override the behavior of a SimpleSituation or DOMDataSituation,
-     * you'll have to create a derived type and set the enter, act
-     * and/or exit function on their prototypes. In most cases,
-     * however, if you want to do something completely different, it
-     * is better to derive your type from this type: Situation, rather
-     * than one of its children.
+     * override the behavior of a SimpleSituation, you'll have to
+     * create a derived type and set the enter, act and/or exit
+     * function on their prototypes. In most cases, however, if you
+     * want to do something completely different, it is better to
+     * derive your type from this type: Situation, rather than one of
+     * its children.
      */
     var Situation = function(opts) {
         if (opts) {
@@ -129,9 +129,8 @@
      * actions: This should be an object mapping action Ids to a
      *     response. The response should either be "Display Content"
      *     to display if this action is carried out, or it should be a
-     *     function(character, system, action) that can return such
-     *     content. If the function returns nothing, then no output
-     *     will be sent.
+     *     function(character, system, action) that will process the
+     *     action.
      *
      * The remaining options in the opts parameter are the same as for
      * the base Situation.
@@ -141,21 +140,19 @@
         this.content = content;
         this.heading = opts && opts.heading;
         this.actions = opts && opts.actions;
-    }
+    };
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
         if (this.heading) system.writeHeading(this.heading);
-        system.write(this.content);
+        if (this.content) system.write(this.content);
         if (this._enter) this._enter(character, system, from);
     };
     SimpleSituation.prototype.act = function(character, system, action) {
-        response = this.actions[action];
+        var response = this.actions[action];
         try {
-            response = response(character, system, action);
+            response(character, system, action);
         } catch (err) {
-        }
-        if (response) {
-            system.write(response);
+            if (response) system.write(response);
         }
         if (this._act) this._act(character, system, action);
     };
@@ -219,7 +216,7 @@
     };
     IntegerQuality.inherits(QualityDefinition);
     IntegerQuality.prototype.format = function(character, value) {
-        return parseInt(value).toString();
+        return Math.floor(value).toString();
     };
 
     /* A quality that displays its full numeric value, including
@@ -254,11 +251,6 @@
      *     anything beyond 'amazing' is still 'amazing'.
      *
      * Other options are the same as for QualityDefinition.
-     *
-     * Words outside the range of the values given will be constructed
-     * from the limits of the values given and an integer modifier. So
-     * if the words are 'low', 'high' with no offset, a value of 2
-     * will be 'high+1' and -2 will be 'low-2'.
      */
     var WordScaleQuality = function(title, values, opts) {
         var myOpts = $.extend({
@@ -272,17 +264,17 @@
     };
     WordScaleQuality.inherits(QualityDefinition);
     WordScaleQuality.prototype.format = function(character, value) {
-        var val = parseInt(value - this.offset);
+        var val = Math.floor(value - this.offset);
         var mod = "";
         if (val < 0) {
             mod = val.toString();
             val = 0;
         } else if (val >= this.values.length) {
-            mod = "+"+(val-this.values.length+1).toString();
-            val = this.values.length-1;
+            mod = "+" + (val - this.values.length + 1).toString();
+            val = this.values.length - 1;
         }
         if (!this.useBonuses) mod = "";
-        return this.values[val]+mod;
+        return this.values[val] + mod;
     };
 
     /* A specialization of WordScaleQuality that uses the FUDGE RPG's
@@ -345,8 +337,8 @@
     };
 
     /* Defines a group of qualities that should be displayed together,
-     * before any miscellaneous qualities. These should be defined in
-     * the `undum.game.qualityGroups` parameter. */
+     * under the given optional title. These should be defined in the
+     * `undum.game.qualityGroups` parameter. */
     var QualityGroup = function(title, opts) {
         var myOpts = $.extend({
             priority: title,
@@ -366,7 +358,7 @@
      * functions of each situation. It is used to interact with the
      * UI.
      */
-    var System = function () {
+    var System = function() {
     };
 
     /* An object derived from Random, which allows your game to make
@@ -403,7 +395,7 @@
     System.prototype.write = function(content) {
         continueOutputTransaction();
         var output = augmentLinks(content);
-        var content = $('#content').append(output);
+        $('#content').append(output);
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -421,7 +413,7 @@
      * is no longer available. It is used automatically when you give
      * a link the 'once' class. */
     System.prototype.clearLinks = function(code) {
-        $("a[href='"+code+"']").each(function(index, element) {
+        $("a[href='" + code + "']").each(function(index, element) {
             var a = $(element);
             a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
         });
@@ -471,7 +463,7 @@
             qualityBlock = addQualityBlock(quality).hide().fadeIn(500);
         } else {
             // Do nothing if there's nothing to do.
-            if (oldValue == newValue) return;
+            if (oldValue === newValue) return;
 
             // Change the value.
             if (newDisplay === null) {
@@ -535,12 +527,15 @@
      *     these are not given, then the labels will be omitted.
      */
     System.prototype.animateQuality = function(quality, newValue, opts) {
+        var currentValue = character.qualities[quality];
+        if (!currentValue) currentValue = 0;
+
         // Change the base UI.
         this.setQuality(quality, newValue);
         if (!interactive) return;
 
         // Overload default options.
-        var myOpts = $.extend({
+        var myOpts = {
             from: 0,
             to: 1,
             title: null,
@@ -548,7 +543,12 @@
             displayValue: null,
             leftLabel: null,
             rightLabel: null
-        }, opts);
+        };
+        if (newValue < currentValue) {
+            myOpts.from = 1;
+            myOpts.to = 0;
+        }
+        $.extend(myOpts, opts);
 
         // Run through the quality definition.
         var qualityDefinition = game.qualities[quality];
@@ -876,11 +876,12 @@
         }
 
         // Find or create the group block.
+        var groupBlock;
         var groupId = qualityDefinition.group;
         if (groupId) {
             var group = game.qualityGroups[groupId];
             assert(group, "Couldn't find a group definition for "+groupId+".");
-            var groupBlock = $("#g_"+groupId);
+            groupBlock = $("#g_"+groupId);
             if (groupBlock.size() <= 0) {
                 groupBlock = addGroupBlock(groupId);
             }
@@ -900,7 +901,7 @@
     var scrollStack = [];
     var pendingFirstWrite = false;
     var startOutputTransaction = function() {
-        if (scrollStack.length == 0) {
+        if (scrollStack.length === 0) {
             pendingFirstWrite = true;
         }
         scrollStack.push(
@@ -917,9 +918,9 @@
     };
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
-        if (scrollStack.length == 0 && scrollPoint) {
+        if (scrollStack.length === 0 && scrollPoint) {
             if (interactive) {
-                $("body, html").animate({scrollTop:scrollPoint}, 500);
+                $("body, html").animate({scrollTop: scrollPoint}, 500);
             }
             scrollPoint = null;
         }
@@ -927,7 +928,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-z0-9]+|.)(\/([-0-9a-z]+))?$/;
+    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
     var processLink = function(code) {
         var match = code.match(linkRe);
         assert(match, "The link '"+code+"' doesn't appear to be valid.");
@@ -939,8 +940,8 @@
         startOutputTransaction();
 
         // Change the situation
-        if (situation != '.') {
-            if (situation != current) {
+        if (situation !== '.') {
+            if (situation !== current) {
                 doTransitionTo(situation);
             }
         } else {
@@ -952,18 +953,14 @@
 
         // Carry out the action
         if (action) {
-            var situation = getCurrentSituation();
+            situation = getCurrentSituation();
             if (situation) {
                 if (game.beforeAction) {
-                    game.beforeAction(
-                        character, system, sysChar.current, action
-                    );
+                    game.beforeAction(character, system, current, action);
                 }
                 situation.act(character, system, action);
                 if (game.afterAction) {
-                    game.afterAction(
-                        character, system, sysChar.current, action
-                    );
+                    game.afterAction(character, system, current, action);
                 }
             }
         }
@@ -978,7 +975,7 @@
     /* This gets called when the user clicks a link to carry out an
      * action. */
     var processClick = function(code) {
-        var now = (new Date).getTime() * 0.001;
+        var now = (new Date()).getTime() * 0.001;
         gameTime = now - startTime;
         progress.sequence.push({link:code, when:gameTime});
         processLink(code);
@@ -1004,12 +1001,16 @@
             }
 
             //  Remove links and transient sections.
-            $('#content a').each(function (index, element) {
+            $('#content a').each(function(index, element) {
                 var a = $(element);
                 if (a.hasClass('sticky')) return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
-            $('#content .transient').fadeOut(2000);
+            if (interactive) {
+                $('#content .transient').fadeOut(2000);
+            } else {
+                $('#content .transient').hide();
+            }
         }
 
         // Move the character.
@@ -1027,24 +1028,24 @@
     var augmentLinks = function(content) {
         var output = $(content);
         output.find("a").each(function(index, element) {
-            var element = $(element);
-            if (!element.hasClass("raw")) {
-                var href = element.attr('href');
+            var a = $(element);
+            if (!a.hasClass("raw")) {
+                var href = a.attr('href');
                 if (href.match(linkRe)) {
-                    element.click(function (event) {
+                    a.click(function(event) {
                         event.preventDefault();
                         processClick(href);
 
                         // If we're a once-click, remove all matching
                         // links after we're clicked.
-                        if (element.hasClass("once")) {
+                        if (a.hasClass("once")) {
                             system.clearLinks(href);
                         }
 
                         return false;
                     });
                 } else {
-                    element.addClass("raw");
+                    a.addClass("raw");
                 }
             }
         });
@@ -1107,7 +1108,7 @@
     var saveGame = function() {
         // Store when we're saving the game, to avoid exploits where a
         // player loads their file to gain extra time.
-        var now = (new Date).getTime() * 0.001;
+        var now = (new Date()).getTime() * 0.001;
         progress.saveTime = now - startTime;
 
         // Save the game.
@@ -1174,10 +1175,10 @@
     };
 
     /* Set up the game when everything is loaded. */
-    $(function () {
+    $(function() {
         // Handle storage.
         if (hasLocalStorage) {
-            var erase = $("#erase").click(function () {
+            var erase = $("#erase").click(function() {
                 doErase();
             });
             var save = $("#save").click(saveGame);
@@ -1255,17 +1256,18 @@
         // prototype outside of this function.
         var width = 256;
         var chunks = 6;
-        var significance = 52;
+        var significanceExponent = 52;
         var startdenom = Math.pow(width, chunks);
-        var significance = Math.pow(2, significance);
+        var significance = Math.pow(2, significanceExponent);
         var overflow = significance * 2;
 
         var Random = function(seed) {
             this.random = null;
-            this.setSeed(seed);
-        };
-        Random.prototype.setSeed = function seedrandom(seed) {
-            if (!seed) return;
+
+            if (!seed) throw {
+                name: "RandomSeedError",
+                message: "You must provide a valid random seed."
+            };
             var key = [];
             mixkey(seed, key);
             var arc4 = new ARC4(key);
@@ -1321,9 +1323,9 @@
                 return r;
             };
             me.g(width);
-        }
+        };
         // Helper functions.
-        function mixkey(seed, key) {
+        var mixkey = function(seed, key) {
             seed += '';
             var smear = 0;
             for (var j = 0; j < seed.length; j++) {
@@ -1336,15 +1338,17 @@
                 seed += String.fromCharCode(key[j]);
             }
             return seed;
-        }
-        function lowbits(n) { return n & (width - 1); }
+        };
+        var lowbits = function(n) {
+            return n & (width - 1);
+        };
 
         return Random;
     })();
-    /* Returns a random floating point number between zero and one. NB:
-     * The prototype implementation below just throws an error, it will be
-     * overridden in each Random instance object by a correct function
-     * when the object's setSeed method is called. */
+    /* Returns a random floating point number between zero and
+     * one. NB: The prototype implementation below just throws an
+     * error, it will be overridden in each Random object when the
+     * seed has been correctly configured. */
     Random.prototype.random = function() {
         throw new {
             name:"RandomError",
@@ -1354,7 +1358,7 @@
     /* Returns an integer between the given min and max values,
      * inclusive. */
     Random.prototype.randomInt = function(min, max) {
-        return min + parseInt((max-min+1)*this.random());
+        return min + Math.floor((max-min+1)*this.random());
     };
     /* Returns the result of rolling n dice with dx sides, and adding
      * plus. */
@@ -1377,18 +1381,19 @@
             }
             if (plus) result += plus;
             return result;
-        }
+        };
     })();
     /* Returns a dice-roll result from the given string dice
-     * specification. The specification should be of the form xdy+z, where
-     * the x compnent and z component are optional. This rolls x dice of
-     * with y sides, and adds z to the result, the z component can also be
-     * negative: xdy-z. The y component can be either a number of sides,
-     * or can be the special values 'F', for a fudge die (with 3 sides,
-     * +,0,-), or 'A' for an averaging die (with sides 2,3,3,4,4,5).
+     * specification. The specification should be of the form xdy+z,
+     * where the x component and z component are optional. This rolls
+     * x dice of with y sides, and adds z to the result, the z
+     * component can also be negative: xdy-z. The y component can be
+     * either a number of sides, or can be the special values 'F', for
+     * a fudge die (with 3 sides, +,0,-), '%' for a 100 sided die, or
+     * 'A' for an averaging die (with sides 2,3,3,4,4,5).
      */
     Random.prototype.diceString = (function() {
-        var diceRe = /^([1-9][0-9]*)?d([FA]|[1-9][0-9]*)([+-][1-9][0-9]*)?$/;
+        var diceRe = /^([1-9][0-9]*)?d([%FA]|[1-9][0-9]*)([-+][1-9][0-9]*)?$/;
         return function(def) {
             var match = def.match(diceRe);
             if (!match) {
@@ -1397,9 +1402,9 @@
                 );
             }
 
-            var num = match[1]?parseInt(match[1]):1;
+            var num = match[1]?parseInt(match[1], 10):1;
             var sides;
-            var bonus = match[3]?parseInt(match[3]):0;
+            var bonus = match[3]?parseInt(match[3], 10):0;
 
             switch (match[2]) {
             case 'A':
@@ -1408,8 +1413,10 @@
                 sides = 3;
                 bonus -= num*2;
                 break;
+            case '%':
+                sides = 100;
             default:
-                sides = parseInt(match[2]);
+                sides = parseInt(match[2], 10);
                 break;
             }
             return this.dice(num, sides, bonus);
