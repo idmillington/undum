@@ -1,6 +1,6 @@
 // Перевод на русский: Oreolek, 2010
 // ---------------------------------------------------------------------------
-// Отредактируйте этот файл, чтобы описать вашу игры. Он должен иметь не
+// Отредактируйте этот файл, чтобы описать вашу игру. Он должен иметь не
 // менее четырёх разделов данных: undum.game.situations, undum.game.start,
 // undum.game.qualities, и undum.game.init.
 // ---------------------------------------------------------------------------
@@ -296,7 +296,7 @@ undum.game.situations = {
         <p>Отсюда остался всего лишь <a href='saving'>маленький шаг</a> до последних\
         кусочков текста в этом обучении.</p>"
     ),
-    // Again, we'll retrieve the text we want from the HTML file.
+    // Опять, мы получаем текст из HTML файла.
     "saving": new undum.Situation({
         enter: function(character, system, from) {
             system.write($("#s_saving").html());
@@ -323,13 +323,13 @@ undum.game.situations = {
 };
 
 // ---------------------------------------------------------------------------
-/* The Id of the starting situation. */
+/* Идентификатор стартовой ситуации. */
 undum.game.start = "start";
 
 // ---------------------------------------------------------------------------
-/* Here we define all the qualities that our characters could
- * possess. We don't have to be exhaustiv, but if we miss one out then
- * that quality will never show up in the character bar in the UI. */
+/* Здесь мы определяем все качества, присущие нашим персонажам.
+ * Мы не должны быть исчерпывающими, но если мы что-то пропустим, то
+ * это качество никогда не покажется в панели персонажа. */
 undum.game.qualities = {
     skill: new undum.IntegerQuality(
         "Сила", {priority:"0001", group:'stats'}
@@ -351,19 +351,18 @@ undum.game.qualities = {
 };
 
 // ---------------------------------------------------------------------------
-/* The qualities are displayed in groups in the character bar. This
- * determines the groups, their heading (which can be null for no
- * heading) and ordering. QualityDefinitions without a group appear at
- * the end. It is an error to have a quality definition belong to a
- * non-existent group. */
+/* Качества отображаются по группам в панели персонажа. Эта функция определяет группы,
+ * их заголовки (которые могут быть null - нет заголовка), и порядок.
+ * Качества без группы появляются в конце. Описание качества,
+ * приналежащее к несуществующей группе, является ошибкой.*/
 undum.game.qualityGroups = {
     stats: new undum.QualityGroup(null, {priority:"0001"}),
     progress: new undum.QualityGroup('Прогресс', {priority:"0002"})
 };
 
 // ---------------------------------------------------------------------------
-/* This function gets run before the game begins. It is normally used
- * to configure the character at the start of play. */
+/* Эта функция запускается перед началом игры. Обычно она используется
+ * для того, чтобы настроить персонажа перед игрой. */
 undum.game.init = function(character, system) {
     character.qualities.skill = 12;
     character.qualities.stamina = 12;
