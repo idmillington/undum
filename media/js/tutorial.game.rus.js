@@ -135,25 +135,23 @@ undum.game.situations = {
         например, ссылка заклинания телепортации домой.</p>"
     ),
     oneshot: new undum.SimpleSituation(
-        "<p>There is one final option for links. If you give a link\
-        the <em>once</em> CSS class, then that link will disappear\
-        after it is clicked. This is  used (as in\
-        <a href='./one-time-action' class='once'>this link</a>) for\
-        actions that you only want to be possible once. There is no\
-        point using 'once' on situation links because they'll be turned\
-        into text as soon as you click them anyway (unless they are also\
-        <em>sticky</em>, of course).</p><p>Once links are useful\
-        for actions such as examining an object more carefully. You\
-        don't want lots of repeated descriptions, so making the link\
-        a <em>once</em> link is more user friendly.</p>\
-        <p>If you have more than one link to the same action, then all\
-        matching links will be removed, so you don't have to worry about\
-        the player having an alternative way to carry out the action.</p>\
-        <p class='transient'>After you've clicked the link, let's\
-        <a href='qualities'>move on</a>.</p>",
+        "<p>Ещё одна последняя настройка ссылок. Если вы назначите ссылке CSS класс\
+        <em>once</em>, то она исчезнет после нажатия. Это используется \
+        <a href='./one-time-action' class='once'>(проверьте сами)</a> для\
+        действий, которые вы хотите сделать однократными. Нет смысла использовать\
+        'once' на ссылках ситуаций, потому что они всё равно превратятся в текст, как только вы на них нажмёте\
+        ( конечно, если они не помечены как <em>sticky</em>).</p><p>Однократные ссылки полезны\
+        для таких действий, как внимательное изучение объекта. Вам не захочется\
+        повторять описание много раз, поэтому сделать ссылку однократной было бы\
+        дружелюбнее для пользователя.</p>\
+        <p>Если у вас более, чем одна ссылка относится к одному действию, то все соответсвующие ссылки\
+        будут удалены, так что вам не придётся заботиться о игроке, который найдёт способ\
+        ещё раз вызвать действие.</p>\
+        <p class='transient'>После того, как вы нажмёте на ссылку, мы \
+        <a href='qualities'>продолжим.</a></p>",
         {
             actions: {
-                "one-time-action": "<p>Как я уже говорил, неповторяющиеся действия\
+                "one-time-action": "<p>Как я уже говорил, однократные действия\
                                    в большинстве своём используются для описания\
                                    чего-то в деталях, когда вы не хотите повторять\
                                    один и тот же текст описания в разных местах рассказа.</p>"
@@ -161,20 +159,18 @@ undum.game.situations = {
         }
     ),
     qualities: new undum.SimpleSituation(
-        "<h1>Qualities</h1>\
-        <p>That's enough about situations. Let's talk about the character.\
-        The character is described by a series of <em>qualities</em>. These\
-        are numeric values that can describe anything from natural abilities\
-        to how much of a resource the character controls. Qualities are\
-        shown in the box on the right of the text.</p>\
+        "<h1>Качества</h1>\
+        <p>Хватит о ситуациях, давайте поговорим о персонаже. Персонаж описывается\
+        при помощи серии <em>качеств.</em> Это численные значения, которые могут описать\
+        всё от врождённых способностей до количества ресурсов,подконтрольных персонажу.\
+        Качества показаны в блоке справа от текста.</p>\
         \
-        <p>The qualities there are those you started the game with. When you\
-        <a href='quality-types'>go to the next situation</a>, keep your\
-        eyes on the character panel. You'll notice I'll give you a boost to\
-        your stamina quality. This process is animated and highlighted to\
-        draw your attention to it. You could also get a boost of skill\
-        by carrying out <a href='./skill-boost'>this action</a> as many\
-        times as you like.</p>",
+        <p>Качества в этом блоке - это те, с которыми вы начали игру. Когда вы\
+        <a href='quality-types'>перейдёте к следующей ситуации, </a> не отводите глаз\
+        от панели персонажа. Вы заметите, что я подниму ваше качество Ловкости.\
+        Этот процесс анимирован и подсвечен, чтобы привлечь ваше внимание.\
+        Также вы можете получить повышение Силы, выполнив\
+        <a href='./skill-boost'>это действие</a> столько раз, сколько захочется.</p>",
         {
             actions: {
                 "skill-boost": function(character, system, action) {
@@ -345,13 +341,13 @@ undum.game.start = "start";
  * that quality will never show up in the character bar in the UI. */
 undum.game.qualities = {
     skill: new undum.IntegerQuality(
-        "Навык", {priority:"0001", group:'stats'}
+        "Сила", {priority:"0001", group:'stats'}
     ),
     stamina: new undum.NumericQuality(
-        "Усталость", {priority:"0002", group:'stats'}
+        "Ловкость", {priority:"0002", group:'stats'}
     ),
     luck: new undum.FudgeAdjectivesQuality( // Fudge as in the FUDGE RPG
-        "<span title='Навык, Усталоть и Удача с почтением позаимствованы из книг-игр серии Fighting Fantasy. Слова, описывающие Удачу, взяты из FUDGE RPG. Эта подсказка иллюстрирует то, что вы можете использовать любой HTML в качестве описания качества (в этом случае, тег span, содержащий атрибут названия).'>Удача</span>",
+        "<span title='Сила, Ловкость и Удача с почтением позаимствованы из книг-игр серии Fighting Fantasy. Слова, описывающие Удачу, взяты из FUDGE RPG. Эта подсказка иллюстрирует то, что вы можете использовать любой HTML в качестве описания качества (в этом случае, тег span, содержащий атрибут названия).'>Удача</span>",
         {priority:"0003", group:'stats'}
     ),
 
