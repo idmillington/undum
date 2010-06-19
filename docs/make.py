@@ -106,7 +106,7 @@ def build():
         os.makedirs(OUT_DIR)
 
     # Find the template we'll use
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader('src'))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(SRC_DIR))
     template = env.get_template('base.html')
 
     # Convert all our markdown source files.
@@ -120,12 +120,12 @@ def build():
             parser = TOCParser()
             parser.feed(html)
             parser.close()
-            html = parser.get_html()
 
             # Create the final result
             result = template.render(
-                content=html,
-                toc=parser.toc, title=parser.title
+                title = parser.title,
+                content = parser.get_html(),
+                toc = parser.toc
                 )
 
             # Write it out
