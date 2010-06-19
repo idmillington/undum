@@ -216,18 +216,18 @@ undum.game.situations = {
         }
     ),
     "character-text": new undum.SimpleSituation(
-        "<h1>Character Text</h1>\
-        <p>Above the list of qualities is a short piece of text, called\
-        the character-text. This describes the character in some way. It\
-        can be set by any action or when entering or leaving a situation.\
-        It is just regular HTML content, as for all text in Undum. It can\
-        also contain Undum links, so this is another place you can put\
-        actions that the character can carry out over a long period of time.\
+        "<h1>Текст персонажа</h1>\
+        <p>Над списком качеств находится коротенький кусочек текста, называемый\
+        текстом персонажа. Он как-то описывает героя. Он может быть задан\
+        любым действием или когда вы входите в или покидаете ситуацию.\
+        Это обычное содержимое HTML, как и любой другой текст в Undum.\
+        Он также может содержать ссылки Undum, так что это - ещё одно место, куда\
+        вы можете поместить действия, которые персонаж может выполнять в течение долгого периода времени.\
         </p>\
-        <p class='transient'>Let's go to the\
-        <a href='progress'>next situation</a>. As you do, I'll change the\
-        character text. Notice that it is highlighted, just the same as\
-        when a quality is altered.</p>",
+        <p class='transient'>Давайте продолжим к \
+        <a href='progress'>следующей ситуации.</a> А пока вы это сделаете, я сменю\
+        текст персонажа. Заметьте, как он подсвечивается, в точности как и качество,\
+        когда изменяется.</p>",
         {
             exit: function(character, system, to) {
                 system.setCharacterText(
@@ -237,20 +237,19 @@ undum.game.situations = {
         }
     ),
     progress: new undum.SimpleSituation(
-        "<h1>Showing Progress</h1>\
-        <p>Sometimes you want to make a change in quality a more\
-        significant event. You can do this by animating the change in\
-        quality. If you <a href='./boost-stamina-action'>boost your\
-        stamina</a>, you will see the stamina change in the normal\
-        way in the character panel. But you will also see a progress\
-        bar appear and animate below.</p>",
+        "<h1>Отображение Прогресса</h1>\
+        <p>Иногда вы хотите сделать изменение качества более заметным событием.\
+        Вы можете сделать это, анимировав его. Если вы\
+        <a href='./boost-stamina-action'>поднимете вашу Ловкость</a>,\
+        то вы увидите, что Ловкость изменяется как обычно в панели персонажа.\
+        Но вы также увидите появление и анимацию полоски прогресса чуть ниже.</p>",
         {
             actions: {
-                // I'm going indirect here - the link carries out an
-                // action, which then uses doLink to directly change
-                // the situation.  This isn't the recommended way (I
-                // could have just changed situation in the link), but
-                // it illustrates the use of doLink.
+                // Здесь я иду по неявному пути - ссылка выдаёт действие,
+                // которое затем использует doLink, чтобы напрямую изменить
+                // ситуацию. Это не рекомендованный путь (я мог бы
+                // просто изменить ситуацию по ссылке, но он демонстрирует
+                // использование doLink.
                 "boost-stamina-action": function(character, system, action) {
                     system.doLink("boost-stamina");
                 }
@@ -263,25 +262,23 @@ undum.game.situations = {
         }
     ),
     "boost-stamina": new undum.SimpleSituation(
-        "<p>The progress bar is also useful in situations where the\
-        character block is displaying just the whole number of a quality,\
-        whereas some action changes a fraction. If the quality is displaying\
-        the character's level, for example, you might want to show a progress\
-        bar to indicate how near the character is to levelling up.</p>\
+        "<p>Полоса прогресса также удобна в ситуациях, где блок персонажа\
+        показывает только общее число качеств, а тем временем какое-нибудь действие меняет\
+        одно из них. Например, вы можете захотеть показать прогресс персонажа к следующему уровню - \
+        имея уровень персонажа качеством, конечно.</p>\
         \
         <img src='media/games/tutorial/woodcut3.png' class='float_right'>\
-        <p>After a few seconds, the progress bar disappears, to keep the\
-        focus on the text. Undum isn't designed for games where a lot of\
-        statistic management is needed. If you want a change to be part\
-        of the permanent record of the game, then write it in text.</p>\
+        <p>После нескольких секунд, полоса прогресса исчезает, чтобы оставить\
+        внимание на тексте. Undum не сделан для игр, где нужно большое управление\
+        статистиками. Если вы хотите, чтобы изменение было частью постоянной\
+        записи игры, напишите его в тексте.</p>\
         \
-        <p>Now we're almost at the end of the road. But so\
-        far you have moved through this tutorial linearly - from one\
-        situation to the next, without any choice. Undum is designed to\
-        support narratives that branch and merge.\
-        <span class='transient'>As a tiny illustration\
-        of this, choose now between going forward to <a href='one'>option\
-        one</a> or <a href='two'>option two</a>.</span></p>"
+        <p>А сейчас мы почти у конца дороги. Но пока что вы шли по этому обучению\
+        линейно - от одной ситуации до другой, без единого выбора.\
+        Undum сделан, чтобы поддерживать ветвящиеся и сливающиеся рассказы.\
+        <span class='transient'>В качестве маленькой иллюстрации\
+        этого, выберите сейчас между направлением по <a href='one'>варианту\
+        один</a> и по <a href='two'>варианту два.</a></span></p>"
     ),
     one: new undum.SimpleSituation(
         "<h1>Вариант Один</h1>\
