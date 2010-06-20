@@ -772,6 +772,10 @@
     /* The current game time, in seconds. */
     var gameTime;
 
+    /* The stack of links, resulting from the last action, still be to
+     * resolved. */
+    var linkStack = null
+
     // -----------------------------------------------------------------------
     // Utility Functions
     // -----------------------------------------------------------------------
@@ -930,14 +934,47 @@
      * of whether it was user action that initiated it. */
     var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
     var processLink = function(code) {
+        // Check if we should do this now, or if processing is already
+        // underway.
+        if (linkStack !== null) {
+            linkStack.push(code);
+            return;
+        }
+
+        // Track where we're about to add new content.
+        startOutputTransaction();
+
+        // We're processing, so make the stack available.
+        linkStack = [];
+
+        // Handle each link in turn.
+        processOneLink(code);
+        while (linkStack.length > 0) {
+            code = linkStack.shift();
+            processOneLink(code);
+        }
+
+        // We're done, so remove the stack to prevent future pushes.
+        linkStack = null;
+
+        // Scroll to the top of the new content.
+        endOutputTransaction();
+
+        // We're able to save, if we weren't already.
+        $("#save").attr('disabled', false);
+    };
+
+    /* This gets called to actually do the work of processing a code.
+     * When one doLink is called (or a link is clicked), this may set call
+     * code that further calls doLink, and so on. This method processes
+     * each one, and processLink manages this.
+     */
+    var processOneLink = function(code) {
         var match = code.match(linkRe);
         assert(match, "The link '"+code+"' doesn't appear to be valid.");
 
         var situation = match[1];
         var action = match[3];
-
-        // Track where we're about to add new content.
-        startOutputTransaction();
 
         // Change the situation
         if (situation !== '.') {
@@ -964,12 +1001,6 @@
                 }
             }
         }
-
-        // Scroll to the top of the new content.
-        endOutputTransaction();
-
-        // We're no longer disabled.
-        $("#save").attr('disabled', false);
     };
 
     /* This gets called when the user clicks a link to carry out an
