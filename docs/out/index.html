@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <style type="text/css" media="screen">
+      body, html {
+          margin: 0;
+          font-family: Palatino, Times, "Times New Roman", serif;
+          font-size: 18px;
+          line-height: 1.6;
+      }
+      h1 {
+          font-size: 1.2em;
+          text-transform: uppercase;
+          letter-spacing: 0.4em;
+          margin: 2em 0 1em 0;
+          color: #210;
+      }
+      #content {
+          position: absolute;
+          z-index: 100;
+          text-align: center;
+      }
+      #image {
+          position: absolute;
+          left: 0;
+          top: 0;
+      }
+      a {
+          color: #900;
+          text-decoration: none;
+          border-bottom: 1px solid transparent;
+      }
+      a:hover {
+          border-bottom: 1px dotted #900;
+      }
+      p.legal {
+          font-size: 0.7em;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <h1>Undum</h1>
+      <p>
+        A client-side framework for<br>
+        hypertext interactive fiction games.
+      </p>
+      <p><a href="/games/tutorial.html">Tutorial Game</a></p>
+      <p><a href="/API.html">Reference Documentation</a></p>
+      <p><a href="http://github.com/idmillington/undum">Source Code</a></p>
+      <p class="legal">
+        The software and design &copy; 2010 IDM.
+      </p>
+    </div>
+    <img id="image" src="media/img/book_bg.jpg">
+    <script type="text/javascript"
+     src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+    (function() {
+      var doLayout = function() {
+          var win = $(window);
+          var w = win.width();
+          var h = win.height();
+          var iw = 1583.0; // Background image size
+          var ih = 981.0;
+          var scale;
+          var tx = 0;
+          if ((w/h) < 1.61366) { // Background image ratio
+              scale = w / iw;
+          } else {
+              scale = h / ih;
+              tx = (w - iw * scale) * 0.5;
+          }
+          $("#image").css('left', tx).
+              attr('width', iw * scale).attr('height', ih * scale);
+          $("#content").css('left', tx+225*scale).
+              css('right', w-(tx+700*scale)).css('top', 80*scale).
+              css('bottom', h-800*scale);
+          $("body, html").css('font-size', 22*scale);
+      };
+      $(function() {
+          $(window).bind('resize', function() {
+              doLayout();
+          });
+          doLayout();
+      });
+    })();
+    </script>
+  </body>
+</html>
