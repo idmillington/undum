@@ -288,7 +288,7 @@
      */
     var FudgeAdjectivesQuality = function(title, opts) {
         WordScaleQuality.call(this, title, [
-            "terrible", "poor", "mediocre", "fair", "good", "great", "superb"
+            "terrible".l(), "poor".l(), "mediocre".l(), "fair".l(), "good".l(), "great".l(), "superb".l()
         ], opts);
         if (!('offset' in opts)) this.offset = -3;
     };
@@ -323,8 +323,8 @@
      */
     var YesNoQuality = function(title, opts) {
         var myOpts = $.extend({
-            yesDisplay: "yes",
-            noDisplay: "no"
+            yesDisplay: "yes".l(),
+            noDisplay: "no".l()
         }, opts);
         QualityDefinition.call(this, title, opts);
         this.yesDisplay = myOpts.yesDisplay;
@@ -884,7 +884,7 @@
         var groupId = qualityDefinition.group;
         if (groupId) {
             var group = game.qualityGroups[groupId];
-            assert(group, "Couldn't find a group definition for "+groupId+".");
+            assert(group, "no_group_definition".localize_with_args({id: groupId}));
             groupBlock = $("#g_"+groupId);
             if (groupBlock.size() <= 0) {
                 groupBlock = addGroupBlock(groupId);
@@ -971,7 +971,7 @@
      */
     var processOneLink = function(code) {
         var match = code.match(linkRe);
-        assert(match, "The link '"+code+"' doesn't appear to be valid.");
+        assert(match, "link_not_valid".localize_with_args({link:code}));
 
         var situation = match[1];
         var action = match[3];
@@ -984,7 +984,7 @@
         } else {
             // We should have an action if we have no situation change.
             assert(
-                action, "A link with a situation of '.', must have an action."
+                action, "link_no_action".l()
             );
         }
 
@@ -1019,8 +1019,7 @@
         var newSituation = game.situations[newSituationId];
 
         assert(
-            newSituation,
-            "You can't move to an unknown situation: "+newSituationId+"."
+            newSituation, "unknown_situation".localize_with_args({id:newSituationId})
         );
         // We might not have an old situation if this is the start of
         // the game.
@@ -1086,12 +1085,8 @@
     /* Erases the character in local storage. This is permanent! TODO:
      * Perhaps give a warning. */
     var doErase = function(force) {
-        var message =
-            "This will permanently delete this character and immediately "+
-            "return you to the start of the game. Are you sure?";
-
         if (localStorage['undum_'+game.id]) {
-            if (force || confirm(message)) {
+            if (force || confirm("erase_message".l())) {
                 delete localStorage['undum_'+game.id];
                 $("#erase").attr('disabled', true);
                 startGame();
@@ -1107,8 +1102,7 @@
 
         var situation = getCurrentSituation();
         assert(
-            situation,
-            "I can't display, because we don't have a current situation."
+            situation, "no_current_situation".l()
         );
 
         showQualities();
@@ -1229,7 +1223,7 @@
                 startGame();
             }
         } else {
-            $("#buttons").html("<p>No local storage available.</p>");
+            $("#buttons").html("<p>"+"no_local_storage".l()+"</p>");
             startGame();
         }
 
@@ -1297,7 +1291,7 @@
 
             if (!seed) throw {
                 name: "RandomSeedError",
-                message: "You must provide a valid random seed."
+                message: "random_seed_error".l()
             };
             var key = [];
             mixkey(seed, key);
@@ -1383,7 +1377,7 @@
     Random.prototype.random = function() {
         throw new {
             name:"RandomError",
-            message:"Initialize the Random with a non-empty seed before use."
+            message: "random_error".l()
         };
     };
     /* Returns an integer between the given min and max values,
@@ -1428,8 +1422,7 @@
         return function(def) {
             var match = def.match(diceRe);
             if (!match) {
-                throw new Error(
-                    "Couldn't interpret your dice string: '"+def+"'."
+                throw new Error("dice_string_error".localize_with_args({string:def})
                 );
             }
 
