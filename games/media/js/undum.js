@@ -1019,10 +1019,7 @@
         var oldSituation = getCurrentSituation();
         var newSituation = game.situations[newSituationId];
 
-        assert(
-            newSituation, 
-            "unknown_situation".l({id:newSituationId})
-        );
+        assert(newSituation, "unknown_situation".l({id:newSituationId}));
         
         // We might not have an old situation if this is the start of
         // the game.
