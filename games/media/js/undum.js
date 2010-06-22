@@ -288,7 +288,8 @@
      */
     var FudgeAdjectivesQuality = function(title, opts) {
         WordScaleQuality.call(this, title, [
-            "terrible".l(), "poor".l(), "mediocre".l(), "fair".l(), "good".l(), "great".l(), "superb".l()
+            "terrible".l(), "poor".l(), "mediocre".l(), 
+            "fair".l(), "good".l(), "great".l(), "superb".l()
         ], opts);
         if (!('offset' in opts)) this.offset = -3;
     };
@@ -884,7 +885,7 @@
         var groupId = qualityDefinition.group;
         if (groupId) {
             var group = game.qualityGroups[groupId];
-            assert(group, "no_group_definition".localize_with_args({id: groupId}));
+            assert(group, "no_group_definition".l({id: groupId}));
             groupBlock = $("#g_"+groupId);
             if (groupBlock.size() <= 0) {
                 groupBlock = addGroupBlock(groupId);
@@ -971,7 +972,7 @@
      */
     var processOneLink = function(code) {
         var match = code.match(linkRe);
-        assert(match, "link_not_valid".localize_with_args({link:code}));
+        assert(match, "link_not_valid".l({link:code}));
 
         var situation = match[1];
         var action = match[3];
@@ -1019,8 +1020,10 @@
         var newSituation = game.situations[newSituationId];
 
         assert(
-            newSituation, "unknown_situation".localize_with_args({id:newSituationId})
+            newSituation, 
+            "unknown_situation".l({id:newSituationId})
         );
+        
         // We might not have an old situation if this is the start of
         // the game.
         if (oldSituation) {
@@ -1196,7 +1199,10 @@
 
         QualityGroup: QualityGroup,
 
-        game: game
+        game: game,
+        
+        // The undum set of translated strings.
+        language: {}
     };
 
     /* Set up the game when everything is loaded. */
@@ -1236,11 +1242,70 @@
         });
     });
 
-
     // -----------------------------------------------------------------------
     // Contributed Code
     // -----------------------------------------------------------------------
 
+    // Internationalization support based on the code provided by Oreolek.
+    (function() {
+        var codesToTry = {};
+        /* Compiles a list of fallback languages to try if the given code
+         * doesn't have the message we need. Caches it for future use. */
+        var getCodesToTry = function(languageCode) {
+            var codeArray;
+            if (codeArray = codesToTry[languageCode]) return codeArray;
+
+            codeArray = [];
+            if (languageCode in undum.language) {
+                codeArray.push(languageCode);
+            }
+            var elements = languageCode.split('-');
+            for (var i = elements.length-2; i > 0; i--) {
+                var thisCode = elements.slice(0, i).join('-');
+                if (thisCode in undum.language) {
+                    codeArray.push(thisCode);
+                }
+            }
+            codeArray.push("");
+            codesToTry[languageCode] = codeArray;
+            return codeArray;
+        };
+        var lookup = function(languageCode, message) {
+            var languageData = undum.language[languageCode];
+            if (!languageData) return null;
+            return languageData[message];
+        };
+        var localize = function(languageCode, message) {
+            var localized, thisCode;
+            var languageCodes = getCodesToTry(languageCode);
+            for (var i = 0; i < languageCodes.length; i++) {
+                thisCode = languageCodes[i];
+                if (localized = lookup(thisCode, message)) return localized;
+            }
+            return message;
+        };
+
+        // API
+        String.prototype.l = function(args) {
+            // Get lang attribute from html tag.
+            var lang = $("html").attr("lang");
+
+            // Find the localized form.
+            var localized = localize(lang, this);
+
+            // Merge in any replacement content.
+            if (args != undefined) {
+                $.each(args, function(i, arg) {
+                    localized = localized.replace(
+                        new RegExp("\\{"+i+"\\}"), arg
+                    );
+                });
+            }
+
+            return localized;
+        };
+    })();
+    
     // Random Number generation based on seedrandom.js code by David Bau.
     // Copyright 2010 David Bau, all rights reserved.
     //
@@ -1288,7 +1353,6 @@
 
         var Random = function(seed) {
             this.random = null;
-
             if (!seed) throw {
                 name: "RandomSeedError",
                 message: "random_seed_error".l()
@@ -1313,7 +1377,6 @@
                 return (n + x) / d;
             };
         };
-
         // Helper type.
         var ARC4 = function(key) {
             var t, u, me = this, keylen = key.length;
@@ -1422,7 +1485,8 @@
         return function(def) {
             var match = def.match(diceRe);
             if (!match) {
-                throw new Error("dice_string_error".localize_with_args({string:def})
+                throw new Error(
+                    "dice_string_error".l({string:def})
                 );
             }
 
@@ -1446,4 +1510,33 @@
             return this.dice(num, sides, bonus);
         };
     })();
+    
+    // -----------------------------------------------------------------------
+    // Default Messages
+    // -----------------------------------------------------------------------
+    var en = {
+        terrible: "terrible",
+        poor: "poor",
+        mediocre: "mediocre",
+        fair: "fair",
+        good: "good",
+        great: "great",
+        superb: "superb",
+        yes: "yes",
+        no: "no",
+        no_group_definition: "Couldn't find a group definition for {id}.",
+        link_not_valid: "The link '{link}' doesn't appear to be valid.",
+        link_no_action: "A link with a situation of '.', must have an action.",
+        unknown_situation: "You can't move to an unknown situation: {id}.",
+        erase_message: "This will permanently delete this character and immediately return you to the start of the game. Are you sure?",
+        no_current_situation: "I can't display, because we don't have a current situation.",
+        no_local_storage: "No local storage available.",
+        random_seed_error: "You must provide a valid random seed.",
+        random_error: "Initialize the Random with a non-empty seed before use.",
+        dice_string_error: "Couldn't interpret your dice string: '{string}'."
+    };            
+    // Set this data as both the default fallback language, and the english
+    // preferred language.
+    undum.language[""] = en;
+    undum.language["en"] = en;
 })();

@@ -1,8 +1,8 @@
-/* This is the strings file. It contains ALL the strings of the Undum core.
- * If you want to translate Undum to another language, use this file to create one.
- * This is convenient so the localization would be apart of the core mechanics. - Oreolek */
-
-Globalite.language("ru", {
+/* This a language file. It contains ALL the strings of the Undum core. And
+ * so separates the translation from the implementation. If you want to 
+ * translate Undum to another language, use this file as a basis. - Oreolek 
+ */
+undum.language["ru"] = {
  terrible: "ужасно",
  poor: "бедно",
  mediocre: "средненько",
@@ -22,26 +22,4 @@ Globalite.language("ru", {
  random_seed_error: "Вы должны задать верное случайное зерно.",
  random_error: "Проинициализируйте Random с непустым зерном перед использованием.",
  dice_string_error: "не могу интерпретировать вашу строку кубиков: '{string}'."
-});
-
-Globalite.language("en", {
- terrible: "terrible",
- poor: "poor",
- mediocre: "mediocre",
- fair: "fair",
- good: "good",
- great: "great",
- superb: "superb",
- yes: "yes",
- no: "no",
- no_group_definition: "Couldn't find a group definition for {id}.",
- link_not_valid: "The link '{link}' doesn't appear to be valid.",
- link_no_action: "A link with a situation of '.', must have an action.",
- unknown_situation: "You can't move to an unknown situation: {id}.",
- erase_message: "This will permanently delete this character and immediately return you to the start of the game. Are you sure?",
- no_current_situation: "I can't display, because we don't have a current situation.",
- no_local_storage: "No local storage available.",
- random_seed_error: "You must provide a valid random seed.",
- random_error: "Initialize the Random with a non-empty seed before use.",
- dice_string_error: "Couldn't interpret your dice string: '{string}'."
-});
+};
