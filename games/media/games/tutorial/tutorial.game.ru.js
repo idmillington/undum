@@ -11,6 +11,8 @@
  * e-mail, например).*/
 undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce072";
 
+undum.game.version = "1.0";
+
 /* Ситуации, в которых может быть игра. Каждая имеет уникальный ID. */
 undum.game.situations = {
     start: new undum.SimpleSituation(

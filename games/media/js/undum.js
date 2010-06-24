@@ -288,7 +288,7 @@
      */
     var FudgeAdjectivesQuality = function(title, opts) {
         WordScaleQuality.call(this, title, [
-            "terrible".l(), "poor".l(), "mediocre".l(), 
+            "terrible".l(), "poor".l(), "mediocre".l(),
             "fair".l(), "good".l(), "great".l(), "superb".l()
         ], opts);
         if (!('offset' in opts)) this.offset = -3;
@@ -789,6 +789,11 @@
         }
     };
 
+    /* Gets the unique id used to identify saved games. */
+    var getSaveId = function() {
+        return 'undum_'+game.id+"_"+game.version;
+    }
+
     /* Adds the quality blocks to the character tools. */
     var showQualities = function() {
         $("#qualities").empty();
@@ -1020,7 +1025,7 @@
         var newSituation = game.situations[newSituationId];
 
         assert(newSituation, "unknown_situation".l({id:newSituationId}));
-        
+
         // We might not have an old situation if this is the start of
         // the game.
         if (oldSituation) {
@@ -1085,9 +1090,10 @@
     /* Erases the character in local storage. This is permanent! TODO:
      * Perhaps give a warning. */
     var doErase = function(force) {
-        if (localStorage['undum_'+game.id]) {
+        var saveId = getSaveId()
+        if (localStorage[saveId]) {
             if (force || confirm("erase_message".l())) {
-                delete localStorage['undum_'+game.id];
+                delete localStorage[saveId];
                 $("#erase").attr('disabled', true);
                 startGame();
             }
@@ -1137,7 +1143,7 @@
         progress.saveTime = now - startTime;
 
         // Save the game.
-        localStorage['undum_'+game.id] = JSON.stringify(progress);
+        localStorage[getSaveId()] = JSON.stringify(progress);
 
         // Switch the button highlights.
         $("#erase").attr('disabled', false);
@@ -1197,7 +1203,7 @@
         QualityGroup: QualityGroup,
 
         game: game,
-        
+
         // The undum set of translated strings.
         language: {}
     };
@@ -1211,7 +1217,7 @@
             });
             var save = $("#save").click(saveGame);
 
-            var storedCharacter = localStorage['undum_'+game.id];
+            var storedCharacter = localStorage[getSaveId()];
             if (storedCharacter) {
                 try {
                     loadGame(JSON.parse(storedCharacter));
@@ -1291,18 +1297,17 @@
             var localized = localize(lang, this);
 
             // Merge in any replacement content.
-            if (args != undefined) {
-                $.each(args, function(i, arg) {
+            if (args) {
+                for (var name in args) {
                     localized = localized.replace(
-                        new RegExp("\\{"+i+"\\}"), arg
+                        new RegExp("\\{"+name+"\\}"), args[name]
                     );
-                });
+                }
             }
-
             return localized;
         };
     })();
-    
+
     // Random Number generation based on seedrandom.js code by David Bau.
     // Copyright 2010 David Bau, all rights reserved.
     //
@@ -1507,7 +1512,7 @@
             return this.dice(num, sides, bonus);
         };
     })();
-    
+
     // -----------------------------------------------------------------------
     // Default Messages
     // -----------------------------------------------------------------------
@@ -1531,7 +1536,7 @@
         random_seed_error: "You must provide a valid random seed.",
         random_error: "Initialize the Random with a non-empty seed before use.",
         dice_string_error: "Couldn't interpret your dice string: '{string}'."
-    };            
+    };
     // Set this data as both the default fallback language, and the english
     // preferred language.
     undum.language[""] = en;

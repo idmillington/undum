@@ -9,6 +9,12 @@
  * or a variation on your email address, for example). */
 undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce072";
 
+/* A string indicating what version of the game this is. Versions are
+ * used to control saved-games. If you change the content of a game,
+ * the saved games are unlikely to work. Changing this version number
+ * prevents Undum from trying to load the saved-game and crashing. */
+undum.game.version = "1.0";
+
 /* The situations that the game can be in. Each has a unique ID. */
 undum.game.situations = {
     start: new undum.SimpleSituation(
