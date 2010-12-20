@@ -274,6 +274,9 @@ you must provide the following data:
 * A unique ID for the game, which is used to make sure saved games
   don't get confused.
 
+* A version number that allows you to manage upgrades to your
+  content.
+
 * All the Situations that make up your game.
 
 * The identifier of the situation that starts the game.
@@ -320,6 +323,22 @@ universally unique identifier will mean that saved games don't clash.
 As stated previously, the game identifier doesn't have the same
 requirements as any other identifier in Undum, you can use any
 characters to make up your game ID.
+
+### Version Number
+
+The version number is a string of text that indicates what version of
+the content is in the file. There is no set format for this version
+text, so you can use any scheme that suits you. I have used the
+"major.minor" approach.
+
+Like the Game ID, this value is used to make sure that saved games
+don't clash. If you change you content, then previous saved games may
+not work correctly. By updating the version number, you allow the
+player to be notified of this directly, rather than suffering a
+silent crash. The effect of this is that you don't need to update the
+version number if you make a change to something that doesn't alter
+the structure of the game. If you just change some text, for example,
+or add an extra action that merely outputs a piece of description.
 
 ### Situation List
 
@@ -407,12 +426,12 @@ Your initialization function should be placed in the `undum.game.init`
 property. Normally its job is to configure the character at the start
 of the game. For example:
 
-  undum.game.init = function(character, system) {
-      character.qualities.investigating = 0;
-      character.qualities.money = 100;
-      ... etc ...
-      system.setCharacterText(...);
-  };
+    undum.game.init = function(character, system) {
+        character.qualities.investigating = 0;
+        character.qualities.money = 100;
+        ... etc ...
+        system.setCharacterText(...);
+    };
 
 Initialization functions can, but normally doesn't, output
 text. Instead the starting situation is tasked with outputting the
@@ -834,6 +853,13 @@ This is a derived type of `QualityDefinition` that displays the
 quality value by rounding it down to the nearest integer. This is
 ideal for most numeric statistics.
 
+### `NonZeroIntegerQuality`
+
+This is a derived type of `IntegerQuality` that only displays its
+value when it is non-zero. If it is non-zero then it formats in the
+same way as `IntegerQuality`. Whereas `IntegerQuality` whould show
+zero values as '0', this type of quality displays nothing.
+
 ### `NumericQuality`
 
 This is a derived type of `QualityDefinition` that displays the
@@ -1019,6 +1045,100 @@ point and find most of their progress wiped out when they load it
 again.
 
 
+# Translation and Internationalization
+
+Undum provides support for translations and internationalization.
+In particular, if you feel you want to translate Undum, then a lot
+of work has already been done for you. I am very grateful to Oreolek
+for this assistance. He translated the Russian version within days
+of the code being released, and advised on the tools that would
+make translation easier.
+
+To write a game in another language, you need only to write the game
+content in that language. The identifiers you use in the game (to
+represent situations, actions, qualities and quality groups) must use
+only unaccented lower case latin letters and numbers, but the text you
+generate can contain any content you choose. Including right to left
+content or ideographs.
+
+Undum itself has a small number of error messages and pieces of text
+that it uses. These include the default names for the
+FudgeAdjectivesQuality values. These strings are all found at the end
+of the `undum.js` file. They can be overridden. Simply define a new
+language file for your language (e.g. `lang/gk.js`) and override the
+appropriate strings. In your HTML file, after importing `undum.js`,
+import you strings file. For example, the end of the Russian
+translation of the tutorial (`tutorial.ru.html`) has:
+
+    <script type="text/javascript" src="media/js/undum.js"></script>
+    <script type="text/javascript" src="media/js/lang/ru.js"></script>
+
+These translation strings are given as an object mapping the string
+name to the translated strings. This object is given as part of the
+`undum.translation` object, with a property name equal to the language
+name. So, for example, the UK English translation might begin:
+
+    undum.lanuage["en-UK"] = {
+        no_group_definition: "Couldn't find a group definition for {id}.",
+
+Within the translation strings, data to be incorporated later is given
+in curly braces.
 
 
+## Language Codes
 
+Undum uses a simplified version of the IETF standards for language
+code. For our purposes this consists of three parts, only the first of
+which is required: `language-Script-REGION` where `language` is a two
+letter lower-case ISO language code, `Script` is a four letter
+title-case script identifier, and `REGION` is a two letter country or
+region code, all capitalized. The script is omitted when it is the
+default script for a language and locale. You would specify a script
+if you were using romaji (Latin letters) to write Japanese, but not if
+you were writing it in Kanji and kana.
+
+The major virtue of this standard is that it allows fall through when
+a translation is not available. For example a translation into
+Brazillian Portuguese `pt-BR` might be different to one into Angolan
+Portuguese `pt-AO`, but there may be some strings they have in
+common. This allows a translator to create a base file for just plain
+Portuguese `pt`, then each country's dialect can define its own file
+that just overrides a few of the strings.
+
+
+## Filename Conventions
+
+It is only a convention, but for all files that occur in language
+specific versions, I have used the filename convention of placing the
+language code before the extension, e.g. `filename.lang.extension`. The
+game file is similar `filename.game.lang.js`. You are free to use any
+format you choose, of course, but if you want to contribute back to
+the trunk, please follow this convention, to save having to rename
+things and connect up the links later.
+
+
+## API
+
+The translation system provides a simple API based on the `Globalite`
+package of Nicolas Merouze (the implementation is unique to Undum). It
+adds a `l()` method to the Javascript `String` prototype. This method
+has the signature `l(data)`, where data can be any object mapping
+strings to other strings.
+
+The method attempts to figure out what the current language is by
+looking at the `lang` attribute of the top level HTML tag (you'll
+notice in the tutorial games this is defined in all cases, you should
+do the same). It then tries to find a matching object containing
+translations in `undum.language`. If it finds such an object, then it
+looks up the original string in that object to find a translation. It
+then merges any data passed into the `l` method into the string,
+before returning the result.
+
+The translation look-up honors the IETF rules for language fallback,
+so (continuing the previous example) if your game file is in Brazilian
+Portuguese `pt-BR`, and a translation isn't found, then generic
+Portuguese translation `pt` is also checked. Finally, if no valid
+translation is found, then the default version is used. Since Undum
+was written in English, this default version is the English
+version. This is purely by my convenience, and isn't part of the IETF
+spec!

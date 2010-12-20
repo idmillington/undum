@@ -372,7 +372,7 @@ undum.game.qualities = {
         {priority:"0003", group:'stats'}
     ),
 
-    inspiration: new undum.IntegerQuality(
+    inspiration: new undum.NonZeroIntegerQuality(
         "Inspiration", {priority:"0001", group:'progress'}
     ),
     novice: new undum.OnOffQuality(
@@ -399,5 +399,6 @@ undum.game.init = function(character, system) {
     character.qualities.stamina = 12;
     character.qualities.luck = 0;
     character.qualities.novice = 1;
+    character.qualities.inspiration = 0;
     system.setCharacterText("<p>You are starting on an exciting journey.</p>");
 };

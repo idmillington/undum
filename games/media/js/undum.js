@@ -219,6 +219,24 @@
         return Math.floor(value).toString();
     };
 
+    /* A quality that displays as an IntegerQuality, unless it is
+     * zero, when it is omitted. Options (in the opts * parameter) are
+     * the same as for QualityDefinition. */
+    var NonZeroIntegerQuality = function(title, opts) {
+        IntegerQuality.call(this, title, opts);
+    };
+    NonZeroIntegerQuality.inherits(IntegerQuality);
+    NonZeroIntegerQuality.prototype.format = function(character, value) {
+        console.info(value);
+        if (value == 0) {
+            return null;
+        } else {
+            return IntegerQuality.prototype.format.call(
+                this, character, value
+            );
+        }
+    };
+
     /* A quality that displays its full numeric value, including
      * decimal component. This is actually a trivial wrapper around
      * the QualityDefinition class, which formats in the same
@@ -1194,6 +1212,7 @@
 
         QualityDefinition: QualityDefinition,
         IntegerQuality: IntegerQuality,
+        NonZeroIntegerQuality: NonZeroIntegerQuality,
         NumericQuality: NumericQuality,
         WordScaleQuality: WordScaleQuality,
         FudgeAdjectivesQuality: FudgeAdjectivesQuality,
