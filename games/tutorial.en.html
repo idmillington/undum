@@ -16,8 +16,20 @@
   </head>
   <body>
     <div id="page">
+      <!-- This isn't needed and isn't visible in desktop versions,
+           because we can display the character information and the
+           tools onscreen all the time. -->
+      <div id="menu">
+        <ul>
+          <li><a href="#title">Start</a></li>
+          <li><a href="#end_of_content">Content</a></li>
+          <li><a href="#character_panel">Character</a></li>
+          <li><a href="#info_panel">Info</a></li>
+        </ul>
+      </div>
+
       <div id="tools_wrapper">
-        <div class="tools left">
+        <div id="info_panel" class="tools left">
 
           <!-- Game Background: edit this -->
           <h1>Undum</h1>
@@ -33,7 +45,8 @@
             <button id="save">Save</button><button id="erase">Erase</button>
           </div>
         </div>
-        <div class="tools right">
+
+        <div id="character_panel" class="tools right">
           <h1>Character</h1>
           <div id="character">
             <div id="character_text">
@@ -42,7 +55,7 @@
             <div id="qualities"></div>
           </div>
         </div>
-      </div>
+      </div> <!-- End of div.tools_wrapper -->
 
       <div id="title">
         <div class="label">
@@ -57,7 +70,10 @@
         </div>
       </div>
 
-      <div id="content">
+      <div id="content_wrapper">
+        <div id="content">
+        </div>
+        <a name="end_of_content"></a>
       </div>
 
       <div id="legal">
@@ -73,7 +89,7 @@
           Derivative works must include this copyright line and link.
         </p>
       </div>
-    </div>
+    </div> <!-- End of div.page -->
 
     <!-- Holds UI elements that will be cloned and placed in the main
          page. This block itself is always hidden. -->
