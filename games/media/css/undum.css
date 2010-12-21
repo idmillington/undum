@@ -153,6 +153,10 @@ img.float_left {
     margin: 20px 20px 20px 0px;
 }
 
+#menu {
+    display: none;
+}
+
 #tools_wrapper {
     position: fixed;
     margin: 0 auto;
