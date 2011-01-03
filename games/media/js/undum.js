@@ -227,7 +227,6 @@
     };
     NonZeroIntegerQuality.inherits(IntegerQuality);
     NonZeroIntegerQuality.prototype.format = function(character, value) {
-        console.info(value);
         if (value == 0) {
             return null;
         } else {
@@ -627,9 +626,10 @@
                     // After a moment to allow the bar to be read, we can
                     // remove it.
                     setTimeout(function() {
-                        bar.slideUp(1000, function() {
-                            bar.remove();
-                        });
+                        bar.animate({opacity: 0}, 1500).
+                            slideUp(500, function() {
+                                $(this).remove();
+                            });
                     }, 2000);
                 }
             );
@@ -1060,9 +1060,13 @@
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
             if (interactive) {
-                $('#content .transient').fadeOut(2000);
+                $('#content .transient, #content ul.options').
+                    animate({opacity: 0}, 1500).
+                    slideUp(500, function() {
+                        $(this).remove();
+                    });
             } else {
-                $('#content .transient').hide();
+                $('#content .transient, #content ul.options').remove();
             }
         }
 
@@ -1080,6 +1084,8 @@
      * wired up. */
     var augmentLinks = function(content) {
         var output = $(content);
+
+        // Wire up the links for regular <a> tags.
         output.find("a").each(function(index, element) {
             var a = $(element);
             if (!a.hasClass("raw")) {
@@ -1102,6 +1108,7 @@
                 }
             }
         });
+
         return output;
     };
 
@@ -1255,13 +1262,25 @@
             startGame();
         }
 
-        // Show the tools when we click on the title.
+        // Show the game when we click on the title.
         $("#title").one('click', function() {
             $("#content, #legal").fadeIn(500);
             $("#tools_wrapper").fadeIn(2000);
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
         });
+
+        // Any point that an option list appears, its options are its
+        // first links.
+        $("ul.options li").live('click', function(event) {
+            console.info("Hi");
+            // Make option clicks pass through to their first link.
+            var link = $("a", this);
+            if (link.length > 0) {
+                $(link.get(0)).click();
+            }
+        });
+
     });
 
     // -----------------------------------------------------------------------

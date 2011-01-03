@@ -120,6 +120,30 @@ p + p, p + img + p, p + hr + p {
     line-height: 48px;
     color: #210;
 }
+ul {
+    margin: 0;
+    padding: 0 0 0 1em;
+}
+ul.options {
+    border: 2px solid #876;
+    padding: 0;
+    list-style-type: none;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+ul.options li {
+    border-bottom: 1px solid #876;
+    padding: 0.5em;
+}
+ul.options li:hover {
+    background-color: rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+ul.options li:last-child {
+    border-bottom: none;
+}
+
 h1 {
     font-size: 17px;
     text-transform: uppercase;

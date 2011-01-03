@@ -303,10 +303,18 @@ undum.game.situations = {
         <p>Now we're almost at the end of the road. But so\
         far you have moved through this tutorial linearly - from one\
         situation to the next, without any choice. Undum is designed to\
-        support narratives that branch and merge.\
-        <span class='transient'>As a tiny illustration\
-        of this, choose now between going forward to <a href='one'>option\
-        one</a> or <a href='two'>option two</a>.</span></p>"
+        support narratives that branch and merge.</p>\
+        \
+        <p class='transient'>As a tiny illustration\
+        of this, choose between these two branches:</p>\
+        <ul class='options'>\
+            <li><a href='one'>option one</a>, or</li>\
+            <li><a href='two'>option two</a>.</li>\
+        </ul>\
+        <p class='transient'>The option block above is a regular HTML\
+        unordered list (<em>ul</em> tag), with the special <em>options</em>\
+        class. You can click anywhere on the option row to carry out the\
+        action.</p>"
     ),
     one: new undum.SimpleSituation(
         "<h1>Option One</h1>\

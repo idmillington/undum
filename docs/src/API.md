@@ -138,6 +138,23 @@ the same action, not just the link that was clicked. So if you have
 the same action available in two links in your content, both will be
 removed.
 
+#### `class="options"`
+
+The options class only works on an unordered list. The default CSS
+also styles this differently. The list items will be presented as
+options within a table of choices. On devices with a mouse or pointer,
+the rows will change color when they are hovered over. The player can
+click anywhere on the row and the first link that it contains will be
+executed.
+
+This class is intended for smarter presentation of standard option
+blocks, if you don't want your choices to be embedded into the
+hypertext.
+
+Note that if you use this style, the unordered list will automatically
+disappear after being clicked, regardless of whether it is marked as
+"`transient`".
+
 ### Headings
 
 In the default CSS for Undum, the only heading level expected in the
