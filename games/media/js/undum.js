@@ -45,7 +45,7 @@
 
     var isMobileDevice = function() {
         // DEBUG
-        return true;
+        //return true;
         return (navigator.userAgent.toLowerCase().search(
             /iphone|ipad|palm|blackberry|android/
         ) >= 0);
@@ -1305,7 +1305,10 @@
             $("#tools_wrapper").fadeIn(2000);
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
-            if (mobile) $("#toolbar").slideDown(500);
+            if (mobile) {
+                $("#toolbar").slideDown(500);
+                $("#menu").show();
+            }
         });
 
         // Any point that an option list appears, its options are its
@@ -1325,15 +1328,23 @@
     /* Set up the drop-down menu if we're on a mobile device. */
     var initMenu = function() {
         var menu = $("#menu");
-
-        var open = function() { menu.slideDown(500); };
-        var close = function() { menu.slideUp(250); };
+        
+        var menuVisible = false;
+        var open = function() { 
+            menu.animate({top:48}, 500);
+            menuVisible = true;
+        };
+        var close = function() { 
+            menu.animate({top:-menu.height()}, 250);
+            menuVisible = false;
+        };
+        menu.css('top', -menu.height());
 
         // Slide up and down on clicks from the main button.
         $("#menu-button").click(function(event) {
             event.preventDefault();
             event.stopPropagation();
-            if (menu.is(":visible")) {
+            if (menuVisible) {
                 close();
             } else {
                 open();

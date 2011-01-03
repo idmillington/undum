@@ -1,6 +1,13 @@
 html, body {
     margin: 0;
+    font-size: 26px;
+    line-height: 1.5em;
+    -webkit-text-size-adjust: none;
 }
+#title h1 span.fancy {
+    font-size: 1.5em;
+}
+
 #page {
     width: 600px;
     padding-top: 48px;
@@ -32,7 +39,7 @@ html, body {
 #toolbar h1 {
     float: left;
     font-weight: normal;
-    font-size: 24px;
+    font-size: 1.0em;
     margin: 4px 0 0 0;
     padding: 0 8px;
     color: #fc6;
@@ -40,16 +47,17 @@ html, body {
 }
 
 #menu {
-    display: none;
     position: fixed;
     top: 52px;
     left: 0;
     right: 0;
+    width: 608;
     background-image: url("../img/tools_bg.jpg");
     z-index: 200;
     list-style-type: none;
     padding: 0;
     margin: 0;
+    opacity: 0.95;
     -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
     -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
     box-shadow: 0 0 16px rgba(0,0,0,0.75);
@@ -62,14 +70,13 @@ html, body {
     border-bottom: none;
 }
 
-#toolar .nav {
-    font-size: 14px;
-    line-height: 14px;
+#toolbar .nav {
+    line-height: 24px;
     float: right;
     margin: 0;
 }
 #toolbar .nav a {
-    font-size: 14px;
+    font-size: 0.9em;
     color: white;
     padding: 2px 16px;
     float: right;
@@ -84,6 +91,7 @@ html, body {
 #title {
     margin-top: -40px;
 }
+
 .tools {
     width: 580px;
     position: relative;
