@@ -12,7 +12,16 @@
           rel='stylesheet' type='text/css'>
 
     <!-- This is your game's stylesheet, modify it if you like. -->
-    <link rel="stylesheet" href="media/css/undum.css" media="screen">
+    <link media="screen"
+          rel="stylesheet" href="media/css/undum.css">
+
+    <!-- Suppport for mobile devices. -->
+    <meta name="viewport" content="user-scalable=no, width=620">
+    <!--[if !IE]>-->
+    <link media="only screen and (max-width: 640px)"
+          rel="stylesheet" type="text/css" href="media/css/undum-mobile.css">
+    <!--<![endif]-->
+
   </head>
   <body>
     <div id="page">

@@ -37,9 +37,21 @@
         return this;
     };
 
+    // Feature detection
+
     var hasLocalStorage = function() {
         return ('localStorage' in window) && window.localStorage !== null;
     };
+
+    var isMobileDevice = function() {
+        // DEBUG
+        return true;
+        return (navigator.userAgent.toLowerCase().search(
+            /iphone|ipad|palm|blackberry|android/
+        ) >= 0);
+    };
+
+    // Assertion
 
     var AssertionError = function(message) {
         this.message = message;
@@ -784,6 +796,9 @@
     /* Tracks whether we're in interactive mode or batch mode. */
     var interactive = true;
 
+    /* Tracks whether we're mobile or not. */
+    var mobile = isMobileDevice();
+
     /* The random number generator that the game can use to
      * derministically generate random possibilities. */
     var rnd;
@@ -950,7 +965,7 @@
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
         if (scrollStack.length == 0 && scrollPoint) {
-            if (interactive) {
+            if (interactive && !mobile) {
                 $("body, html").animate({scrollTop: scrollPoint}, 500);
             }
             scrollPoint = null;

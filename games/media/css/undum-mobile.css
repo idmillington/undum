@@ -1,0 +1,15 @@
+#page {
+    width: 600px;
+}
+#menu {
+    display: block;
+}
+#character_panel {
+    display: none;
+}
+#info_panel {
+    display: none;
+}
+#tools_wrapper {
+    display: block;
+}
