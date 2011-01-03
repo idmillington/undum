@@ -141,7 +141,7 @@ ul.options li {
     padding: 0.5em;
 }
 ul.options li:hover {
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(153,136,119,0.2);
     cursor: pointer;
 }
 ul.options li:last-child {
