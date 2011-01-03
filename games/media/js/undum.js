@@ -44,11 +44,9 @@
     };
 
     var isMobileDevice = function() {
-        // DEBUG
-        //return true;
         return (navigator.userAgent.toLowerCase().search(
             /iphone|ipad|palm|blackberry|android/
-        ) >= 0);
+        ) >= 0 || $(window).width() < 640);
     };
 
     // Assertion
