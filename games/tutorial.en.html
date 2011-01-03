@@ -24,18 +24,24 @@
 
   </head>
   <body>
-    <div id="page">
-      <!-- This isn't needed and isn't visible in desktop versions,
-           because we can display the character information and the
-           tools onscreen all the time. -->
-      <div id="menu">
-        <ul>
-          <li><a href="#title">Start</a></li>
-          <li><a href="#end_of_content">Content</a></li>
-          <li><a href="#character_panel">Character</a></li>
-          <li><a href="#info_panel">Info</a></li>
-        </ul>
+    <!-- This isn't needed and isn't visible in desktop versions,
+         because we can display the character information and the
+         tools onscreen all the time. -->
+    <div id="toolbar">
+      <!-- Set this to be a small version of the title, for the
+           toolbar on mobile devices. -->
+      <h1>Undum</h1>
+      <div class="nav">
+        <a href="#" class="button" id="menu-button">Menu</a>
       </div>
+    </div>
+    <ul id="menu">
+      <li><a href="#title, #content_wrapper">Story</a></li>
+      <li><a href="#character_panel">Character</a></li>
+      <li><a href="#info_panel">Info</a></li>
+    </ul>
+
+    <div id="page">
 
       <div id="tools_wrapper">
         <div id="info_panel" class="tools left">

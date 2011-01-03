@@ -636,10 +636,14 @@
                     // After a moment to allow the bar to be read, we can
                     // remove it.
                     setTimeout(function() {
-                        bar.animate({opacity: 0}, 1500).
-                            slideUp(500, function() {
-                                $(this).remove();
-                            });
+                        if (mobile) {
+                            bar.fadeOut(1500, function() {$(this).remove();});
+                        } else {
+                            bar.animate({opacity: 0}, 1500).
+                                slideUp(500, function() {
+                                    $(this).remove();
+                                });
+                        }
                     }, 2000);
                 }
             );
@@ -1088,11 +1092,16 @@
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
             if (interactive) {
-                $('#content .transient, #content ul.options').
-                    animate({opacity: 0}, 1500).
-                    slideUp(500, function() {
-                        $(this).remove();
-                    });
+                if (mobile) {
+                    $('#content .transient, #content ul.options').
+                        fadeOut(2000);
+                } else {
+                    $('#content .transient, #content ul.options').
+                        animate({opacity: 0}, 1500).
+                        slideUp(500, function() {
+                            $(this).remove();
+                        });
+                }
             } else {
                 $('#content .transient, #content ul.options').remove();
             }
@@ -1296,12 +1305,12 @@
             $("#tools_wrapper").fadeIn(2000);
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
+            if (mobile) $("#toolbar").slideDown(500);
         });
 
         // Any point that an option list appears, its options are its
         // first links.
-        $("ul.options li").live('click', function(event) {
-            console.info("Hi");
+        $("ul.options li, #menu li").live('click', function(event) {
             // Make option clicks pass through to their first link.
             var link = $("a", this);
             if (link.length > 0) {
@@ -1309,7 +1318,50 @@
             }
         });
 
+        // Handle display of the menu
+        if (mobile) initMenu();
     });
+
+    /* Set up the drop-down menu if we're on a mobile device. */
+    var initMenu = function() {
+        var menu = $("#menu");
+
+        var open = function() { menu.slideDown(500); };
+        var close = function() { menu.slideUp(250); };
+
+        // Slide up and down on clicks from the main button.
+        $("#menu-button").click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (menu.is(":visible")) {
+                close();
+            } else {
+                open();
+            }
+            return false;
+        });
+
+        // Register for clicks on the individual menu items: show the
+        // relevant item.
+        $("#menu a").click(function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var target = $($(this).attr('href'));
+            if (!target.is(":visible")) {
+                // Fade out those we don't want.
+                $("#menu a").each(function() {
+                    var href = $(this).attr('href');
+                    if (href != target) {
+                        $(href).fadeOut(250);
+                    }
+                });
+                // Fade in our target
+                setTimeout(function() { target.fadeIn(500); }, 250);
+            }
+            close();
+            return false;
+        });
+    };
 
     // -----------------------------------------------------------------------
     // Contributed Code

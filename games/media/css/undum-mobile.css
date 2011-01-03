@@ -1,8 +1,9 @@
+html, body {
+    margin: 0;
+}
 #page {
     width: 600px;
-}
-#menu {
-    display: block;
+    padding-top: 48px;
 }
 #character_panel {
     display: none;
@@ -12,4 +13,78 @@
 }
 #tools_wrapper {
     display: block;
+}
+
+#toolbar {
+    position: fixed;
+    z-index: 300;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: transparent url("../img/toolbar_bg.jpg") repeat-x top left;
+    height: 36px;
+    padding: 8px;
+    overflow: hidden;
+    -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    box-shadow: 0 0 16px rgba(0,0,0,0.75);
+}
+#toolbar h1 {
+    float: left;
+    font-weight: normal;
+    font-size: 24px;
+    margin: 4px 0 0 0;
+    padding: 0 8px;
+    color: #fc6;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
+}
+
+#menu {
+    display: none;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    background-image: url("../img/tools_bg.jpg");
+    z-index: 200;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    box-shadow: 0 0 16px rgba(0,0,0,0.75);
+}
+#menu li {
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+#menu li:last-child {
+    border-bottom: none;
+}
+
+#toolar .nav {
+    font-size: 14px;
+    line-height: 14px;
+    float: right;
+    margin: 0;
+}
+#toolbar .nav a {
+    font-size: 14px;
+    color: white;
+    padding: 2px 16px;
+    float: right;
+    text-decoration: none;\
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    -webkit-border-radius: 6px;
+    background-image: -webkit-gradient(linear, left top, left bottom,
+                                       from(#C00), color-stop(0.45, #a00),
+                                       color-stop(0.55, #900), to(#900));
+    border: 2px solid #600;
+}
+#title {
+    margin-top: -40px;
+}
+.tools {
+    width: 580px;
+    position: relative;
 }
