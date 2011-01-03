@@ -171,10 +171,8 @@
      *     numbers (e.g. "00001").
      *
      * group - The Id of a group in which to display this
-     *     parameter. If a group is given, then it must be defined in
-     *     your `undum.game.qualityGroups` property. If no group is
-     *     given, then the quality will be placed at the end of the
-     *     list.
+     *     parameter. The corresponding group must be defined in
+     *     your `undum.game.qualityGroups` property.
      *
      * extraClasses - These classes will be attached to the <div> tag
      *     that surrounds the quality when it is displayed. A common
@@ -481,7 +479,7 @@
             qualityBlock = addQualityBlock(quality).hide().fadeIn(500);
         } else {
             // Do nothing if there's nothing to do.
-            if (oldValue === newValue) return;
+            if (oldValue == newValue) return;
 
             // Change the value.
             if (newDisplay === null) {
@@ -726,6 +724,11 @@
          * function is given it should have the signature:
          *
          * function(character, system, situationId, actionId);
+         *
+         * If the function returns true, then it is indicating that it
+         * has consumed the action, and the action will not be passed
+         * on to the situation. Note that this is the only one of
+         * these global handlers that can consume the event.
          */
         beforeAction: null,
 
@@ -929,7 +932,7 @@
     var scrollStack = [];
     var pendingFirstWrite = false;
     var startOutputTransaction = function() {
-        if (scrollStack.length === 0) {
+        if (scrollStack.length == 0) {
             pendingFirstWrite = true;
         }
         scrollStack.push(
@@ -946,7 +949,7 @@
     };
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
-        if (scrollStack.length === 0 && scrollPoint) {
+        if (scrollStack.length == 0 && scrollPoint) {
             if (interactive) {
                 $("body, html").animate({scrollTop: scrollPoint}, 500);
             }
@@ -1017,9 +1020,19 @@
             situation = getCurrentSituation();
             if (situation) {
                 if (game.beforeAction) {
-                    game.beforeAction(character, system, current, action);
+                    // Try the global act handler, and see if we need
+                    // to notify the situation.
+                    var consumed = game.beforeAction(
+                        character, system, current, action
+                    );
+                    if (consumed !== true) {
+                        situation.act(character, system, action);
+                    }
+                } else {
+                    // We have no global act handler, always notify
+                    // the situation.
+                    situation.act(character, system, action);
                 }
-                situation.act(character, system, action);
                 if (game.afterAction) {
                     game.afterAction(character, system, current, action);
                 }
