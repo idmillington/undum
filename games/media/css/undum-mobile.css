@@ -4,14 +4,29 @@ body {
     line-height: 1.5em;
     -webkit-text-size-adjust: none;
 }
-#title h1 span.fancy {
-    font-size: 1.5em;
-}
 
+/* Structure */
 #page {
-    width: 23.1em;
     padding-top: 1.9em;
     margin: 0.5em;
+}
+#mid_panel {
+    margin: 0;
+}
+
+/* Title */
+#title {
+    margin-top: -1.5em;
+}
+#title .label  {
+    font-size: 0.75em;
+}
+
+/* Side panels */
+.tools {
+    background-image: url("../img/text_bg.jpg");
+    position: relative;
+    width: auto;
 }
 #character_panel {
     display: none;
@@ -23,6 +38,17 @@ body {
     display: block;
 }
 
+/* Main content */
+#content_wrapper {
+    width: auto;
+    padding: 2.0em;
+}
+#content {
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
+/* Toolbar and menu */
 #toolbar {
     position: fixed;
     z-index: 300;
@@ -46,7 +72,24 @@ body {
     color: #fc6;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
 }
-
+#toolbar .nav {
+    float: right;
+    margin: 0;
+}
+#toolbar .nav a {
+    font-size: 16px;
+    line-height: 20px;
+    color: white;
+    padding: 4px 16px;
+    float: right;
+    text-decoration: none;\
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    -webkit-border-radius: 6px;
+    background-image: -webkit-gradient(linear, left top, left bottom,
+                                       from(#C00), color-stop(0.45, #a00),
+                                       color-stop(0.55, #900), to(#900));
+    border: 2px solid #600;
+}
 #menu {
     position: fixed;
     top: 52px;
@@ -74,30 +117,4 @@ body {
     padding: 10px 20px;
 }
 
-#toolbar .nav {
-    float: right;
-    margin: 0;
-}
-#toolbar .nav a {
-    font-size: 16px;
-    line-height: 20px;
-    color: white;
-    padding: 4px 16px;
-    float: right;
-    text-decoration: none;\
-    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-    -webkit-border-radius: 6px;
-    background-image: -webkit-gradient(linear, left top, left bottom,
-                                       from(#C00), color-stop(0.45, #a00),
-                                       color-stop(0.55, #900), to(#900));
-    border: 2px solid #600;
-}
-#title {
-    margin-top: -1.5em;
-}
 
-.tools {
-    width: 32.6em;
-    background-image: url("../img/text_bg.jpg");
-    position: relative;
-}

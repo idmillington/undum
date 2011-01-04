@@ -46,7 +46,7 @@
     var isMobileDevice = function() {
         return (navigator.userAgent.toLowerCase().search(
             /iphone|ipad|palm|blackberry|android/
-        ) >= 0 || $(window).width() < 640);
+        ) >= 0 || $("body").width() < 640);
     };
 
     // Assertion
@@ -1299,7 +1299,7 @@
 
         // Show the game when we click on the title.
         $("#title").one('click', function() {
-            $("#content, #legal").fadeIn(500);
+            $("#content_wrapper, #legal").fadeIn(500);
             $("#tools_wrapper").fadeIn(2000);
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
@@ -1319,11 +1319,42 @@
             }
         });
 
-        // Handle display of the menu and resizing
-        if (mobile) initMobile();
+        // Switch between the two UIs as we resize.
+        var resize = function() {
+            // Work out if we're mobile or not.
+            mobile = isMobileDevice();
+
+            var showing = !$(".click_message").is(":visible");
+            console.info(mobile, showing);
+            if (mobile) {
+                if (showing) {
+                    $("#toolbar").show();
+                }
+                var menu = $("#menu").show();
+                menu.css('top', -menu.height());
+                // Remove the side bars
+                $("#character_panel, #info_panel").hide();
+            } else {
+                // Use the full width version
+                $("#toolbar").hide();
+                $("#menu").hide();
+                if (showing) {
+                    // Display the side bars
+                    $("#tools_wrapper").show();
+                }
+                $("#character_panel, #info_panel").show();
+            }
+        };
+        $(window).bind('resize', resize);
+        resize();
+
+
+        // Handle display of the menu and resizing: used on mobile
+        // devices and an small screens.
+        initMenu();
     });
 
-    var initMobile = function() {
+    var initMenu = function() {
         var menu = $("#menu");
 
         var menuVisible = false;
@@ -1369,14 +1400,6 @@
             close();
             return false;
         });
-
-        // Scale the text.
-        var resize = function() {
-            var w = $(window).width()
-            $("body").css('font-size', (18.5 * w / 640.0));
-        };
-        $(window).bind('resize', resize);
-        resize();
     };
 
     // -----------------------------------------------------------------------
