@@ -33,7 +33,7 @@ body {
 #title .label {
     overflow: hidden;
     background: #e6e6c6 url("../img/text_bg.jpg") repeat left top;
-    padding: 2.8em;
+    padding: 2.0em;
     margin: auto;
     max-width: 18em;
     -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);

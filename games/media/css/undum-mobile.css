@@ -17,10 +17,12 @@ body {
 /* Title */
 #title {
     margin-top: -1.5em;
+    padding: 1.0em 0.5em;
 }
 #title .label  {
     font-size: 0.65em;
     max-width: 25em;
+    padding: 2.0em;
 }
 
 /* Side panels */
