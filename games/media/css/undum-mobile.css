@@ -91,6 +91,7 @@ body {
     border: 2px solid #600;
 }
 #menu {
+    display: none;
     position: fixed;
     top: 52px;
     left: 0;

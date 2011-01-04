@@ -1325,7 +1325,6 @@
             mobile = isMobileDevice();
 
             var showing = !$(".click_message").is(":visible");
-            console.info(mobile, showing);
             if (mobile) {
                 if (showing) {
                     $("#toolbar").show();
@@ -1347,7 +1346,6 @@
         };
         $(window).bind('resize', resize);
         resize();
-
 
         // Handle display of the menu and resizing: used on mobile
         // devices and an small screens.
