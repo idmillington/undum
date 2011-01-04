@@ -19,10 +19,13 @@ body {
     margin-top: -1.5em;
 }
 #title .label  {
-    font-size: 0.75em;
+    font-size: 0.65em;
 }
 
 /* Side panels */
+#tools_wrapper {
+    position: static;
+}
 .tools {
     background-image: url("../img/text_bg.jpg");
     position: relative;

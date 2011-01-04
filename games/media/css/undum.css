@@ -253,7 +253,7 @@ img.float_left {
 
 #legal {
     color: #654;
-    margin: 0 auto;
+    margin: 1em auto 0 auto;
     padding-bottom: 2.2em;
     display: none; /* Shown by Javascript */
 }

@@ -1322,27 +1322,31 @@
         // Switch between the two UIs as we resize.
         var resize = function() {
             // Work out if we're mobile or not.
+            var wasMobile = mobile;
             mobile = isMobileDevice();
 
-            var showing = !$(".click_message").is(":visible");
-            if (mobile) {
-                var menu = $("#menu")
-                if (showing) {
-                    $("#toolbar").show();
-                    menu.show();
+            if (wasMobile != mobile) {
+                var showing = !$(".click_message").is(":visible");
+                if (mobile) {
+                    var menu = $("#menu")
+                    if (showing) {
+                        $("#toolbar").show();
+                        menu.show();
+                    }
+                    menu.css('top', -menu.height()-52);
+                    // Go to the story view.
+                    $("#character_panel, #info_panel").hide();
+                } else {
+                    // Use the full width version
+                    $("#toolbar").hide();
+                    $("#menu").hide();
+                    if (showing) {
+                        // Display the side bars
+                        $("#tools_wrapper").show();
+                    }
+                    $("#character_panel, #info_panel").show();
                 }
-                menu.css('top', -menu.height());
-                // Remove the side bars
-                $("#character_panel, #info_panel").hide();
-            } else {
-                // Use the full width version
-                $("#toolbar").hide();
-                $("#menu").hide();
-                if (showing) {
-                    // Display the side bars
-                    $("#tools_wrapper").show();
-                }
-                $("#character_panel, #info_panel").show();
+                $("#title, #content_wrapper").show();
             }
         };
         $(window).bind('resize', resize);
@@ -1362,10 +1366,10 @@
             menuVisible = true;
         };
         var close = function() {
-            menu.animate({top:-menu.height()}, 250);
+            menu.animate({top:-menu.height()-52}, 250);
             menuVisible = false;
         };
-        menu.css('top', -menu.height());
+        menu.css('top', -menu.height()-52);
 
         // Slide up and down on clicks from the main button.
         $("#menu-button").click(function(event) {
