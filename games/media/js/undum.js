@@ -46,7 +46,7 @@
     var isMobileDevice = function() {
         return (navigator.userAgent.toLowerCase().search(
             /iphone|ipad|palm|blackberry|android/
-        ) >= 0 || $("body").width() < 640);
+        ) >= 0 || $("html").width() <= 640);
     };
 
     // Assertion
@@ -1346,7 +1346,8 @@
                     }
                     $("#character_panel, #info_panel").show();
                 }
-                $("#title, #content_wrapper").show();
+                $("#title").show();
+                if (showing) $("#content_wrapper").show();
             }
         };
         $(window).bind('resize', resize);
