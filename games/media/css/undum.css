@@ -112,7 +112,7 @@ p + p, p + img + p, p + hr + p {
 #content h1 + p:first-letter,
 #content h1 + img + p:first-letter {
     position: relative;
-    padding-top:8px;
+    padding-top: 0.1em;
     display: block;
     float: left;
     font-weight: normal;
@@ -127,6 +127,7 @@ ul {
 ul.options {
     border: 2px solid #876;
     padding: 0;
+    margin-bottom: 0.7em;
     list-style-type: none;
     border-radius: 4px;
     -moz-border-radius: 4px;
@@ -219,17 +220,17 @@ img.float_left {
     background: #876;
     color: #e6e6c6;
     border: none;
-    padding: 6px 0;
+    padding: 0.3em 1.0em;
     cursor: pointer;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 .buttons button:hover {
     background: #987;
 }
 .buttons button + button {
-    margin-left: 5px;
+    margin-left: 0.3em;
 }
 .buttons button[disabled], .buttons button[disabled]:hover {
     background: #ba9;
@@ -239,9 +240,9 @@ img.float_left {
 
 #legal {
     color: #654;
-    width: 600px;
+    width: 33em;
     margin: 0 auto;
-    padding-bottom: 40px;
+    padding-bottom: 2.2em;
     display: none; /* Shown by Javascript */
 }
 #legal p {
@@ -261,11 +262,11 @@ img.float_left {
     position: relative;
     clear: both;
     overflow: hidden;
-    margin: 0 -4px;
-    padding: 0 4px;
+    margin: 0 -0.25em;
+    padding: 0 0.25em;
 }
 #character_text {
-    margin-bottom: 10px;
+    margin-bottom: 0.6em;
 }
 #character_text_content {
     position: relative;
@@ -298,14 +299,14 @@ img.float_left {
 .progress_bar {
     position: relative;
     overflow: hidden;
-    margin: 10px 0;
+    margin: 0.6em 0;
 }
 .progress_bar_track {
     z-index: 100;
     background: rgba(255,255,255,0.25);
     border: 2px solid #876;
-    height: 12px;
-    width: 496px;
+    height: 0.75em;
+    width: 27.7em;
     clear: both;
     border-radius: 4px;
     -moz-border-radius: 4px;
@@ -314,7 +315,7 @@ img.float_left {
 .progress_bar_color {
     background: #987;
     width: 0;
-    height: 12px;
+    height: 0.75em;
 }
 .progress_bar span {
     z-index: 100;

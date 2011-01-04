@@ -1318,16 +1318,23 @@
             }
         });
 
-        // Handle display of the menu
-        if (mobile) initMenu();
+        // Handle display of the menu and resizing
+        if (mobile) initMobile();
     });
 
-    /* Set up the drop-down menu if we're on a mobile device. */
-    var initMenu = function() {
+    var initMobile = function() {
         var menu = $("#menu");
 
-        var open = function() { menu.slideDown(500); };
-        var close = function() { menu.slideUp(250); };
+        var menuVisible = false;
+        var open = function() {
+            menu.animate({top:48}, 500);
+            menuVisible = true;
+        };
+        var close = function() {
+            menu.animate({top:-menu.height()}, 250);
+            menuVisible = false;
+        };
+        menu.css('top', -menu.height());
 
         // Slide up and down on clicks from the main button.
         $("#menu-button").click(function(event) {
@@ -1361,6 +1368,14 @@
             close();
             return false;
         });
+
+        // Scale the text.
+        var resize = function() {
+            var w = $(window).width()
+            $("body").css('font-size', (18.5 * w / 640.0));
+        };
+        $(window).bind('resize', resize);
+        resize();
     };
 
     // -----------------------------------------------------------------------
