@@ -44,11 +44,9 @@
     };
 
     var isMobileDevice = function() {
-        // DEBUG
-        return true;
         return (navigator.userAgent.toLowerCase().search(
             /iphone|ipad|palm|blackberry|android/
-        ) >= 0);
+        ) >= 0 || $(window).width() < 640);
     };
 
     // Assertion
@@ -1305,7 +1303,10 @@
             $("#tools_wrapper").fadeIn(2000);
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
-            if (mobile) $("#toolbar").slideDown(500);
+            if (mobile) {
+                $("#toolbar").slideDown(500);
+                $("#menu").show();
+            }
         });
 
         // Any point that an option list appears, its options are its
@@ -1340,7 +1341,7 @@
         $("#menu-button").click(function(event) {
             event.preventDefault();
             event.stopPropagation();
-            if (menu.is(":visible")) {
+            if (menuVisible) {
                 close();
             } else {
                 open();
