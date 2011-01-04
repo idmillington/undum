@@ -1326,10 +1326,11 @@
 
             var showing = !$(".click_message").is(":visible");
             if (mobile) {
+                var menu = $("#menu")
                 if (showing) {
                     $("#toolbar").show();
+                    menu.show();
                 }
-                var menu = $("#menu").show();
                 menu.css('top', -menu.height());
                 // Remove the side bars
                 $("#character_panel, #info_panel").hide();
