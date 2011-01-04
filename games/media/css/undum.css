@@ -217,13 +217,14 @@ img.float_left {
     padding-top: 0.6em;
     margin-top: 0.6em;
     border-top: 1px solid #321;
+    text-align: center;
 }
 .buttons button {
-    width: 77px;
+    font-size: 0.8em;
     background: #876;
     color: #e6e6c6;
     border: none;
-    padding: 6px 0;
+    padding: 6px 1.0em;
     cursor: pointer;
     border-radius: 5px;
     -moz-border-radius: 5px;
