@@ -2,12 +2,12 @@ body {
     background: #170804 url("../img/page_bg.jpg") repeat-x left top;
     font-family: Palatino, Times, "Times New Roman", serif;
     font-size: 18px;
-    line-height: 1.5em;
+    line-height: 1.6em;
     background-attachment: fixed;
     overflow-y: scroll;
 }
 #page {
-    width: 1000px;
+    width: 56em;
     margin: 0 auto;
     position: relative;
 }
@@ -20,17 +20,17 @@ body {
     -webkit-border-radius: 2px;
 }
 #title {
-    width: 500px;
-    background: #e6e6c6 url("../img/title_bg.jpg") repeat -20px -20px;
-    margin: 40px auto 20px auto;
-    padding: 30px;
-    border: 20px solid rgba(0,0,0,0.25);
+    width: 28em;
+    background: #e6e6c6 url("../img/title_bg.jpg") repeat -1.1em -1.1em;
+    margin: 2.2em auto 1.1em auto;
+    padding: 1.7em;
+    border: 1.1em solid rgba(0,0,0,0.25);
     cursor: pointer; /* Until we click to start. */
 }
 #title .label {
-    width: 300px;
+    width: 17em;
     background: #e6e6c6 url("../img/text_bg.jpg") repeat left top;
-    padding: 50px;
+    padding: 2.8em;
     margin: auto;
     -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
     -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
@@ -40,22 +40,22 @@ body {
 #title h1 {
     font-size: 1.6em;
     line-height: 1.4em;
-    letter-spacing: 3px;
+    letter-spacing: 0.2em;
     font-weight: normal;
-    padding-bottom: 20px;
+    padding-bottom: 1.1em;
     border-bottom: 1px solid #321;
 }
 #title h2 {
     font-size: 1.2em;
     font-weight: normal;
     text-align: center;
-    margin: 20px 0 0 0;
+    margin: 1.1em 0 0 0;
 }
 #title h3 {
     font-size: 1.0em;
     font-weight: normal;
     text-align: center;
-    margin: 20px 0 0 0;
+    margin: 1.1em 0 0 0;
 }
 #title h1, #title h2, #title h3 {
     color: rgba(33,17,0,0.9);
@@ -67,7 +67,7 @@ body {
     line-height: 0;
     font-family: Tangerine, Palatino, Times, "Times New Roman", serif;
     font-style: italic;
-    margin: 0 -4px;
+    margin: 0 -0.2em;
 }
 #title .click_message {
     margin: 0 auto;
@@ -76,21 +76,21 @@ body {
     font-size: 0.9em;
     font-style: italic;
     text-align: center;
-    width: 300px;
+    width: 17em;
     color: #987;
 }
 
 #content {
     position: relative;
-    width: 500px;
+    width: 28em;
     background: #e6e6c6 url("../img/text_bg.jpg") repeat left top;
-    margin: 10px auto 20px auto;
-    padding: 50px;
+    margin: 0.6em auto 1.1em auto;
+    padding: 2.8em;
     display: none; /* Shown by Javascript */
     overflow: auto;
 }
 span.drop + p {
-    text-indent: -8px;
+    text-indent: -0.4em;
 }
 p {
     margin: 0;
@@ -101,12 +101,12 @@ p {
 hr {
     border: none;
     background-color: rgba(0,0,0,0.25);
-    margin: -1px 0 -1px -50px;
-    width: 20px;
+    margin: -1px 0 -1px -2.8em;
+    width: 1.1em;
     height: 2px;
 }
 p + p, p + img + p, p + hr + p {
-    text-indent: 30px;
+    text-indent: 1.6em;
 }
 #content h1 + p:first-line,
 #content h1 + img + p:first-line {
@@ -116,7 +116,7 @@ p + p, p + img + p, p + hr + p {
 #content h1 + p:first-letter,
 #content h1 + img + p:first-letter {
     position: relative;
-    padding-top: 8px;
+    padding-top: 0.4em;
     display: block;
     float: left;
     font-weight: normal;
@@ -152,7 +152,7 @@ h1 {
     font-size: 1.0em;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: 40px 0 20px 0;
+    margin: 2.3em 0 1.1em 0;
     color: #210;
     text-align: center;
 }
@@ -174,11 +174,11 @@ a:hover {
 
 img.float_right {
     float: right;
-    margin: 20px 0 20px 20px;
+    margin: 1.1em 0 1.1em 1.1em;
 }
 img.float_left {
     float: left;
-    margin: 20px 20px 20px 0px;
+    margin: 1.1em 1.1em 1.1em 0;
 }
 
 #toolbar {
@@ -188,12 +188,12 @@ img.float_left {
 #tools_wrapper {
     position: fixed;
     margin: 0 auto;
-    width: 1000px;
+    width: 56em;
     display: none; /* Shown by Javascript */
 }
 .tools {
-    padding: 10px;
-    width: 160px;
+    padding: 0.6em;
+    width: 8.9em;
     background: #cec3ae url("../img/tools_bg.jpg") repeat left top;
     position: absolute;
 }
@@ -211,11 +211,11 @@ img.float_left {
     font-size: 1.0em;
     font-weight: normal;
     border-bottom: 1px solid #321;
-    margin-bottom: 10px;
+    margin-bottom: 0.6em;
 }
 .buttons {
-    padding-top: 10px;
-    margin-top: 10px;
+    padding-top: 0.6em;
+    margin-top: 0.6em;
     border-top: 1px solid #321;
 }
 .buttons button {
