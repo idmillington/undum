@@ -74,6 +74,7 @@ body {
     margin: 0 -0.2em;
 }
 #title .click_message {
+    display: none;
     left: 0;
     right: 0;
     bottom: 0;
@@ -82,6 +83,16 @@ body {
     font-style: italic;
     text-align: center;
     color: #987;
+}
+#title .noscript_message {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: center;
+    color: #943;
 }
 
 /* Main content */

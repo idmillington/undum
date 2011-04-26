@@ -1333,6 +1333,10 @@
             startGame();
         }
 
+        // Display the "click to begin" message. (We do this in code
+        // so that, if Javascript is off, it doesn't happen.)
+        $(".click_message").show();
+
         // Show the game when we click on the title.
         $("#title").one('click', function() {
             if (game.isAnimated) {
