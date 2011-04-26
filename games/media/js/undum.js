@@ -417,11 +417,44 @@
      * with the <p> of the first paragraph, and ends with the </p> of
      * the last. So "<p>Foo</p><img src='bar'>" is valid, but "foo<img
      * src='bar'>" is not.
+     *
+     * The content goes to the end of the page, unless you supply
+     * the optional elid argument. If you do, the content appears after
+     * the element with that id.
      */
-    System.prototype.write = function(content) {
+    System.prototype.write = function(content, elid) {
         continueOutputTransaction();
         var output = augmentLinks(content);
-        $('#content').append(output);
+        var el;
+        if (elid)
+            el = $('#'+elid);
+        if (!el) {
+            $('#content').append(output);
+        }
+        else {
+            el.after(output);
+        }
+    };
+
+    /* Outputs regular content to the page. The content supplied must
+     * be valid "Display Content".
+     *
+     * The content goes to the beginning of the page, unless you supply
+     * the optional elid argument. If you do, the content appears before
+     * the element with that id.
+     */
+    System.prototype.writeBefore = function(content, elid) {
+        continueOutputTransaction();
+        var output = augmentLinks(content);
+        var el;
+        if (elid)
+            el = $('#'+elid);
+        if (!el) {
+            $('#content').prepend(output);
+        }
+        else {
+            el.before(output);
+        }
     };
 
     /* Carries out the given situation change or action, as if it were
