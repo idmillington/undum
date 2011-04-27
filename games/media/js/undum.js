@@ -434,6 +434,18 @@
         else {
             el.after(output);
         }
+        /* We want to scroll this new element to the bottom of the screen.
+         * while still being visible. The easiest way is to find the
+         * top edge of the *following* element and move that exactly
+         * to the bottom (while still ensuring that this element is fully
+         * visible.) */
+        var nextel = output.last().next();
+        if (!nextel.length)
+            scrollPoint = $("#content").height() + $("#title").height() + 60;
+        else
+            scrollPoint = nextel.offset().top - $(window).height();
+        if (scrollPoint > output.offset().top)
+            scrollPoint = output.offset().top;
     };
 
     /* Outputs regular content to the page. The content supplied must
@@ -455,6 +467,18 @@
         else {
             el.before(output);
         }
+        /* We want to scroll this new element to the bottom of the screen.
+         * while still being visible. The easiest way is to find the
+         * top edge of the *following* element and move that exactly
+         * to the bottom (while still ensuring that this element is fully
+         * visible.) */
+        var nextel = output.last().next();
+        if (!nextel.length)
+            scrollPoint = $("#content").height() + $("#title").height() + 60;
+        else
+            scrollPoint = nextel.offset().top - $(window).height();
+        if (scrollPoint > output.offset().top)
+            scrollPoint = output.offset().top;
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -981,16 +1005,26 @@
      * correctly. We do this in a stack because one click might cause
      * a chain reaction. Of output events, only when we return to the
      * top level will we do the scroll.
+     *
+     * However, that leaves the question of where to scroll *to*.
+     * (Remember that elements could be inserted anywhere in the
+     * document.) The rule is that we scroll to the last insertion --
+     * last chronologically, not the last in the document.
+     *
+     * We therefore need a stack counter (scrollCount), but not an
+     * actual stack; we just remember the most recent scroll destination
+     * (scrollPoint).
      */
-    var scrollStack = [];
+    var scrollCount = 0;
+    var scrollPoint = null;
     var pendingFirstWrite = false;
     var startOutputTransaction = function() {
-        if (scrollStack.length == 0) {
+        if (scrollCount == 0) {
             pendingFirstWrite = true;
         }
-        scrollStack.push(
-            $("#content").height() + $("#title").height() + 60
-        );
+        scrollCount += 1;
+        // The default is "all the way down".
+        scrollPoint = $("#content").height() + $("#title").height() + 60;
     };
     var continueOutputTransaction = function() {
         if (pendingFirstWrite) {
@@ -1001,8 +1035,8 @@
         }
     };
     var endOutputTransaction = function() {
-        var scrollPoint = scrollStack.pop();
-        if (scrollStack.length == 0 && scrollPoint) {
+        scrollCount -= 1;
+        if (scrollCount <= 0 && scrollPoint != null) {
             if (interactive && !mobile) {
                 if (game.isAnimated) {
                     $("body, html").animate({scrollTop: scrollPoint}, 500);
@@ -1011,6 +1045,7 @@
                     $("body, html").scrollTop(scrollPoint);
                 }
             }
+            scrollCount = 0;
             scrollPoint = null;
         }
     };
