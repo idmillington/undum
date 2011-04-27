@@ -1003,8 +1003,13 @@
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
         if (scrollStack.length == 0 && scrollPoint) {
-            if (interactive && game.isAnimated && !mobile) {
-                $("body, html").animate({scrollTop: scrollPoint}, 500);
+            if (interactive && !mobile) {
+                if (game.isAnimated) {
+                    $("body, html").animate({scrollTop: scrollPoint}, 500);
+                }
+                else {
+                    $("body, html").scrollTop(scrollPoint);
+                }
             }
             scrollPoint = null;
         }
