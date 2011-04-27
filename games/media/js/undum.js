@@ -440,12 +440,14 @@
          * to the bottom (while still ensuring that this element is fully
          * visible.) */
         var nextel = output.last().next();
+        var scrollPoint;
         if (!nextel.length)
             scrollPoint = $("#content").height() + $("#title").height() + 60;
         else
             scrollPoint = nextel.offset().top - $(window).height();
         if (scrollPoint > output.offset().top)
             scrollPoint = output.offset().top;
+        scrollStack[scrollStack.length-1] = scrollPoint;
     };
 
     /* Outputs regular content to the page. The content supplied must
@@ -473,12 +475,14 @@
          * to the bottom (while still ensuring that this element is fully
          * visible.) */
         var nextel = output.last().next();
+        var scrollPoint;
         if (!nextel.length)
             scrollPoint = $("#content").height() + $("#title").height() + 60;
         else
             scrollPoint = nextel.offset().top - $(window).height();
         if (scrollPoint > output.offset().top)
             scrollPoint = output.offset().top;
+        scrollStack[scrollStack.length-1] = scrollPoint;
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -1008,23 +1012,19 @@
      *
      * However, that leaves the question of where to scroll *to*.
      * (Remember that elements could be inserted anywhere in the
-     * document.) The rule is that we scroll to the last insertion --
-     * last chronologically, not the last in the document.
-     *
-     * We therefore need a stack counter (scrollCount), but not an
-     * actual stack; we just remember the most recent scroll destination
-     * (scrollPoint).
+     * document.) Whenever we do a write(), we'll have to update the
+     * top (last) stack element to that position.
      */
-    var scrollCount = 0;
-    var scrollPoint = null;
+    var scrollStack = [];
     var pendingFirstWrite = false;
     var startOutputTransaction = function() {
-        if (scrollCount == 0) {
+        if (scrollStack.length == 0) {
             pendingFirstWrite = true;
         }
-        scrollCount += 1;
         // The default is "all the way down".
-        scrollPoint = $("#content").height() + $("#title").height() + 60;
+        scrollStack.push(
+            $("#content").height() + $("#title").height() + 60
+        );
     };
     var continueOutputTransaction = function() {
         if (pendingFirstWrite) {
@@ -1035,8 +1035,8 @@
         }
     };
     var endOutputTransaction = function() {
-        scrollCount -= 1;
-        if (scrollCount <= 0 && scrollPoint != null) {
+        var scrollPoint = scrollStack.pop();
+        if (scrollStack.length == 0 && scrollPoint != null) {
             if (interactive && !mobile) {
                 if (game.isAnimated) {
                     $("body, html").animate({scrollTop: scrollPoint}, 500);
@@ -1045,7 +1045,6 @@
                     $("body, html").scrollTop(scrollPoint);
                 }
             }
-            scrollCount = 0;
             scrollPoint = null;
         }
     };
