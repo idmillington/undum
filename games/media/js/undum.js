@@ -417,11 +417,72 @@
      * with the <p> of the first paragraph, and ends with the </p> of
      * the last. So "<p>Foo</p><img src='bar'>" is valid, but "foo<img
      * src='bar'>" is not.
+     *
+     * The content goes to the end of the page, unless you supply
+     * the optional elid argument. If you do, the content appears after
+     * the element with that id.
      */
-    System.prototype.write = function(content) {
+    System.prototype.write = function(content, elid) {
         continueOutputTransaction();
         var output = augmentLinks(content);
-        $('#content').append(output);
+        var el;
+        if (elid)
+            el = $('#'+elid);
+        if (!el) {
+            $('#content').append(output);
+        }
+        else {
+            el.after(output);
+        }
+        /* We want to scroll this new element to the bottom of the screen.
+         * while still being visible. The easiest way is to find the
+         * top edge of the *following* element and move that exactly
+         * to the bottom (while still ensuring that this element is fully
+         * visible.) */
+        var nextel = output.last().next();
+        var scrollPoint;
+        if (!nextel.length)
+            scrollPoint = $("#content").height() + $("#title").height() + 60;
+        else
+            scrollPoint = nextel.offset().top - $(window).height();
+        if (scrollPoint > output.offset().top)
+            scrollPoint = output.offset().top;
+        scrollStack[scrollStack.length-1] = scrollPoint;
+    };
+
+    /* Outputs regular content to the page. The content supplied must
+     * be valid "Display Content".
+     *
+     * The content goes to the beginning of the page, unless you supply
+     * the optional elid argument. If you do, the content appears before
+     * the element with that id.
+     */
+    System.prototype.writeBefore = function(content, elid) {
+        continueOutputTransaction();
+        var output = augmentLinks(content);
+        var el;
+        if (elid)
+            el = $('#'+elid);
+        if (!el) {
+            $('#content').prepend(output);
+        }
+        else {
+            el.before(output);
+        }
+        /* We want to scroll this new element to the bottom of the screen.
+         * while still being visible. The easiest way is to find the
+         * top edge of the *following* element and move that exactly
+         * to the bottom (while still ensuring that this element is fully
+         * visible.) */
+        var nextel = output.last().next();
+        var scrollPoint;
+        if (!nextel.length)
+            scrollPoint = $("#content").height() + $("#title").height() + 60;
+        else
+            scrollPoint = nextel.offset().top - $(window).height();
+        if (scrollPoint > output.offset().top)
+            scrollPoint = output.offset().top;
+        scrollStack[scrollStack.length-1] = scrollPoint;
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -455,7 +516,7 @@
         var block = $("#character_text_content");
         var oldContent = block.html();
         var newContent = augmentLinks(content);
-        if (interactive && block.is(':visible')) {
+        if (interactive && game.isAnimated && block.is(':visible')) {
             block.fadeOut(250, function() {
                 block.html(newContent);
                 block.fadeIn(750);
@@ -473,7 +534,7 @@
     System.prototype.setQuality = function(quality, newValue) {
         var oldValue = character.qualities[quality];
         character.qualities[quality] = newValue;
-        if (!interactive) return;
+        if (!(interactive && game.isAnimated)) return;
 
         // Work out how to display the values.
         var newDisplay = newValue.toString();
@@ -558,7 +619,7 @@
 
         // Change the base UI.
         this.setQuality(quality, newValue);
-        if (!interactive) return;
+        if (!(interactive && game.isAnimated)) return;
 
         // Overload default options.
         var myOpts = {
@@ -694,6 +755,9 @@
          * new game. */
         start: "start",
 
+        /* If this is false, transition animations are all suppressed.
+         */
+        isAnimated: true,
 
         // Quality display definitions
 
@@ -945,6 +1009,11 @@
      * correctly. We do this in a stack because one click might cause
      * a chain reaction. Of output events, only when we return to the
      * top level will we do the scroll.
+     *
+     * However, that leaves the question of where to scroll *to*.
+     * (Remember that elements could be inserted anywhere in the
+     * document.) Whenever we do a write(), we'll have to update the
+     * top (last) stack element to that position.
      */
     var scrollStack = [];
     var pendingFirstWrite = false;
@@ -952,6 +1021,7 @@
         if (scrollStack.length == 0) {
             pendingFirstWrite = true;
         }
+        // The default is "all the way down".
         scrollStack.push(
             $("#content").height() + $("#title").height() + 60
         );
@@ -966,9 +1036,14 @@
     };
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
-        if (scrollStack.length == 0 && scrollPoint) {
+        if (scrollStack.length == 0 && scrollPoint != null) {
             if (interactive && !mobile) {
-                $("body, html").animate({scrollTop: scrollPoint}, 500);
+                if (game.isAnimated) {
+                    $("body, html").animate({scrollTop: scrollPoint}, 500);
+                }
+                else {
+                    $("body, html").scrollTop(scrollPoint);
+                }
             }
             scrollPoint = null;
         }
@@ -976,7 +1051,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
+    var linkRe = /^([-a-z0-9_]+|\.)(\/([-0-9a-z_]+))?$/;
     var processLink = function(code) {
         // Check if we should do this now, or if processing is already
         // underway.
@@ -1089,7 +1164,7 @@
                 if (a.hasClass('sticky')) return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
-            if (interactive) {
+            if (interactive && game.isAnimated) {
                 if (mobile) {
                     $('#content .transient, #content ul.options').
                         fadeOut(2000);
@@ -1297,12 +1372,24 @@
             startGame();
         }
 
+        // Display the "click to begin" message. (We do this in code
+        // so that, if Javascript is off, it doesn't happen.)
+        $(".click_message").show();
+
         // Show the game when we click on the title.
         $("#title").one('click', function() {
-            $("#content_wrapper, #legal").fadeIn(500);
-            $("#tools_wrapper").fadeIn(2000);
-            $("#title").css("cursor", "default");
-            $("#title .click_message").fadeOut(250);
+            if (game.isAnimated) {
+                $("#content_wrapper, #legal").fadeIn(500);
+                $("#tools_wrapper").fadeIn(2000);
+                $("#title").css("cursor", "default");
+                $("#title .click_message").fadeOut(250);
+            }
+            else {
+                $("#content_wrapper, #legal").show();
+                $("#tools_wrapper").show();
+                $("#title").css("cursor", "default");
+                $("#title .click_message").hide();
+            }
             if (mobile) {
                 $("#toolbar").slideDown(500);
                 $("#menu").show();
