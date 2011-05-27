@@ -71,6 +71,9 @@
       ul {
           padding-left: 1.5em;
       }
+      #toc {
+          padding-top: 2.4em;
+      }
       ul.toc {
           list-style: none;
           padding: 0;
@@ -120,11 +123,14 @@
         <h1>Undum Documentation: {{title}}</h1>
       </div>
       <div id="toc">
-        <h1>Contents</h1>
         <ul class='toc'>
-        {% for level,id,text in toc %}
-        <li class='level_{{level}}'><a href='{{id}}'>{{text}}</a></li>
-        {% endfor %}
+          <li class='level_0'><a href="/">Undum Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          {% for level,id,text in toc %}
+          <li class='level_{{level}}'><a href='{{id}}'>{{text}}</a></li>
+          {% endfor %}
         </ul>
       </div>
       <div id="body">
