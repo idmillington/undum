@@ -385,26 +385,9 @@
      * UI.
      */
     var System = function() {
+        this.rnd = null;
+        this.time = 0;
     };
-
-    /* An object derived from Random, which allows your game to make
-     * random number requests in a way that allows the game to
-     * replayed exactly. This is essential if you want saves to
-     * work. It will also be used in future for automated regression
-     * testing.
-     */
-    System.prototype.__defineGetter__("rnd", function() {
-        return rnd;
-    });
-
-    /* The time, in seconds, that has elapsed since the player started
-     * this game. Do not directly query time for time-related actions,
-     * because that invalidates the saved game (remember we load a
-     * saved game by playing through it from the start).
-     */
-    System.prototype.__defineGetter__("time", function() {
-        return gameTime;
-    });
 
     /* Outputs regular content to the page. The content supplied must
      * be valid "Display Content".
@@ -423,31 +406,7 @@
      * the element with that id.
      */
     System.prototype.write = function(content, elid) {
-        continueOutputTransaction();
-        var output = augmentLinks(content);
-        var el;
-        if (elid)
-            el = $('#'+elid);
-        if (!el) {
-            $('#content').append(output);
-        }
-        else {
-            el.after(output);
-        }
-        /* We want to scroll this new element to the bottom of the screen.
-         * while still being visible. The easiest way is to find the
-         * top edge of the *following* element and move that exactly
-         * to the bottom (while still ensuring that this element is fully
-         * visible.) */
-        var nextel = output.last().next();
-        var scrollPoint;
-        if (!nextel.length)
-            scrollPoint = $("#content").height() + $("#title").height() + 60;
-        else
-            scrollPoint = nextel.offset().top - $(window).height();
-        if (scrollPoint > output.offset().top)
-            scrollPoint = output.offset().top;
-        scrollStack[scrollStack.length-1] = scrollPoint;
+        doWrite(content, elid, 'append', 'after');
     };
 
     /* Outputs regular content to the page. The content supplied must
@@ -458,31 +417,7 @@
      * the element with that id.
      */
     System.prototype.writeBefore = function(content, elid) {
-        continueOutputTransaction();
-        var output = augmentLinks(content);
-        var el;
-        if (elid)
-            el = $('#'+elid);
-        if (!el) {
-            $('#content').prepend(output);
-        }
-        else {
-            el.before(output);
-        }
-        /* We want to scroll this new element to the bottom of the screen.
-         * while still being visible. The easiest way is to find the
-         * top edge of the *following* element and move that exactly
-         * to the bottom (while still ensuring that this element is fully
-         * visible.) */
-        var nextel = output.last().next();
-        var scrollPoint;
-        if (!nextel.length)
-            scrollPoint = $("#content").height() + $("#title").height() + 60;
-        else
-            scrollPoint = nextel.offset().top - $(window).height();
-        if (scrollPoint > output.offset().top)
-            scrollPoint = output.offset().top;
-        scrollStack[scrollStack.length-1] = scrollPoint;
+        doWrite(content, elid, 'prepend', 'before');
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -865,15 +800,8 @@
     /* Tracks whether we're mobile or not. */
     var mobile = isMobileDevice();
 
-    /* The random number generator that the game can use to
-     * derministically generate random possibilities. */
-    var rnd;
-
     /* The system time when the game was initialized. */
     var startTime;
-
-    /* The current game time, in seconds. */
-    var gameTime;
 
     /* The stack of links, resulting from the last action, still be to
      * resolved. */
@@ -889,6 +817,37 @@
         } else {
             return null;
         }
+    };
+
+    /* Outputs regular content to the page. Used by write and
+     * writeBefore, the last two arguments control what jQuery methods
+     * are used to add the content.
+     */
+    var doWrite = function(content, elid, addMethod, appendMethod) {
+        continueOutputTransaction();
+        var output = augmentLinks(content);
+        var el;
+        if (elid) el = $('#'+elid);
+        if (!el) {
+            $('#content')[addMethod](output);
+        }
+        else {
+            el[appendMethod](output);
+        }
+        /* We want to scroll this new element to the bottom of the screen.
+         * while still being visible. The easiest way is to find the
+         * top edge of the *following* element and move that exactly
+         * to the bottom (while still ensuring that this element is fully
+         * visible.) */
+        var nextel = output.last().next();
+        var scrollPoint;
+        if (!nextel.length)
+            scrollPoint = $("#content").height() + $("#title").height() + 60;
+        else
+            scrollPoint = nextel.offset().top - $(window).height();
+        if (scrollPoint > output.offset().top)
+            scrollPoint = output.offset().top;
+        scrollStack[scrollStack.length-1] = scrollPoint;
     };
 
     /* Gets the unique id used to identify saved games. */
@@ -1136,8 +1095,8 @@
      * action. */
     var processClick = function(code) {
         var now = (new Date()).getTime() * 0.001;
-        gameTime = now - startTime;
-        progress.sequence.push({link:code, when:gameTime});
+        system.time = now - startTime;
+        progress.sequence.push({link:code, when:system.time});
         processLink(code);
     };
 
@@ -1254,7 +1213,7 @@
         progress.seed = new Date().toString();
 
         character = new Character();
-        rnd = new Random(progress.seed);
+        system.rnd = new Random(progress.seed);
         progress.sequence = [{link:game.start, when:0}];
 
         // Empty the display
@@ -1262,7 +1221,7 @@
 
         // Start the game
         startTime = new Date().getTime() * 0.001;
-        gameTime = 0;
+        system.time = 0;
         if (game.init) game.init(character, system);
         showQualities();
 
@@ -1290,7 +1249,7 @@
         progress = characterData;
 
         character = new Character();
-        rnd = new Random(progress.seed);
+        system.rnd = new Random(progress.seed);
 
         // Empty the display
         $("#content").empty();
@@ -1304,7 +1263,7 @@
         for (var i = 0; i < progress.sequence.length; i++) {
             var step = progress.sequence[i];
             // The action must be done at the recorded time.
-            gameTime = step.when;
+            system.time = step.when;
             processLink(step.link);
         }
         interactive = true;
