@@ -401,23 +401,23 @@
      * the last. So "<p>Foo</p><img src='bar'>" is valid, but "foo<img
      * src='bar'>" is not.
      *
-     * The content goes to the end of the page, unless you supply
-     * the optional elid argument. If you do, the content appears after
-     * the element with that id.
+     * The content goes to the end of the page, unless you supply the
+     * optional selector argument. If you do, the content appears
+     * after the element that matches that selector.
      */
-    System.prototype.write = function(content, elid) {
-        doWrite(content, elid, 'append', 'after');
+    System.prototype.write = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'append', 'after');
     };
 
     /* Outputs regular content to the page. The content supplied must
      * be valid "Display Content".
      *
-     * The content goes to the beginning of the page, unless you supply
-     * the optional elid argument. If you do, the content appears before
-     * the element with that id.
+     * The content goes to the beginning of the page, unless you
+     * supply the optional selector argument. If you do, the content
+     * appears after the element that matches that selector.
      */
-    System.prototype.writeBefore = function(content, elid) {
-        doWrite(content, elid, 'prepend', 'before');
+    System.prototype.writeBefore = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'prepend', 'before');
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -823,16 +823,16 @@
      * writeBefore, the last two arguments control what jQuery methods
      * are used to add the content.
      */
-    var doWrite = function(content, elid, addMethod, appendMethod) {
+    var doWrite = function(content, selector, addMethod, appendMethod) {
         continueOutputTransaction();
         var output = augmentLinks(content);
-        var el;
-        if (elid) el = $('#'+elid);
-        if (!el) {
+        var element;
+        if (selector) element = $(selector);
+        if (!element) {
             $('#content')[addMethod](output);
         }
         else {
-            el[appendMethod](output);
+            element[appendMethod](output);
         }
         /* We want to scroll this new element to the bottom of the screen.
          * while still being visible. The easiest way is to find the

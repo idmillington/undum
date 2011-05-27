@@ -540,11 +540,30 @@ The system represents the interface between your code and the
 user-interface.  You don't create your own `System` object, it is
 passed into your code.
 
-#### `write(content)`
+#### `write(content, elementSelector)`
 
 Writes new content to the main flow of the story. The content you pass
 in must be either valid DOM elements already, or else be a string
 containing text in Display Content format.
+
+The `elementSelector` is optional. If you provide it, then the new
+content will be added after the DOM element in the document that
+matches the selector. This allows you to do out-of-order addition of
+content. Simply add a paragraph with an id in your game, then later
+you can give this id as a selector to write, and the new content will
+be inserted immediately following that paragraph, regardless of how
+much extra content has been added since that point. If no selector is
+given then `#content` is used, i.e. the content is added at the end of
+the document. The `writeBefore` method inserts content at the start of
+the document, or before a selector.
+
+#### `writeBefore(content, elementSelector)`
+
+Writes content into the story. This method is identical to `write`,
+above, except that the content is written at the start of the story,
+or if a selector is given, inserted before the matching element. On
+browsers that support it, the story will be scrolled to the insertion
+point.
 
 #### `doLink(URL)`
 
