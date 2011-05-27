@@ -51,9 +51,10 @@ class TOCParser(HTMLParser):
             # Link back to the top, unless we're already there.
             if self.header_index > 1:
                 self.output.append('<div class="header">')
-            self.output.append(
-                '<div class="top"><a href="#title">&uarr;</a></div>'
-                )
+                self.output.append(
+                    '<div class="top"><a href="#title" title="Return to top">'+
+                    '&#x25b2;</a></div>'
+                    )
 
         # Accumulate the transformed version
         content = "<%s%s>" % (tag, self._convert_attr(attr))

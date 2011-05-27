@@ -609,34 +609,34 @@ shows to the user how the value has changed. The `options` parameter
 should be an object containing options for how the bar should
 display. The available options are:
 
-`from`: The proportion along the progress bar where the animation
-    starts. Defaults to 0, valid range is 0-1.
+- `from`: The proportion along the progress bar where the animation
+   starts. Defaults to 0, valid range is 0-1.
 
-`to`: The proportion along the progress bar where the animation
-    ends. Defaults to 1, valid range is 0-1.
+- `to`: The proportion along the progress bar where the animation
+   ends. Defaults to 1, valid range is 0-1.
 
-`showValue`: If `true` (the default) then the new value of the quality is
-    displayed above the progress bar.
+- `showValue`: If `true` (the default) then the new value of the
+   quality is displayed above the progress bar.
 
-`displayValue`: If this is given, and `showValue` is `true`, then the
-    given value is used above the progress bar. If this isn't given,
-    and `showValue` is `true`, then the display value will be
-    calculated from the `QualityDefinition`, as normal. This option is
-    useful for qualities that don't have a definition, because they
-    don't normally appear in the UI.
+- `displayValue`: If this is given, and `showValue` is `true`, then
+   the given value is used above the progress bar. If this isn't
+   given, and `showValue` is `true`, then the display value will be
+   calculated from the `QualityDefinition`, as normal. This option is
+   useful for qualities that don't have a definition, because they
+   don't normally appear in the UI.
 
-`title`: The title of the progress bar. If this is not given, then the
-    title of the quality is used. As for `displayValue` this is
-    primarily used when the progress bar doesn't have a
-    `QualityDefinition`, and therefore doesn't have a title.
+- `title`: The title of the progress bar. If this is not given, then
+   the title of the quality is used. As for `displayValue` this is
+   primarily used when the progress bar doesn't have a
+   `QualityDefinition`, and therefore doesn't have a title.
 
-`leftLabel`, `rightLabel`: Underneath the progress bar you can place
-    two labels at the left and right extent of the track. These can
-    help to give scale to the bar. So if the bar signifies going from
-    10.2 to 10.5, you might label the left and right extents with "10"
-    and "11" respectively and have the `from` and `to` value be 0.2
-    and 0.5 respectively. If these are not given, then the labels will
-    be omitted.
+- `leftLabel`, `rightLabel`: Underneath the progress bar you can place
+   two labels at the left and right extent of the track. These can
+   help to give scale to the bar. So if the bar signifies going from
+   10.2 to 10.5, you might label the left and right extents with "10"
+   and "11" respectively and have the `from` and `to` value be 0.2 and
+   0.5 respectively. If these are not given, then the labels will be
+   omitted.
 
 #### `setCharacterText(content)`
 
@@ -773,38 +773,38 @@ Creates a new simple situation that will display the given content
 when its `enter` method is called. The given options array provides
 further control of the behavior of this type. Valid options are:
 
-`enter`: Providing an enter function in the `options` parameter allows
-    you to add additional behavior to the enter method. Your custom
-    function will be called *in addition to* and *after* the default
-    content is written to the screen. You cannot override
-    `SimpleSituation`'s `enter` method by providing this function. To
-    override the method, you would have to create a derived type. If
-    you provide an `enter` function, it should have the same form as
-    `Situation.enter`.
+- `enter`: Providing an enter function in the `options` parameter
+   allows you to add additional behavior to the enter method. Your
+   custom function will be called *in addition to* and *after* the
+   default content is written to the screen. You cannot override
+   `SimpleSituation`'s `enter` method by providing this function. To
+   override the method, you would have to create a derived type. If
+   you provide an `enter` function, it should have the same form as
+   `Situation.enter`.
 
-`act`: Pass in a function to add additional behavior to the act
-    method. As for `enter`, your method is called *in addition to* and
-    *after* the built-in functionality.
+- `act`: Pass in a function to add additional behavior to the act
+   method. As for `enter`, your method is called *in addition to* and
+   *after* the built-in functionality.
 
-`exit`: Because `SimpleSituation` has no default behavior for `exit`,
-    any function you pass in here will be the only exit behavior for
-    the object you are creating.
+- `exit`: Because `SimpleSituation` has no default behavior for
+   `exit`, any function you pass in here will be the only exit
+   behavior for the object you are creating.
 
-`heading`: The `content` that you specify will be written out
-    verbatim.  You can include headings in this content. Often it is
-    more convenient to pass in just the text in the `content`
-    parameter. In that case you may define this `heading` parameter to
-    display a heading before the text. Unlike `content`, this doesn't
-    need to conform to the Display Content requirements.
+- `heading`: The `content` that you specify will be written out
+   verbatim.  You can include headings in this content. Often it is
+   more convenient to pass in just the text in the `content`
+   parameter. In that case you may define this `heading` parameter to
+   display a heading before the text. Unlike `content`, this doesn't
+   need to conform to the Display Content requirements.
 
-`actions`: This should be an object that maps action identifiers to
-    responses. A response should be either some Display Content to
-    write to the screen, or a function that will process that
-    request. These functions should have the same signature as the
-    `Situation.act` method. Each function will only be called if the
-    situation receives a call to `act` with its corresponding
-    identifier. This allows you to simply define functions that only
-    get called when particular actions happen.
+- `actions`: This should be an object that maps action identifiers to
+   responses. A response should be either some Display Content to
+   write to the screen, or a function that will process that
+   request. These functions should have the same signature as the
+   `Situation.act` method. Each function will only be called if the
+   situation receives a call to `act` with its corresponding
+   identifier. This allows you to simply define functions that only
+   get called when particular actions happen.
 
 An example `SimpleSituation` definition might be:
 
@@ -852,22 +852,22 @@ doesn't have to be in Display Content format.
 Options are passed in in the `options` parameter. The following
 options are available.
 
-priority: A string used to sort qualities within their groups. When
-    the system displays a list of qualities they will be sorted by
-    this string. If you don't give a priority, then the title will be
-    used, so you'll get alphabetic order. Normally you either don't
-    give a priority, or else use a priority string containing 0-padded
-    numbers (e.g. "00001").
+- `priority`: A string used to sort qualities within their
+   groups. When the system displays a list of qualities they will be
+   sorted by this string. If you don't give a priority, then the title
+   will be used, so you'll get alphabetic order. Normally you either
+   don't give a priority, or else use a priority string containing
+   0-padded numbers (e.g. "00001").
 
-group: The identifier of a group in which to display this
-    parameter. If a group is given, then it must be defined in your
-    `undum.game.qualityGroups` property.
+- `group`: The identifier of a group in which to display this
+   parameter. If a group is given, then it must be defined in your
+   `undum.game.qualityGroups` property.
 
-extraClasses: These classes will be attached to the `<div>` tag that
-    surrounds the quality when it is displayed. A common use for this
-    is to add icons representing the quality. In your CSS define a
-    class for each icon, then pass those classes into the appropriate
-    quality definitions.
+- `extraClasses`: These classes will be attached to the `<div>` tag
+   that surrounds the quality when it is displayed. A common use for
+   this is to add icons representing the quality. In your CSS define a
+   class for each icon, then pass those classes into the appropriate
+   quality definitions.
 
 #### `format(character, value)`
 
@@ -927,20 +927,20 @@ The `options` parameter supports the same three options as
 `QualityDefinition`. It also takes the following additional
 parameters:
 
-offset: With offset=0 (the default), a quantity value of 0 will map to
-    the first word, and so on. If offset is non-zero then the value
-    given will correspond to the first word in the list. So if
-    offset=4, then the first word in the list will be used for
-    value=4, the second for value=5. You can specify a non-integer
-    offset value, in this case the offset is applied *before* the
-    value is rounded down.
+- `offset`: With offset=0 (the default), a quantity value of 0 will
+   map to the first word, and so on. If offset is non-zero then the
+   value given will correspond to the first word in the list. So if
+   offset=4, then the first word in the list will be used for value=4,
+   the second for value=5. You can specify a non-integer offset value,
+   in this case the offset is applied *before* the value is rounded
+   down.
 
-useBonuses: If this is true (the default), then values outside the
-    range of words will be constructed from the word and a numeric
-    bonus. So with offset=0 and five words, the last of which is
-    'amazing', a score of six would give 'amazing+1'.  if this is
-    false, then the bonus would be omitted, so anything beyond
-    'amazing' is still 'amazing'.
+- `useBonuses`: If this is true (the default), then values outside the
+   range of words will be constructed from the word and a numeric
+   bonus. So with offset=0 and five words, the last of which is
+   'amazing', a score of six would give 'amazing+1'.  if this is
+   false, then the bonus would be omitted, so anything beyond
+   'amazing' is still 'amazing'.
 
 ### `FudgeAdjectivesQuality`
 
@@ -969,10 +969,10 @@ is shown in the panel, but doesn't have a value label). See
 The constructor for this type is the same as for `QualityDefinition`
 from which it is derived. It accepts one extra option:
 
-`onDisplay`: If given, then rather than displaying the empty string,
-    it displays the given string when its corresponding value is
-    non-zero. This can be used to display a check-mark, for example
-    (`{onDisplay:"&#10003;"}`), or even a HTML `img` tag.
+- `onDisplay`: If given, then rather than displaying the empty string,
+   it displays the given string when its corresponding value is
+   non-zero. This can be used to display a check-mark, for example
+   (`{onDisplay:"&#10003;"}`), or even a HTML `img` tag.
 
 ### YesNoQuality
 
@@ -984,10 +984,10 @@ value is zero or not.
 The constructor for this type is the same as for `QualityDefinition`
 from which it is derived. It accepts two extra options:
 
-`yesDisplay`, `noDisplay`: Either or both of these may be given. If
-    they are given, then they should be set to a string, which will be
-    used to indicate non-zero or zero values, respectively. By default
-    "yes" and "no" are used.
+- `yesDisplay`, `noDisplay`: Either or both of these may be given. If
+   they are given, then they should be set to a string, which will be
+   used to indicate non-zero or zero values, respectively. By default
+   "yes" and "no" are used.
 
 ## `QualityGroup`
 
@@ -1009,17 +1009,17 @@ not need a heading.
 The `options` parameter should be an object with the given optional
 parameters:
 
-`priority`: A string used to sort quality groups. When the system
-    displays more than one quality group, they will be sorted by this
-    string. If you don't give a priority, then the title will be used,
-    so you'll get alphabetic order. Normally you either don't give a
-    priority, or else use a priority string containing 0-padded
-    numbers (e.g. "00001").
+- `priority`: A string used to sort quality groups. When the system
+   displays more than one quality group, they will be sorted by this
+   string. If you don't give a priority, then the title will be used,
+   so you'll get alphabetic order. Normally you either don't give a
+   priority, or else use a priority string containing 0-padded numbers
+   (e.g. "00001").
 
-extraClasses: These classes will be attached to the `<div>` tag that
-    surrounds the entire quality group when it is displayed. You can
-    use this in addition to your CSS to radically change the way
-    certain qualities are displayed.
+- `extraClasses`: These classes will be attached to the `<div>` tag
+   that surrounds the entire quality group when it is displayed. You
+   can use this in addition to your CSS to radically change the way
+   certain qualities are displayed.
 
 
 # Loading and Saving
