@@ -557,6 +557,11 @@ given then `#content` is used, i.e. the content is added at the end of
 the document. The `writeBefore` method inserts content at the start of
 the document, or before a selector.
 
+The story will scroll to the start of the insertion point. If you do
+not wish to animate this scrolling, but just jump right there, you can
+switch off jQuery's animation system by adding `jQuery.fx.off=true` to
+your initialization code. This is particularly useful when debugging.
+
 #### `writeBefore(content, elementSelector)`
 
 Writes content into the story. This method is identical to `write`,
@@ -1178,3 +1183,18 @@ translation is found, then the default version is used. Since Undum
 was written in English, this default version is the English
 version. This is purely by my convenience, and isn't part of the IETF
 spec!
+
+
+# Changelog
+
+## 2011-05-27
+
+- Added `System.writeBefore` to do out of order insertion. (credit:
+  ekyrath)
+
+- Added an optional selector to `System.write` and
+  `System.writeBefore` to support out of order insertion. (credit:
+  ekyrath)
+
+- Removed the use of `__defineGetter__`, so that the core code now
+  works on IE7 (thanks for the bug report juhana and bloomengine).
