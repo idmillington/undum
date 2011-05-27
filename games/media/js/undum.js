@@ -451,7 +451,7 @@
         var block = $("#character_text_content");
         var oldContent = block.html();
         var newContent = augmentLinks(content);
-        if (interactive && game.isAnimated && block.is(':visible')) {
+        if (interactive && block.is(':visible')) {
             block.fadeOut(250, function() {
                 block.html(newContent);
                 block.fadeIn(750);
@@ -469,7 +469,7 @@
     System.prototype.setQuality = function(quality, newValue) {
         var oldValue = character.qualities[quality];
         character.qualities[quality] = newValue;
-        if (!(interactive && game.isAnimated)) return;
+        if (!interactive) return;
 
         // Work out how to display the values.
         var newDisplay = newValue.toString();
@@ -554,7 +554,7 @@
 
         // Change the base UI.
         this.setQuality(quality, newValue);
-        if (!(interactive && game.isAnimated)) return;
+        if (!interactive) return;
 
         // Overload default options.
         var myOpts = {
@@ -689,10 +689,6 @@
         /* The unique id of the situation to enter at the start of a
          * new game. */
         start: "start",
-
-        /* If this is false, transition animations are all suppressed.
-         */
-        isAnimated: true,
 
         // Quality display definitions
 
@@ -997,12 +993,7 @@
         var scrollPoint = scrollStack.pop();
         if (scrollStack.length == 0 && scrollPoint != null) {
             if (interactive && !mobile) {
-                if (game.isAnimated) {
-                    $("body, html").animate({scrollTop: scrollPoint}, 500);
-                }
-                else {
-                    $("body, html").scrollTop(scrollPoint);
-                }
+                $("body, html").animate({scrollTop: scrollPoint}, 500);
             }
             scrollPoint = null;
         }
@@ -1123,7 +1114,7 @@
                 if (a.hasClass('sticky')) return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
-            if (interactive && game.isAnimated) {
+            if (interactive) {
                 if (mobile) {
                     $('#content .transient, #content ul.options').
                         fadeOut(2000);
@@ -1337,18 +1328,10 @@
 
         // Show the game when we click on the title.
         $("#title").one('click', function() {
-            if (game.isAnimated) {
-                $("#content_wrapper, #legal").fadeIn(500);
-                $("#tools_wrapper").fadeIn(2000);
-                $("#title").css("cursor", "default");
-                $("#title .click_message").fadeOut(250);
-            }
-            else {
-                $("#content_wrapper, #legal").show();
-                $("#tools_wrapper").show();
-                $("#title").css("cursor", "default");
-                $("#title .click_message").hide();
-            }
+            $("#content_wrapper, #legal").fadeIn(500);
+            $("#tools_wrapper").fadeIn(2000);
+            $("#title").css("cursor", "default");
+            $("#title .click_message").fadeOut(250);
             if (mobile) {
                 $("#toolbar").slideDown(500);
                 $("#menu").show();
