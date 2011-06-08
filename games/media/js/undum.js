@@ -821,7 +821,13 @@
      */
     var doWrite = function(content, selector, addMethod, appendMethod) {
         continueOutputTransaction();
-        var output = augmentLinks(content);
+        var output;
+        if( typeof content == 'function' ) {
+            output = augmentLinks(content());
+        }
+        else {
+            output = augmentLinks(content);
+        }
         var element;
         if (selector) element = $(selector);
         if (!element) {
