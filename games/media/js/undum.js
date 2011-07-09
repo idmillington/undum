@@ -1183,7 +1183,6 @@
                 if (href.match(linkRe)) {
                     a.click(function(event) {
                         event.preventDefault();
-                        processClick(href);
 
                         // If we're a once-click, remove all matching
                         // links after we're clicked.
@@ -1191,6 +1190,7 @@
                             system.clearLinks(href);
                         }
 
+                        processClick(href);
                         return false;
                     });
                 } else {
