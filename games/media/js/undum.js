@@ -738,6 +738,13 @@
          * function(character, system, oldSituationId, newSituationId);
          */
         enter: null,
+        
+        /* Hook for when the situation has already been carried out and printed.
+         * The signature is
+         * 
+         * function( character, system, oldSituationId, newSituationId );
+         */
+        afterEnter: null,
 
         /* This function is called before carrying out any action in
          * any situation. It is called before the corresponding
@@ -1156,6 +1163,11 @@
             game.enter(character, system, oldSituationId, newSituationId);
         }
         newSituation.enter(character, system, oldSituationId);
+        
+        // additional hook for when the situation text has already been printed
+        if( game.afterEnter ) {
+            game.afterEnter( character, system, oldSituationId, newSituationId );
+        }
     };
 
     /* Returns HTML from the given content with the non-raw links
