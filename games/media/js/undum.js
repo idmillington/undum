@@ -155,9 +155,9 @@
     SimpleSituation.prototype.enter = function(character, system, from) {
         if (this.heading) {
             if ($.isFunction(this.heading)) {
-                system.write(this.heading());
+                system.writeHeading(this.heading());
             } else {
-                system.write(this.heading);
+                system.writeHeading(this.heading);
             }
         }
         if (this.content) {
