@@ -829,6 +829,14 @@ notice how the `listen` function is responsible for its own output,
 where the `search` property is a string in Display Content format,
 ready for output.
 
+#### Functions in `SimpleSituation`
+
+Both the `content` and the `heading` of a simple situation can be
+provided either as plain text, or as a function. If you provide a
+function, then it will be called with no arguments, and it should
+return a string to use for the output. This enables `SimpleSituation`
+to be used with other formatting and templating systems.
+
 ## QualityDefinition
 
 Quality definitions tell Undum how and where to display a quality in
@@ -1198,3 +1206,8 @@ spec!
 
 - Removed the use of `__defineGetter__`, so that the core code now
   works on IE7 (thanks for the bug report juhana and bloomengine).
+
+## 2011-08-18
+
+- Added support for functions in the `content` and `header` of a
+  `SimpleSituation` (credit: David Eyk).
