@@ -153,8 +153,20 @@
     };
     SimpleSituation.inherits(Situation);
     SimpleSituation.prototype.enter = function(character, system, from) {
-        if (this.heading) system.writeHeading(this.heading);
-        if (this.content) system.write(this.content);
+        if (this.heading) {
+            if ($.isFunction(this.heading)) {
+                system.writeHeading(this.heading());
+            } else {
+                system.writeHeading(this.heading);
+            }
+        }
+        if (this.content) {
+            if ($.isFunction(this.content)) {
+                system.write(this.content());
+            } else {
+                system.write(this.content);
+            }
+        }
         if (this._enter) this._enter(character, system, from);
     };
     SimpleSituation.prototype.act = function(character, system, action) {
