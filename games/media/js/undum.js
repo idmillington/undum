@@ -840,13 +840,7 @@
      */
     var doWrite = function(content, selector, addMethod, appendMethod) {
         continueOutputTransaction();
-        var output;
-        if( typeof content == 'function' ) {
-            output = augmentLinks(content());
-        }
-        else {
-            output = augmentLinks(content);
-        }
+        var output = augmentLinks(content);
         var element;
         if (selector) element = $(selector);
         if (!element) {
@@ -1026,7 +1020,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-zA-Z0-9]+|\.)(\/([-0-9a-zA-Z]+))?$/;
+    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
     var processLink = function(code) {
         // Check if we should do this now, or if processing is already
         // underway.
