@@ -460,13 +460,14 @@ Most of the time you want Situations to handle user
 interaction. Occasionally, however, you have to handle something that
 spans situations. It would be inconvenient to duplicate the same code
 in every situation. So Undum provides a set of hooks for you to
-respond globally to user interaction. There are four of these:
-`enter`, `exit`, `beforeAction` and `afterAction`. You can define
-functions in your game file using the properties: `undum.game.enter`,
+respond globally to user interaction. There are five of these:
+`enter`, `afterEnter`, `exit`, `beforeAction` and `afterAction`. You 
+can define functions in your game file using the properties: 
+`undum.game.enter`, `undum.game.afterEnter`,
 `undum.game.exit`, `undum.game.beforeAction`, and
 `undum.game.afterAction`.
 
-The `enter` and `exit` functions look like this:
+The `enter`, `afterEnter`, and `exit` functions look like this:
 
     undum.game.enter = function(character, system, from, to) {
         ...
