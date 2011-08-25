@@ -1179,7 +1179,7 @@
                         event.preventDefault();
 
                         // If we're a once-click, remove all matching
-                        // links after we're clicked.
+                        // links.
                         if (a.hasClass("once")) {
                             system.clearLinks(href);
                         }
