@@ -1093,6 +1093,12 @@ games will not load correctly. A player may save their game at one
 point and find most of their progress wiped out when they load it
 again.
 
+If your game has elements that should not be triggered while Undum is
+replaying a saved game, for example sound effects or popup notifications,
+you can use `undum.isInteractive()` to test whether the game is being
+played normally (returns `true`) or being loaded from a save game
+(returns `false`).
+
 
 # Translation and Internationalization
 

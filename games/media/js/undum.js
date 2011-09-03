@@ -1313,6 +1313,8 @@
         QualityGroup: QualityGroup,
 
         game: game,
+        
+        isInteractive: function() { return interactive; },
 
         // The undum set of translated strings.
         language: {}
