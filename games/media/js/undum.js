@@ -1508,6 +1508,11 @@
         String.prototype.l = function(args) {
             // Get lang attribute from html tag.
             var lang = $("html").attr("lang");
+            
+            // Fall back to en if the lang attribute isn't set
+            if( typeof lang === 'undefined' ) {
+                lang = 'en';
+            }
 
             // Find the localized form.
             var localized = localize(lang, this);
