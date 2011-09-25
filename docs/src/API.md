@@ -577,6 +577,16 @@ Carries out the action associated with the given URL, as if it had
 been the `href` of a HTML link that the user clicked. This allows you
 to procedurally change situation and carry out actions from your code.
 
+#### `doClick(URL)`
+
+Carries out an action just like `doLink`, but the click is saved
+to the turn sequence so that the action will be replayed when loading
+the game. `doClick` should be used only as a direct response to an
+event, for example the player clicking on a button in the user
+interface. `doLink` should be used instead when the action is a 
+continuation of another action initiated by clicking on a normal link 
+to avoid the action being executed twice when loading the game.
+
 #### `rnd`
 
 This holds a general purpose random number generator. It is an object
