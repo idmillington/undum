@@ -40,7 +40,15 @@
     // Feature detection
 
     var hasLocalStorage = function() {
-        return ('localStorage' in window) && window.localStorage !== null;
+        var hasStorage = false;
+        try {
+            hasStorage = ('localStorage' in window) && window.localStorage !== null && window.localStorage !== undefined;
+        }
+        catch (err) {
+            // Firefox with the "Always Ask" cookie accept setting will throw an error when attempting to access localStorage
+            hasStorage = false;
+        }
+        return hasStorage;
     };
 
     var isMobileDevice = function() {
@@ -1323,7 +1331,7 @@
     /* Set up the game when everything is loaded. */
     $(function() {
         // Handle storage.
-        if (hasLocalStorage) {
+        if (hasLocalStorage()) {
             var erase = $("#erase").click(function() {
                 doErase();
             });
@@ -1344,7 +1352,7 @@
                 startGame();
             }
         } else {
-            $("#buttons").html("<p>"+"no_local_storage".l()+"</p>");
+            $(".buttons").html("<p>"+"no_local_storage".l()+"</p>");
             startGame();
         }
 
