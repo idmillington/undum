@@ -1,6 +1,6 @@
 /* This a language file. It contains ALL the strings of the Undum core. And
- * so separates the translation from the implementation. If you want to 
- * translate Undum to another language, use this file as a basis. - Oreolek 
+ * so separates the translation from the implementation. If you want to
+ * translate Undum to another language, use this file as a basis. - Oreolek
  */
 undum.language["ru"] = {
  terrible: "ужасно",
