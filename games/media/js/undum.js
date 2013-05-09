@@ -42,10 +42,14 @@
     var hasLocalStorage = function() {
         var hasStorage = false;
         try {
-            hasStorage = ('localStorage' in window) && window.localStorage !== null && window.localStorage !== undefined;
+            hasStorage = ('localStorage' in window) &&
+                window.localStorage !== null &&
+                window.localStorage !== undefined;
         }
         catch (err) {
-            // Firefox with the "Always Ask" cookie accept setting will throw an error when attempting to access localStorage
+            // Firefox with the "Always Ask" cookie accept setting
+            // will throw an error when attempting to access
+            // localStorage
             hasStorage = false;
         }
         return hasStorage;
@@ -746,10 +750,10 @@
          * function(character, system, oldSituationId, newSituationId);
          */
         enter: null,
-        
+
         /* Hook for when the situation has already been carried out and printed.
          * The signature is
-         * 
+         *
          * function( character, system, oldSituationId, newSituationId );
          */
         afterEnter: null,
@@ -801,6 +805,8 @@
 
     /* This is the data on the player's progress that gets saved. */
     var progress = {
+        // The name of this save, if we have one.
+        name: "",
         // A random seed string, used internally to make random
         // sequences predictable.
         seed: null,
@@ -809,6 +815,11 @@
         // The time when the progress was saved.
         saveTime: null
     };
+
+    /* This is a list of all the saved progress sets, with the current
+     * progress as the first. */
+    var savedData = [
+    ];
 
     /* The Id of the current situation the player is in. */
     var current = null;
@@ -1056,8 +1067,8 @@
         // Scroll to the top of the new content.
         endOutputTransaction();
 
-        // We're able to save, if we weren't already.
-        $("#save").attr('disabled', false);
+        // Save the game
+        if (hasLocalStorage()) saveGame();
     };
 
     /* This gets called to actually do the work of processing a code.
@@ -1165,10 +1176,10 @@
             game.enter(character, system, oldSituationId, newSituationId);
         }
         newSituation.enter(character, system, oldSituationId);
-        
+
         // additional hook for when the situation text has already been printed
         if( game.afterEnter ) {
-            game.afterEnter( character, system, oldSituationId, newSituationId );
+            game.afterEnter(character, system, oldSituationId, newSituationId);
         }
     };
 
@@ -1204,19 +1215,6 @@
         return output;
     };
 
-    /* Erases the character in local storage. This is permanent! TODO:
-     * Perhaps give a warning. */
-    var doErase = function(force) {
-        var saveId = getSaveId()
-        if (localStorage[saveId]) {
-            if (force || confirm("erase_message".l())) {
-                delete localStorage[saveId];
-                $("#erase").attr('disabled', true);
-                startGame();
-            }
-        }
-    };
-
     /* Set up the screen from scratch to reflect the current game
      * state. */
     var initGameDisplay = function() {
@@ -1232,15 +1230,21 @@
     };
 
     /* Clear the current game output and start again. */
-    var startGame = function() {
-        progress.seed = new Date().toString();
-
+    var startNewGame = function(name) {
+        progress = {
+            name: name,
+            seed: new Date().toString(),
+            saveTime: null
+        };
         character = new Character();
         system.rnd = new Random(progress.seed);
         progress.sequence = [{link:game.start, when:0}];
 
         // Empty the display
         $("#content").empty();
+
+        // Store this as the current save.
+        savedData.unshift(progress);
 
         // Start the game
         startTime = new Date().getTime() * 0.001;
@@ -1260,16 +1264,18 @@
         progress.saveTime = now - startTime;
 
         // Save the game.
-        localStorage[getSaveId()] = JSON.stringify(progress);
-
-        // Switch the button highlights.
-        $("#erase").attr('disabled', false);
-        $("#save").attr('disabled', true);
+        var saveString = JSON.stringify(savedData);
+        localStorage[getSaveId()] = saveString;
     };
 
-    /* Loads the game from the given data */
-    var loadGame = function(characterData) {
-        progress = characterData;
+    /* Loads the game from the given index in the savedData array */
+    var loadGame = function(i) {
+        // Get the progress and move it to the start.
+        progress = savedData[i];
+        if (i > 0) {
+            savedData.splice(i, 1);
+            savedData.unshift(progress);
+        }
 
         character = new Character();
         system.rnd = new Random(progress.seed);
@@ -1321,7 +1327,7 @@
         QualityGroup: QualityGroup,
 
         game: game,
-        
+
         isInteractive: function() { return interactive; },
 
         // The undum set of translated strings.
@@ -1332,28 +1338,11 @@
     $(function() {
         // Handle storage.
         if (hasLocalStorage()) {
-            var erase = $("#erase").click(function() {
-                doErase();
-            });
-            var save = $("#save").click(saveGame);
-
-            var storedCharacter = localStorage[getSaveId()];
-            if (storedCharacter) {
-                try {
-                    loadGame(JSON.parse(storedCharacter));
-                    save.attr('disabled', true);
-                    erase.attr("disabled", false);
-                } catch(err) {
-                    doErase(true);
-                }
-            } else {
-                save.attr('disabled', true);
-                erase.attr("disabled", true);
-                startGame();
-            }
+            initSavePanel();
         } else {
+            $("#save_panel").remove();
             $(".buttons").html("<p>"+"no_local_storage".l()+"</p>");
-            startGame();
+            startNewGame("");
         }
 
         // Display the "click to begin" message. (We do this in code
@@ -1362,14 +1351,18 @@
 
         // Show the game when we click on the title.
         $("#title").one('click', function() {
-            $("#content_wrapper, #legal").fadeIn(500);
-            $("#tools_wrapper").fadeIn(2000);
+            if (hasLocalStorage()) {
+                $("#save_panel, #legal").fadeIn(500);
+            } else {
+                $("#content_wrapper, #legal").fadeIn(500);
+                $("#tools_wrapper").fadeIn(2000);
+                if (mobile) {
+                    $("#toolbar").slideDown(500);
+                    $("#menu").show();
+                }
+            }
             $("#title").css("cursor", "default");
             $("#title .click_message").fadeOut(250);
-            if (mobile) {
-                $("#toolbar").slideDown(500);
-                $("#menu").show();
-            }
         });
 
         // Any point that an option list appears, its options are its
@@ -1420,6 +1413,62 @@
         // devices and an small screens.
         initMenu();
     });
+
+    var initSavePanel = function() {
+        var panel = $("#save_panel");
+
+        // Load the stored data.
+        savedData = localStorage[getSaveId()];
+        if (savedData !== undefined) savedData = JSON.parse(savedData);
+
+        // Populate the panel with previous saves.
+        if (savedData === undefined || savedData.length === 0) {
+            // We have no previous saves.
+            savedData = [];
+            $("#load_from_save", panel).hide();
+        } else {
+            var $ul = $("ul", panel);
+            for (var i = 0; i < savedData.length; ++i) {
+                var save = savedData[i];
+                var $a = $("<a>").html(save.name).attr("href", "#").click(
+                    (function(i) {
+                        return function(event) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            loadGame(i);
+                            transitionFromSaveToContent();
+                        }
+                    })(i)
+                );
+                var $li = $("<li>").html($a);
+                $ul.append($li);
+            };
+        }
+
+        // Register to hear about creating a new game.
+        $("form", panel).submit(createNewSave);
+    };
+
+    var createNewSave = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var saveName = $("#new_save input[name=name]").val();
+        if (!saveName || saveName.length === 0) return;
+
+        startNewGame(saveName);
+        transitionFromSaveToContent();
+    };
+
+    var transitionFromSaveToContent = function() {
+        $("#save_panel").slideUp();
+        $("#content_wrapper").fadeIn(500);
+        $("#tools_wrapper").fadeIn(2000);
+        if (mobile) {
+            $("#toolbar").slideDown(500);
+            $("#menu").show();
+        }
+    };
 
     var initMenu = function() {
         var menu = $("#menu");

@@ -95,6 +95,30 @@ body {
     color: #943;
 }
 
+/* Save content */
+#save_panel {
+    position: relative;
+    overflow: auto;
+    max-width: 30.8em;
+    background: #cec3ae url("../img/tools_bg.jpg") repeat left top;
+    margin: 0.6em auto 1.1em auto;
+    padding: 1.4em;
+    text-align: center;
+    display: none; /* Shown by Javascript */
+}
+#save_panel p {
+    font-style: italic;
+}
+#save_panel input[type=text] {
+    width: 90%;
+    border: 1px solid black;
+    font-size: 110%;
+    padding: 2%;
+}
+#save_panel button {
+    width: 20%;
+}
+
 /* Main content */
 #content_wrapper {
     max-width: 28em;
@@ -210,6 +234,7 @@ img.float_left {
     right: 0.4em;
     margin: 0 auto;
     display: none; /* Shown by Javascript */
+    z-index: 200;
 }
 .tools {
     padding: 0.6em;
@@ -239,7 +264,7 @@ img.float_left {
     border-top: 1px solid #321;
     text-align: center;
 }
-.buttons button {
+button {
     font-size: 0.8em;
     background: #876;
     color: #e6e6c6;
@@ -250,13 +275,13 @@ img.float_left {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
 }
-.buttons button:hover {
+button:hover {
     background: #987;
 }
-.buttons button + button {
+button + button {
     margin-left: 0.3em;
 }
-.buttons button[disabled], .buttons button[disabled]:hover {
+button[disabled], button[disabled]:hover {
     background: #ba9;
     color: #dcb;
     cursor: default;
@@ -361,4 +386,12 @@ img.float_left {
 }
 #menu {
     display: none;
+}
+
+#save_panel table {
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+#save_panel table thead td {
+    border-bottom: 1px solid black;
 }
