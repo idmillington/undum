@@ -6,13 +6,37 @@
     <title>Undum</title>
     <!-- Конец названия игры -->
 
+    <link href="http://fonts.googleapis.com/css?family=Tangerline" rel="stylesheet" type="text/css">
+
     <!-- Это стиль оформления вашей игры, измените его если вам хочется. -->
     <link rel="stylesheet" href="media/css/undum.css" media="screen">
+
+    <meta name="viewport" content="user-scalable=no, width=device-width">
+    <link rel="apple-touch-icon" href="media/img/iphone/icon.png">
+    <link rel="apple-touch-startup-image" href="media/img/iphone/splash.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--[if !IE]>-->
+    <link media="only screen and (max-width: 640px)" rel="stylesheet" type="text/css" href="media/css/undum-mobile.css">
+    <!--<![endif]-->
   </head>
   <body>
+    <div id="toolbar">
+      <h1>Undum</h1>
+      <div class="nav">
+        <a href="#" class="button" id="menu-button">Меню</a>
+      </div>
+    </div>
+    <ul id="menu">
+      <li><a href="#title, #content_wrapper">Рассказ</a></li>
+      <li><a href="#character_panel">Персонаж</a></li>
+      <li><a href="#info_panel">Информация</a></li>
+    </ul>
+
     <div id="page">
+
       <div id="tools_wrapper">
-        <div class="tools left">
+        <div id="info_panel" class="tools left">
 
           <!-- Предыстория игры; отредактируйте это. -->
           <h1>Undum</h1>
@@ -27,7 +51,8 @@
             <button id="save">Сохранить</button><button id="erase">Стереть</button>
           </div>
         </div>
-        <div class="tools right">
+
+        <div id="character_panel" class="tools right">
           <h1>Персонаж</h1>
           <div id="character">
             <div id="character_text">
@@ -38,35 +63,40 @@
         </div>
       </div>
 
-      <div id="title">
-        <div class="label">
+      <div id="mid_panel">
+        <div id="title">
+          <div class="label">
 
-          <!-- Приветствие игры; отредактируйте это -->
-          <h1>Обучение Undum <span class='fancy'>&amp;</span><br>
-            Интерактивный Пример</h1>
-          <h2>Автор: I. D. Millington<br>
-          Переводчик: Oreolek</h2>
-          <!-- Конец приветствия -->
-          <noscript><p class="noscript_message">This game requires 
-            Javascript.</p></noscript>
-          <p class="click_message">Нажмите, чтобы начать</p>
+            <!-- Приветствие игры; отредактируйте это -->
+            <h1>Обучение Undum <span class='fancy'>&amp;</span><br>
+              Интерактивный Пример</h1>
+            <h2>Автор: I. D. Millington<br>
+            Переводчик: Oreolek</h2>
+            <!-- Конец приветствия -->
+            <noscript><p class="noscript_message">This game requires 
+              Javascript.</p></noscript>
+            <p class="click_message">Нажмите, чтобы начать</p>
+          </div>
         </div>
-      </div>
 
-      <div id="content">
-      </div>
+        <div id="content_wrapper">
+          <div id="content">
+          </div>
+          <a name="end_of_content"></a>
+        </div>
 
-      <div id="legal">
-        <!-- Ваш копирайт; отредактируйте это -->
-        <p>Содержимое, дополнительное программное обеспечение и дизайн &copy; 2010 IDM.</p>
-        <!-- Конец вашего копирайта -->
+        <div id="legal">
+          <!-- Ваш копирайт; отредактируйте это -->
+          <p>Содержимое, дополнительное программное обеспечение и дизайн &copy; 2010 IDM.</p>
+          <!-- Конец вашего копирайта -->
 
-        <!-- Эта линия копирайта должна остаться в вашем финальном файле. -->
-        <p>
-          Программное обеспечение и дизайн &copy; 2010 IDM. Undum доступен
-          <a href="http://github.com/idmillington/undum">здесь</a>.
-          Производные работы должны включать это сообщение о копирайте и ссылку.
-        </p>
+          <!-- Эта линия копирайта должна остаться в вашем финальном файле. -->
+          <p>
+            Программное обеспечение и дизайн &copy; 2010 IDM. Undum доступен
+            <a href="http://github.com/idmillington/undum">здесь</a>.
+            Производные работы должны включать это сообщение о копирайте и ссылку.
+          </p>
+        </div>
       </div>
     </div>
 
