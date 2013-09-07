@@ -563,6 +563,12 @@ not wish to animate this scrolling, but just jump right there, you can
 switch off jQuery's animation system by adding `jQuery.fx.off=true` to
 your initialization code. This is particularly useful when debugging.
 
+#### `writeHeading(content, elementSelector)`
+
+Writes new content into the story and formats it as a heading. This
+method work exactly as `write`, but wraps the content you provide into
+a `h1` html tag.
+
 #### `writeBefore(content, elementSelector)`
 
 Writes content into the story. This method is identical to `write`,
