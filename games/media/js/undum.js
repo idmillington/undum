@@ -42,10 +42,13 @@
     var hasLocalStorage = function() {
         var hasStorage = false;
         try {
-            hasStorage = ('localStorage' in window) && window.localStorage !== null && window.localStorage !== undefined;
+            hasStorage = ('localStorage' in window) &&
+                window.localStorage !== null &&
+                window.localStorage !== undefined;
         }
         catch (err) {
-            // Firefox with the "Always Ask" cookie accept setting will throw an error when attempting to access localStorage
+            // Firefox with the "Always Ask" cookie accept setting
+            // will throw an error when attempting to access localStorage
             hasStorage = false;
         }
         return hasStorage;
@@ -427,6 +430,18 @@
      */
     System.prototype.write = function(content, elementSelector) {
         doWrite(content, elementSelector, 'append', 'after');
+    };
+
+    /* Outputs the given content in a heading on the page. The content
+     * supplied must be valid "Display Content".
+     *
+     * The content goes to the end of the page, unless you supply the
+     * optional selector argument. If you do, the content appears
+     * after the element that matches that selector.
+     */
+    System.prototype.writeHeading = function(headingContent, elementSelector) {
+        var heading = $("<h1>").html(headingContent);
+        doWrite(heading, elementSelector, 'append', 'after');
     };
 
     /* Outputs regular content to the page. The content supplied must
