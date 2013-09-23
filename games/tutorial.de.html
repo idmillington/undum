@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <!-- Titel des Spiels: bearbeite dies -->
+    <title>Undum</title>
+    <!-- Ende des Spiel-Titels -->
+
+    <!-- Entferne das Folgende, falls du nicht die Schriftart Tangerine in deinem Stylesheet benutzt -->
+    <link href='http://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet' type='text/css'>
+
+    <!-- Dies ist das Stylesheet des Spiels; es kann nach Belieben geaendert werden. -->
+    <link media="screen" rel="stylesheet" href="media/css/undum.css">
+
+    <!-- Unterstuetzung fuer tragbare Geraete (Smartphones etc.). -->
+    <meta name="viewport" content="user-scalable=no, width=device-width">
+    <link rel="apple-touch-icon" href="media/img/iphone/icon.png">
+    <link rel="apple-touch-startup-image" href="media/img/iphone/splash.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--[if !IE]>-->
+    <link media="only screen and (max-width: 640px)" rel="stylesheet" type="text/css" href="media/css/undum-mobile.css">
+    <!--<![endif]-->
+
+  </head>
+  <body>
+    <!-- Folgender Abschnitt ist fuer die Desktop-Version irrelevant,
+         weil auf Desktops die Charakter-Informationen und die Tools
+         gleichzeitig angezeigt werden koennen. -->
+    <div id="toolbar">
+      <!-- Das Folgende sollte eine Kurzversion des Titels sein; gedacht
+           fuer die Anzeige auf mobilen Geraeten. -->
+      <h1>Undum</h1>
+      <div class="nav">
+        <a href="#" class="button" id="menu-button">Men&uuml;</a>
+      </div>
+    </div>
+    <ul id="menu">
+      <li><a href="#title, #content_wrapper">Geschichte</a></li>
+      <li><a href="#character_panel">Spielfigur</a></li>
+      <li><a href="#info_panel">Info</a></li>
+    </ul>
+
+    <div id="page">
+
+      <div id="tools_wrapper">
+        <div id="info_panel" class="tools left">
+
+          <!-- Informationen zum Spiel: bearbeite dies -->
+          <h1>Undum</h1>
+          <p>
+            Undum ist ein System, mit dem man digitale Spielb&uuml;cher erstellen
+            kann. Es l&auml;uft komplett im Browser des Spielers und wurde f&uuml;r HTML&#x200A;5 und
+            CSS&#x200A;3 entworfen. Weitere Informationen (auf Englisch) und den Quellcode
+            gibt es <a href="http://github.com/idmillington/undum">hier</a>.
+          </p>
+          <!-- Ende der Informationen zum Spiel -->
+
+          <div class='buttons'>
+            <button id="save">Speichern</button><button id="erase">L&ouml;schen</button>
+          </div>
+        </div>
+
+        <div id="character_panel" class="tools right">
+          <h1>Spielfigur</h1>
+          <div id="character">
+            <div id="character_text">
+              <div id="character_text_content"></div>
+            </div>
+            <div id="qualities"></div>
+          </div>
+        </div>
+      </div> <!-- End of div.tools_wrapper -->
+
+      <div id="mid_panel">
+        <div id="title">
+          <div class="label">
+
+            <!-- Titel des Spiels: bearbeite dies -->
+            <h1>Undum-Tutorium <span class='fancy'> &amp;</span><br>
+              interaktives Beispiel</h1>
+            <h2>von I D Millington</h2>
+	    <h3>&uuml;bersetzt von StJohnLimbo</h3>
+            <!-- Ende des Spiel-Titels -->
+
+            <noscript><p class="noscript_message">Dieses Spiel erfordert Javascript.</p></noscript>
+            <p class="click_message">Klicke hier, um anzufangen</p>
+          </div>
+        </div>
+
+        <div id="content_wrapper">
+          <div id="content">
+          </div>
+          <a name="end_of_content"></a>
+        </div>
+
+        <div id="legal">
+          <!-- Dein Copyright-Hinweis: bearbeite dies -->
+          <p>Inhalt sowie weitere Software und Design &copy; 2010 IDM.</p>
+          <!-- Ende deines Copyright-Hinweises -->
+
+          <!-- Dieser Copyright-Hinweis muss in deiner Datei stehenbleiben. -->
+          <p>
+            Teile der Software und des Designs &copy; 2010 IDM. Undum ist
+            <a href="http://github.com/idmillington/undum">hier</a> verf&uuml;gbar.
+            Abgeleitete Werke m&uuml;ssen diesen Copyright-Hinweis und den Link enthalten.
+          </p>
+        </div>
+      </div>
+    </div> <!-- End of div.page -->
+
+    <!-- Folgender Abschnitt enthaelt Elemente der Benutzeroberflaeche, 
+         die kopiert und in die Hauptseite eingefuegt werden. Dieser Block
+	 selbst bleibt immer versteckt. -->
+    <div id="ui_library">
+      <div id="quality" class="quality">
+        <span class="name" data-attr="name"></span>
+        <span class="value" data-attr="value"></span>
+      </div>
+
+      <div id="quality_group" class="quality_group">
+        <h2 data-attr="title"></h2>
+        <div class="qualities_in_group">
+        </div>
+      </div>
+
+      <div id="progress_bar" class="progress_bar">
+        <span class="name" data-attr="name"></span>
+        <span class="value" data-attr="value"></span>
+        <div class="progress_bar_track">
+          <div class="progress_bar_color" data-attr="width">
+          </div>
+        </div>
+        <span class="left_label" data-attr="left_label"></span>
+        <span class="right_label" data-attr="right_label"></span>
+      </div>
+
+      <hr id="turn_separator">
+    </div>
+
+    <!-- Dieser Block muss nicht unbedingt hier stehen, aber er ist
+         in der CSS-Datei als versteckt definiert, daher ist hier eine gute
+	 Stelle, um Inhalte unterzubringen, die spaeter vom Code des Spiels
+         aus geladen werden sollen. In der Datei
+         tutorial.game.de.js kann man sehen, wie das funktioniert. -->
+    <div id="content_library">
+      <div id="s_rooms">
+        <h1>Situationen</h1>
+        <p>
+          Jede Interaktion findet in Undum innerhalb einer 'Situation' statt.
+	  Das ist so &auml;hnlich wie ein 'Raum' in klassischen Textadventures 
+	  (aber weniger flexibel) oder wie eine 'Seite' in einem Spielbuch (blo&szlig; flexibler).
+	  Die Hauptfigur ist immer in genau einer Situation, und diese Situation legt fest, 
+	  was mit der Figur passiert. Situationen sind Code-Abschnitte, 
+	  die den Text erzeugen, den du gerade liest. Dieser Absatz wurde z. B. durch 
+	  die <em>enter</em>-Methode der ersten Situation erzeugt.
+        </p>
+        <p class='transient'>
+          Lass uns <a href='todo'>fortfahren</a>.
+        </p>
+      </div>
+
+      <div id="s_saving">
+        <h1>Speichern, Laden, L&ouml;schen</h1>
+        <p>Was wir bisher noch nicht angesprochen haben, sind 
+	die Schaltfl&auml;chen 'Speichern' und 'L&ouml;schen' im Feld links. 
+	Diese werden nur dann angezeigt, wenn der Browser des Spielers
+	die lokale ('client-side') Speicherung von Daten erlaubt. 
+	Mit einem Klick auf 'Speichern' wird der momentane Spielstand
+	gesichert, so dass man sp&auml;ter an derselben Stelle fortfahren
+	kann. Durch einen Klick auf 'L&ouml;schen' l&ouml;scht man den
+	Spielstand und versetzt das Spiel wieder in den Anfangszustand.
+	Es gibt keinen 'Laden'-Knopf; ein gespeicherter Spielstand wird
+	automatisch geladen, wenn die gesamte Seite aufgerufen wird.
+	Zur Zeit gibt es auch noch keine M&ouml;glichkeit, mehrere
+	Spielst&auml;nde zu speichern und zwischen ihnen auszuw&auml;hlen.
+        </p>
+        <p>
+	<br>
+          Ein Undum-Spiel kann unter Umst&auml;nden sehr viel Text erzeugen.
+	Das w&uuml;rde zu Schwierigkeiten f&uuml;hren, wenn man alles
+	lokal im Browser speichern wollte (der verf&uuml;gbare Speicherplatz
+	variiert unvorhersehbar), besonders falls in Zukunft mehrere Spielst&auml;nde
+	gespeichert werden sollen. Daher speichert Undum den Spielstand ab, indem
+	es eine Liste der angeklickten Links sichert. Wenn ein Spielstand geladen
+	wird, wird also das Spiel anhand dieser Liste noch einmal schnell durchgespielt.
+	Das ist auch f&uuml;rs Testen und die Fehlerkorrektur n&uuml;tzlich:
+	Wenn du deinen Text durchsiehst und Tippfehler korrigierst, kannst du den
+	Spielstand sichern, die Seite neu laden und durch das Transkript scrollen,
+	um direkt die Verbesserungen zu sehen. Wenn wir stattdessen den kompletten
+	Text abspeicherten, h&auml;tte der gespeicherte Spielstand noch den Fehler
+	und du m&uuml;sstest das gesamte Spiel per Hand noch einmal durchspielen,
+	bis du zur korrigierten Stelle kommst.
+        </p>
+        <p class='transient'>
+          Zeit f&uuml;r den <a href='last'>letzten Abschnitt</a>.
+        </p>
+      </div>
+    </div>
+
+    <!-- Diese Anweisungen laden die noetigen Javascript-Bibliotheken -->
+    <script type="text/javascript" src="media/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="media/js/undum.js"></script>
+    <script type="text/javascript" src="media/js/lang/de.js"></script>
+
+    <!-- Aendere den Namen der folgenden Datei; sie ist die wichtigste deines Spiels. -->
+    <script type="text/javascript"
+            src="media/games/tutorial/tutorial.game.de.js"></script>
+  </body>
+</html>
