@@ -761,11 +761,11 @@
          * function(character, system, oldSituationId, newSituationId);
          */
         enter: null,
-        
-        /* Hook for when the situation has already been carried out and printed.
-         * The signature is
-         * 
-         * function( character, system, oldSituationId, newSituationId );
+
+        /* Hook for when the situation has already been carried out
+         * and printed. The signature is:
+         *
+         * function(character, system, oldSituationId, newSituationId);
          */
         afterEnter: null,
 
@@ -1094,9 +1094,7 @@
             }
         } else {
             // We should have an action if we have no situation change.
-            assert(
-                action, "link_no_action".l()
-            );
+            assert(action, "link_no_action".l());
         }
 
         // Carry out the action
@@ -1180,10 +1178,10 @@
             game.enter(character, system, oldSituationId, newSituationId);
         }
         newSituation.enter(character, system, oldSituationId);
-        
+
         // additional hook for when the situation text has already been printed
-        if( game.afterEnter ) {
-            game.afterEnter( character, system, oldSituationId, newSituationId );
+        if (game.afterEnter) {
+            game.afterEnter(character, system, oldSituationId, newSituationId);
         }
     };
 
@@ -1219,8 +1217,7 @@
         return output;
     };
 
-    /* Erases the character in local storage. This is permanent! TODO:
-     * Perhaps give a warning. */
+    /* Erases the character in local storage. This is permanent! */
     var doErase = function(force) {
         var saveId = getSaveId()
         if (localStorage[saveId]) {
@@ -1239,9 +1236,7 @@
         $("#content").empty();
 
         var situation = getCurrentSituation();
-        assert(
-            situation, "no_current_situation".l()
-        );
+        assert(situation, "no_current_situation".l());
 
         showQualities();
     };
@@ -1336,7 +1331,7 @@
         QualityGroup: QualityGroup,
 
         game: game,
-        
+
         isInteractive: function() { return interactive; },
 
         // The undum set of translated strings.

@@ -40,7 +40,7 @@ def package():
 
     # Add games.
     with lcd(ROOT_DIR):
-        local("tar --append games -f %s" % TAR)
+        local("tar --append -f %s games" % TAR)
 
     # Compress.
     local("gzip -f %s" % TAR)
