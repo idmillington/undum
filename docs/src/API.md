@@ -2,7 +2,7 @@
 
 # High Level Overview
 
-Undum games area based around three concepts: Situations, Actions and
+Undum games are based around three concepts: Situations, Actions and
 Qualities.
 
 ## Situations
@@ -777,8 +777,9 @@ exactly as for the base type `Situation`.
 #### `new SimpleSituation(content, options)`
 
 Creates a new simple situation that will display the given content
-when its `enter` method is called. The given options array provides
-further control of the behavior of this type. Valid options are:
+when its `enter` method is called. The given options dictionary
+provides further control of the behavior of this type. Valid options
+are:
 
 - `enter`: Providing an enter function in the `options` parameter
    allows you to add additional behavior to the enter method. Your
