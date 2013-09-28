@@ -76,7 +76,7 @@ development. It also has excellent Javascript debugging tools.
 
 
 Reference documentation, including full API details, is at
-[http://undum.com/API.html](http://undum.com/API.html),
+[http://undum.com/doc/](http://undum.com/doc/),
 and is also included in the repository.
 
 The source code for all the files is also heavily commented, so if you
