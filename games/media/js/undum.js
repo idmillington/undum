@@ -572,7 +572,7 @@
      * but the element itself remains, ready to be filled again using
      * System.write.
      */
-    System.prototype.clearContent = function(content, elementSelector) {
+    System.prototype.clearContent = function(elementSelector) {
         var $element;
         if (elementSelector) $element = $(elementSelector);
         if (!$element) $element = $("#content");
@@ -1237,7 +1237,8 @@
         if (str === undefined) {
             return str;
         } else {
-            var fstr = "(function(character, system, situation) { "+ str + "})";
+            var fstr = "(function(character, system, situation) {\n" +
+                str + "\n})";
             var fn = eval(fstr);
             return fn;
         }

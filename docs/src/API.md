@@ -1,499 +1,6 @@
-# API Documentation
+# Javascript API
 
-# High Level Overview
-
-Undum games are based around three concepts: Situations, Actions and
-Qualities.
-
-## Situations
-
-A situation is a chunk of code that is responsible for adding content
-to the screen and responding to user interaction. All user interaction
-is performed by clicking links in the content.
-
-Often a link will change the current situation, in which case another
-situation is loaded, can write to the screen, and can begin responding
-to user interaction. When a situation changes, all links that were
-previously available are removed, so that the player can't unfairly go
-back and try alternative options after committing to one. It is
-possible to override this behavior, see the section on 'Sticky',
-below.
-
-There is always exactly one active situation. These situations, and
-the links between them, form the structure of the game.
-
-## Actions
-
-A situation may offer the player a series of actions to perform. These
-actions are internal to that situation and normally do not cause the
-situation to change. Actions may output more content, including new
-links for the user to select.
-
-## Qualities
-
-Qualities represent the current state of the character. Internally
-they are all numeric values, able to take on any decimal value,
-positive or negative.  They have no meaning to Undum - they are given
-meaning by your code as you perform calculations or make decisions
-based on their value.
-
-Qualities display themselves to the user through a formatting
-function, which can turn the number into any kind of indicator: a
-progress bar, a symbol, a word, an integer, and so on. So as far as
-the user is concerned, qualities can represent any kind of value.
-
-## Other Concepts
-
-There are a handful of other elements to an Undum game, but they are
-very much in a supporting role. Quality groups allow you to display a
-set of qualities under a common heading; and character text is a short
-chunk of HTML that you can use to summarize a character's qualities,
-or to give hints.
-
-
-# HTML
-
-All of Undum's output is HTML. This allows you to style your content
-in any way you choose. It also allows you to include rich media into
-your output, such as images, video or audio.
-
-## Display Content
-
-All HTML output should be in a format we call "Display Content" - this
-has particular rules:
-
-* Display Content must always start and end with a HTML tag. It may
-  consist of more than one tag internally, however. So we can have the
-  structure: `<p>...</p><img>`, for example, but not `some
-  text...<img>`.
-
-* It must be a complete snippet of HTML in its own right. So any tags
-  that represent a range of content must have their closing tags
-  present. So we can do `<p><em>...</em></p>`, but not
-  `<p><em>...</p>`.
-
-## CSS Styles
-
-Undum also uses some of HTML's capabilities to control its own
-behavior. In particular, it uses a series of CSS classes to control
-how content behaves.
-
-#### `class="transient"`
-
-The CSS class `transient` can be used to mark HTML content that should
-be removed when the user changes their situation. When a situation
-changes, Undum will go back and remove any links from the text
-(leaving the text that was in the link). Any HTML content that has the
-CSS class `transient` will be completely removed at this time. Undum
-uses a fading animation to show the user this is happening, to avoid
-the user seeing an abrupt disappearance but being unable to work out
-what was removed.
-
-Any HTML tag can be marked as `transient`. It is most commonly used on
-a paragraph of text that gives the user a set of options. Undum is
-designed to allow game developers to produce beautiful narratives -
-you don't want that narrative littered by "You could do X, or you
-could do Y." statements. Mark this content as transient, and it will
-not form part of the permanent record.
-
-#### `class="sticky"`
-
-When you change situations, links in previous situations will be
-removed. This prevents the user backtracking and picking options that
-no longer apply. Sometimes you want links to be available for a longer
-time, however. In this case mark them with the CSS class
-`sticky`. Sticky only applies to links, so should only be added to
-`<a>` tags.
-
-#### `class="raw"`
-
-Links can also have the `raw` CSS class. This class prevents Undum
-from interpreting the link as an instruction to the game. If you want
-to add a link to an external resource, you can add this class to
-it. Note that raw links are still removed when you change situations,
-so if you want a raw link permanently available, you should also make
-it sticky.
-
-For some URLs, Undum can guess that the link is supposed to be an
-external link, and will automatically add the `raw` class for
-you. This isn't perfect, however, and you are better off not relying
-on it. If you have a link that you don't want Undum to capture, always
-use the `raw` class.
-
-#### `class="once"`
-
-Although links will be removed when the situation changes, often you
-want to remove them before that, as a result of an action within the
-current situation. There is an API tool available to do that in your
-code.
-
-For convenience, there is also the `once` CSS class. Adding this to a
-link means that the link will be removed as soon as it is
-clicked. This is mostly useful for action links, because a link that
-changes the situation will automatically cause previous links to
-disappear.
-
-Note that once is smart about this removal. It removes all links to
-the same action, not just the link that was clicked. So if you have
-the same action available in two links in your content, both will be
-removed.
-
-#### `class="options"`
-
-The options class only works on an unordered list. The default CSS
-also styles this differently. The list items will be presented as
-options within a table of choices. On devices with a mouse or pointer,
-the rows will change color when they are hovered over. The player can
-click anywhere on the row and the first link that it contains will be
-executed.
-
-This class is intended for smarter presentation of standard option
-blocks, if you don't want your choices to be embedded into the
-hypertext.
-
-Note that if you use this style, the unordered list will automatically
-disappear after being clicked, regardless of whether it is marked as
-"`transient`".
-
-### Headings
-
-In the default CSS for Undum, the only heading level expected in the
-text is `<h1>`. You can use other headings, but you'll have to create
-your own CSS styles. One level of heading is almost always enough (if
-not too much) for narrative works.
-
-
-## Types of Link
-
-Undum captures the links you put into your display content, and uses
-them to control the flow of the game. There are three formats of link
-that Undum understands, plus raw links, which it ignores.
-
-### Situation Links
-
-Situation links are of the form `situation-id`. They must have no
-additional punctuation. As we'll see below, situation identifiers
-consist of lower case Latin letters, hyphens and the digits 0-9 only.
-
-Clicking a situation link changes the current situation.
-
-### Action Links
-
-Action links are of the form `./action-id`. As for situations, action
-identifiers consist of lower case Latin letters, the digits 0-9 and
-hyphens only.
-
-Clicking an action link carries out the specified action in the
-current situation.
-
-### Combined Links
-
-Combined links are of the form `situation-id/action-id`. They combine
-both the previous steps: they change to the given situation, and then
-they carry out the given action once there. They are rarely used.
-
-It is possible to use the combined form to refer to an action in the
-current situation. Undum is smart enough to understand that it doesn't
-need to change situation in that case, so it is entirely equivalent to
-the action link. It is rarely used (because it is so much more
-verbose), but can be useful. For example, we might want a sticky link
-to always take the character into their study and drink a potion,
-having this sticky link point to `bedroom/drink-potion`, achieves
-this. If they are already in the bedroom, then Undum notices this and
-doesn't try to make them enter it again.
-
-### External Links
-
-As described above, you can add any other links to external content in
-your display content, as long as you mark it with the `raw` CSS
-class. It is also *highly* recommended that you mark all such links as
-opening in a new window or tab (add the `target="_blank"` attribute to
-the `<a>` tag). If you link the player to another page, and it
-replaces the Undum page, then for most browsers, all progress will be
-lost. Chrome appears to keep the progress, so that if you hit the back
-button you will be where you left off. Other browsers reset the game
-to the last saved location, or back to the beginning if the game
-hasn't been saved.
-
-### Link Data
-
-*This section describes a feature that is planned, or in development.
-It may not be functional in the current version of the code.*
-
-Undum links are allowed to add query data,
-e.g. `./action-id?foo=1&bar=2`. This extra data is URL-encoded content
-which will be parsed and passed back to your code. For situation links
-the data will be passed into the old situation's `exit` handler, and
-the new situation's `enter` handler. For action links, the data will
-be passed into the situation's `act` handler. For combined links the
-data will be passed into both sets of handlers.
-
-Raw links, as usual, do not have any processing performed. If they
-contain query data, it will be passed on to their target as it would
-for any link in any HTML document.
-
-
-# File Structure
-
-An Undum game consists of a single HTML file. This imports the game
-engine and any supporting files. It also provides the structure needed
-for Undum to place content correctly on-screen.
-
-The Undum engine consists of a single Javascript file, `undum.js`. In
-order to work, however, it needs supporting files. It requires the
-jQuery library (http://jquery.com) to be already imported, and it
-requires a game definition file to be imported after it.
-
-The normal pattern of imports in the HTML file is therefore:
-
-    <script type="text/javascript" src="media/js/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="media/js/undum.js"></script>
-    <script type="text/javascript" src="media/js/mygame.game.js"></script>
-
-By convention, the Javascript files are held in a `media/js`
-directory, but this is not enforced, you can arrange these files as
-you like, as long as you update the references to match.
-
-In addition to the Javascript files, Undum expects the HTML file that
-imports it to have a particular structure. Although there is a good
-deal of flexibility, if you need it, you should start with the HTML
-file that is provided.
-
-Finally, the HTML file will include a CSS file that controls the look
-and feel of the page. There are some elements in the CSS file which
-are used by Undum, and so, as for the HTML page, you should start with
-the CSS files provided.  In most cases you will be able to leave the
-CSS file untouched, or else just tweak colors and image imports to
-match your game's style.
-
-## The HTML File
-
-The sample HTML file provided shows the key points to edit. They are:
-
-* The game's title.
-
-* The top-left panel title and summary (you can leave this as an
-  explanation of Undum, or change it to be more game-specific).
-
-* The copyright message. Please note that there are two copyright
-  lines, the second one is the acknowledgment that your game is based
-  on Undum. You must leave the second line unchanged, under the terms
-  of use of Undum.
-
-* The path to your game definition file. By convention, game
-  definition files are named `yourgamename.game.js`.
-
-## The Game Definition File
-
-The game definition file where you create your game. To define a game
-you must provide the following data:
-
-* A unique ID for the game, which is used to make sure saved games
-  don't get confused.
-
-* A version number that allows you to manage upgrades to your
-  content.
-
-* All the Situations that make up your game.
-
-* The identifier of the situation that starts the game.
-
-In addition it is very common to provide the following data:
-
-* Descriptions of each quality your game will use, and how that should
-  be displayed to the player.
-
-* Definitions of what groups of qualities should appear in the
-  character panel and what headings to use to label them.
-
-* An Initialization function that sets up the game ready for
-  playing. This is where you typically assign any starting qualities
-  to the character, or set their initial character text.
-
-And finally, there are a range of other data you can provide:
-
-* Functions to be called whenever any situation is entered, or exited.
-
-* Functions to be called before or after any action is carried out.
-
-### Identifiers
-
-Identifiers are small snippets of text that allow you to refer to
-something in Undum. There are two types of identifier. The Game
-identifier represents your whole game, and has its own particular
-requirements (described below).
-
-Lots of other things in Undum have identifiers (Situations, Actions,
-Qualities, Quality Groups), and they all have the same
-requirements. These identifiers must consist of Latin lower-case
-letters (i.e. a-z, no accents), hyphens, and the digits 0-9 only.
-
-### Game ID
-
-The game identifier should be a string that is unlikely to be used in
-other games. You could use a UUID (my preference), or you could use a
-variation on your email `mygame-myname@mydomain.com`, or a URL you
-control `http://mydomain.com/undum-games/mygame`. If and when Undum
-games end up being re-distributable (as I hope they will), having a
-universally unique identifier will mean that saved games don't clash.
-
-As stated previously, the game identifier doesn't have the same
-requirements as any other identifier in Undum, you can use any
-characters to make up your game ID.
-
-### Version Number
-
-The version number is a string of text that indicates what version of
-the content is in the file. There is no set format for this version
-text, so you can use any scheme that suits you. I have used the
-"major.minor" approach.
-
-Like the Game ID, this value is used to make sure that saved games
-don't clash. If you change you content, then previous saved games may
-not work correctly. By updating the version number, you allow the
-player to be notified of this directly, rather than suffering a
-silent crash. The effect of this is that you don't need to update the
-version number if you make a change to something that doesn't alter
-the structure of the game. If you just change some text, for example,
-or add an extra action that merely outputs a piece of description.
-
-### Situation List
-
-Situations are defined in a Javascript object, placed in the
-`undum.game.situations` property. Situations in the object use their
-situation identifier as a property name, and a `Situation` object as
-its value.  For example:
-
-    undum.game.situations = {
-        doorway: new Situation(...),
-        lobby: new SimpleSituation(...),
-        lobby-upstairs-closed: new MyCustomSituation(...),
-        ... etc ...
-    };
-
-The situation objects are described more fully below.
-
-### Starting Situation
-
-This is placed in the `undum.game.start` property. It should consist
-of the situation identifier as a string. It must be given.
-
-### Qualities
-
-Qualities don't have to be displayed to the user. They can just
-function as internal properties for use by your code. Qualities that
-will never be displayed don't need to be declared, you can just set
-them when you need them (we'll look at the API for setting qualities
-below).
-
-Often you want the quality to be displayed, however, and so you need
-to tell Undum to display the quality, and how it should be
-formatted. The `QualityDefinition` object does that. Any quality that
-doesn't have a corresponding quality definition will be invisible to
-the player.
-
-Quality definitions are placed in an object in the
-`undum.game.qualities` property. Within this object, the property
-names are the quality identifiers, and the values they contain are
-`QualityDefinition` objects. For example:
-
-    undum.game.qualities = {
-        investigation: new IntegerQuality("Investigation", ...),
-        "found-mr-black": new OnOffQuality("Found Mr. Black", ...),
-        ... etc ...
-    };
-
-There are a number of `QualityDefinition` constructors defined which
-automatically format in common ways, you can also define your own and
-take complete control of the output. We'll return to discussion of the
-API, below.
-
-### Quality Groups
-
-Qualities can be assigned to groups, and displayed under a common
-heading in the character panel. To define groups, place an object in
-the `undum.game.qualityGroups` property. This object should have
-properties which are the group identifiers, and values that are
-`QualityGroup` objects.  For example:
-
-    undum.game.qualityGroups = {
-        stats: new QualityGroup(...),
-        clues: new QualityGroup(...),
-        equipment: new QualityGroup(...)
-    }
-
-A common source of puzzlement is that you don't use this data
-structure to define which qualities belong in which group. Instead,
-each quality that you want to assign to a group, should be given the
-identifier of the group it belongs to. So your `undum.game.qualities`
-property will look something like:
-
-    undum.game.qualities = {
-        investigation: new IntegerQuality("Investigation", {group:'stats'}),
-        "found-mr-black": new OnOffQuality("Found Mr. Black", {group:'clues'}),
-        ... etc ...
-    };
-
-Again, see the API documentation below for more details about what you
-can pass into these constructors.
-
-### Initialization Function
-
-Your initialization function should be placed in the `undum.game.init`
-property. Normally its job is to configure the character at the start
-of the game. For example:
-
-    undum.game.init = function(character, system) {
-        character.qualities.investigating = 0;
-        character.qualities.money = 100;
-        ... etc ...
-        system.setCharacterText(...);
-    };
-
-Initialization functions can, but normally doesn't, output
-text. Instead the starting situation is tasked with outputting the
-initial content.
-
-### Global Event Functions
-
-Most of the time you want Situations to handle user
-interaction. Occasionally, however, you have to handle something that
-spans situations. It would be inconvenient to duplicate the same code
-in every situation. So Undum provides a set of hooks for you to
-respond globally to user interaction. There are five of these:
-`enter`, `afterEnter`, `exit`, `beforeAction` and `afterAction`. You 
-can define functions in your game file using the properties: 
-`undum.game.enter`, `undum.game.afterEnter`,
-`undum.game.exit`, `undum.game.beforeAction`, and
-`undum.game.afterAction`.
-
-The `enter`, `afterEnter`, and `exit` functions look like this:
-
-    undum.game.enter = function(character, system, from, to) {
-        ...
-    };
-
-where `from` and `to` are the identifiers of the situations being left
-and entered, respectively. And the `beforeAction` and `afterAction`
-functions look like this:
-
-    undum.game.beforeAction = function(character, system, situation, action) {
-        ...
-    };
-
-where `situation` is the current situation identifier, and `action` is
-the identifier of the action being carried out.
-
-These functions intentionally look like the `enter`, `exit` and `act`
-methods of the `Situation` object. These are described in more detail
-in the API reference, below.
-
-# API Reference
-
-This section describes the types of object available to your game
-code.
-
-## `Character`
+# `Character`
 
 The character is created for you, but is passed into most of the
 functions that you define. It consists of an object with no methods
@@ -535,11 +42,24 @@ example:
 Sandbox data is never visible to the user, so you can use any data
 structures you like here, to any depth.
 
-## `System`
+# `System`
 
 The system represents the interface between your code and the
 user-interface.  You don't create your own `System` object, it is
 passed into your code.
+
+#### `clearContent(elementSelector)`
+
+*Since version 2*
+
+Removes all content from the page, clearing the main content area.
+
+Although Undum is designed to keep the flow of the narrative on one
+page, sometimes you do need to start a new page, and this allows you
+to do so.
+
+The `elementSelector` is options. If you give it, then the DOM element
+matching the selector is cleared, rather than the whole document.
 
 #### `write(content, elementSelector)`
 
@@ -576,6 +96,67 @@ above, except that the content is written at the start of the story,
 or if a selector is given, inserted before the matching element. On
 browsers that support it, the story will be scrolled to the insertion
 point.
+
+#### `writeChoices(listOfSituationIds)`
+
+*Since version 2*
+
+Creates a standard block of choices, one for each of the given
+situation ids. The text used in the links will be whatever is returned
+by the situation's `optionText` method. In addition, if the
+situation's `canChoose` method returns `false`, then the option will
+be displayed, but will not be clickable.
+
+#### `getSituationIdChoices(listOfIdsOrTags, minChoices, maxChoices)`
+
+*Since version 2*
+
+This function is a complex and powerful way of compiling implicit
+situation choices. You give it a list of situation ids and situation
+tags. Tags should be prefixed with a hash # to differentiate them from
+situation ids. The function then considers all matching situations in
+descending priority order, calling their canView functions and
+filtering out any that should not be shown, given the current
+state. Without additional parameters the function returns a list of
+the situation ids at the highest level of priority that has any valid
+results. So, for example, if a tag #places matches three situations,
+one with priority 2, and two with priority 3, and all of them can be
+viewed in the current context, then only the two with priority 3 will
+be returned. This allows you to have high-priority situations that
+trump any lower situations when they are valid, such as situations
+that force the player to go to one destination if the player is out of
+money, for example.
+
+If a `minChoices` value is given, then the function will attempt to
+return at least that many results. If not enough results are available
+at the highest priority, then lower priorities will be considered in
+turn, until enough situations are found. In the example above, if we
+had a minChoices of three, then all three situations would be
+returned, even though they have different priorities. If you need to
+return all valid situations, regardless of their priorities, set
+minChoices to a large number, such as `Number.MAX_VALUE`, and leave
+maxChoices undefined.
+
+If a `maxChoices` value is given, then the function will not return any
+more than the given number of results. If there are more than this
+number of results possible, then the highest priority resuls will be
+guaranteed to be returned, but the lowest priority group will have to
+fight it out for the remaining places. In this case, a random sample
+is chosen, taking into account the frequency of each situation. So a
+situation with a frequency of 100 will be chosen 100 times more often
+than a situation with a frequency of 1, if there is one space
+available. Often these frequencies have to be taken as a guideline,
+and the actual probabilities will only be approximate. Consider three
+situations with frequencies of 1, 1, 100, competing for two
+spaces. The 100-frequency situation will be chosen almost every time,
+but for the other space, one of the 1-frequency situations must be
+chosen. So the actual probabilities will be roughly 50%, 50%,
+100%. When selecting more than one result, frequencies can only be a
+guide.
+
+Before this function returns its result, it sorts the situations in
+increasing order of their `displayOrder` properties.
+
 
 #### `doLink(URL)`
 
@@ -660,7 +241,7 @@ situation, or when you click a link marked with the `once` CSS
 class. It allows you to control what options are available
 dynamically, from your code.
 
-### `Random`
+## `Random`
 
 The `Random` object provides a set of tools for simple random number
 generation, in a way that is guaranteed to work with the Loading and
@@ -709,7 +290,7 @@ either a number of sides, or can be the special values 'F', for a
 fudge die (with 3 sides, +,0,-), '%' for a 100 sided die, or 'A' for
 an averaging die (with sides 2,3,3,4,4,5).
 
-## `Situation`
+# `Situation`
 
 The `Situation` object is the prototype of all the situations in your
 game. It can be used directly, or through its more common derived
@@ -720,8 +301,16 @@ produce terser code.
 #### `new Situation(options)`
 
 Creates a new situation. The options array can specify your
-implementation of any or all of the three functions that control the
-behavior of a situation: i.e. `enter`, `act`, or `exit`. This allows
+implementation for any or all of the following methods of this class:
+
+- `enter`
+- `exit`
+- `act`
+- `optionText`
+- `canView`
+- `canChoose`
+
+(see below for explanations of those methods). This allows
 you to easily create situations that override certain behaviors with
 code such as:
 
@@ -731,11 +320,39 @@ code such as:
         }
     });
 
-See below for information on `enter`, `exit` and `act`.
+without having to subclass `Situation` to provide your own
+implementations.
 
-Note that the methods defined in the `Situation` object are never
-called by your code. They are methods that you implement so that Undum
-can call them to respond to user interaction.
+In addition the following options can be passed in.
+
+- `tags`: A list of tags with which to label this situation. These are
+primarily used to generate implicit lists of choices with
+`System.getSituationIdChoices`. Tags are arbitrary strings. You can
+pass a list of strings, or a single string. If you pass a single
+string, it will be split at spaces, commas and tabs to form a list of
+tags. For this reason, tags normally do not contain spaces, commas or
+tabs (though if you pass in a list, and don't expect Undum to do the
+splitting for you, you can include any characters you like in a tag).
+
+- `optionText` (as a string): If given as a string, rather than a
+function, this text will be returned whenever `optionText(...)` is
+called.
+
+- `displayOrder`: A numeric value, defaults to 1. When displaying
+lists of implicitly generated choices, the options be displayed in
+increasing value of this parameter.
+
+- `priority`: Can be any number, defaults to 1. When generating lists
+of choices implicitly, situations are considered in descending
+priority order. If higher priority situations can be displayed, lower
+priority situations will be hidden. See `System.getSituationIdChoices`
+for details of the algorithm.
+
+- `frequency`: Any number, defaults to 1. When generating lists of
+implicit choices, where there are more choices available that slots to
+display them, situations will be chosen randomly, with a probability
+based on this value. See `System.getSituationIdChoices` for details of
+the algorithm.
 
 #### `enter(character, system, from)`
 
@@ -766,7 +383,27 @@ and decide what to do accordingly. For situations in which many
 different actions are possible, consider using the `SimpleSituation`
 prototype, which provides this switching behavior for you.
 
-### SimpleSituation
+#### `optionText(character, system, hostSituation)`
+
+This method is called by `System.writeChoices` to generate a label for
+links to this situation. The `hostSituation` is the situation that has
+asked for the choices to be displayed.
+
+#### `canView(character, system, hostSituation)`
+
+This method is called by `System.getSituationIdChoices` to determine
+whether this situation can be part of a list of choices in the current
+game state. It should return true or false.
+
+#### `canChoose(character, system, hostSituation)`
+
+This method is called by `System.writeChoices` to determine whether a
+link should be added to allow the user to enter this situation. If
+not, the choice will still appear, but will not be clickable.
+
+
+
+## SimpleSituation
 
 This prototype builds on the basic `Situation`, providing tools to
 make it easy to output content in the `enter` method, and to switch
@@ -814,6 +451,21 @@ are:
    identifier. This allows you to simply define functions that only
    get called when particular actions happen.
 
+- `choices`: An optional list of tags and situation-ids, with tags
+  prefixed by a has symbol to distinguish them from situation ids. If
+  given, this will cause the SimpleSituation to output an implicit block
+  of choices after the content.
+
+- `minChoices`: If you have given a `choices` definition, you can set
+  this to an integer value to change the number of choices that will
+  appear. See `System.getSituationIdChoices` for more information on
+  how this affects the output.
+
+- `maxChoices`: If you have given a `choices` definition, you can set
+  this to an integer value to change the number of choices that will
+  appear. See `System.getSituationIdChoices` for more information on
+  how this affects the output.
+
 An example `SimpleSituation` definition might be:
 
     new SimpleSituation(
@@ -845,7 +497,7 @@ function, then it will be called with no arguments, and it should
 return a string to use for the output. This enables `SimpleSituation`
 to be used with other formatting and templating systems.
 
-## QualityDefinition
+# QualityDefinition
 
 Quality definitions tell Undum how and where to display a quality in
 the character panel. Each quality definition has one method, `format`,
@@ -904,25 +556,25 @@ You may call this function yourself, but there is commonly no need. It
 will be called by Undum any time the corresponding quality needs to be
 displayed.
 
-### `IntegerQuality`
+## `IntegerQuality`
 
 This is a derived type of `QualityDefinition` that displays the
 quality value by rounding it down to the nearest integer. This is
 ideal for most numeric statistics.
 
-### `NonZeroIntegerQuality`
+## `NonZeroIntegerQuality`
 
 This is a derived type of `IntegerQuality` that only displays its
 value when it is non-zero. If it is non-zero then it formats in the
 same way as `IntegerQuality`. Whereas `IntegerQuality` whould show
 zero values as '0', this type of quality displays nothing.
 
-### `NumericQuality`
+## `NumericQuality`
 
 This is a derived type of `QualityDefinition` that displays the
 quality value directly, as a full floating point value.
 
-### `WordScaleQuality`
+## `WordScaleQuality`
 
 Sometimes you want qualities displayed in words rather than
 numbers. This is a derived type of `QualityDefinition` that allows you
@@ -958,7 +610,7 @@ parameters:
    false, then the bonus would be omitted, so anything beyond
    'amazing' is still 'amazing'.
 
-### `FudgeAdjectivesQuality`
+## `FudgeAdjectivesQuality`
 
 This is a derived type of `WordScaleQuality` that doesn't require you
 to specify the words you wish to use. It uses the word scale from the
@@ -972,7 +624,7 @@ constructor. The `offset` option defaults to -3, however (in
 `WordScaleQuality` it defaults to 0), making "fair" the display value
 for 0.
 
-### `OnOffQuality`
+## `OnOffQuality`
 
 An `OnOffQuality` returns `null` from its `format` method
 (i.e. removes itself from the character panel) when the corresponding
@@ -990,7 +642,7 @@ from which it is derived. It accepts one extra option:
    non-zero. This can be used to display a check-mark, for example
    (`{onDisplay:"&#10003;"}`), or even a HTML `img` tag.
 
-### YesNoQuality
+## YesNoQuality
 
 A `YesNoQuality` displays one of two strings depending whether its
 value is zero or not.
@@ -1005,7 +657,7 @@ from which it is derived. It accepts two extra options:
    used to indicate non-zero or zero values, respectively. By default
    "yes" and "no" are used.
 
-## `QualityGroup`
+# `QualityGroup`
 
 A quality group defines a set of qualities that should be displayed
 together in the character panel, under an optional subheading. You
@@ -1036,192 +688,3 @@ parameters:
    that surrounds the entire quality group when it is displayed. You
    can use this in addition to your CSS to radically change the way
    certain qualities are displayed.
-
-
-# Loading and Saving
-
-There is no API for you to manually access loading and saving
-functionality. The load and save functions are triggered by the
-buttons on the user interface. But the way loading and saving work
-does have a big impact on the way you write your code.
-
-Undum makes a big feature of the fact that you can scroll back through
-the story you've helped create. To save your character's progress you
-would have to save not only the current situation and the character's
-qualities, but also all the text that has been generated up to that
-point. This would not be a problem in a downloaded game, because your
-hard-drive is plenty big enough. Unfortunately in a browser game,
-there is a limit on how much data you can store. Worse, this data
-limit is per-domain. So if you hosted 10 Undum games on a server, the
-saved games from all ten would have to fit into the limited
-space. This makes it impractical to save the complete text history.
-
-Instead Undum saves all the actions you've taken as a player. It
-doesn't save the character's qualities or any other information, just
-the actions. It expects to be able to rebuild the complete text, and
-the complete current state of the character, by playing back these
-actions when the file is loaded. We call this determinism, because the
-current state of the character and the content needs to be determined
-from just the actions they take.
-
-This means that you must take care to write all your code in a way
-that will generate *exactly* the same results if the game was played
-again in the same way.
-
-There are two major limitations to this, firstly it means you can't
-use random events, and secondly you can't use timed events. Both of
-these are such serious limitations that Undum provides ways around
-them.
-
-Undum provides your code with a random number generator in
-`System.rng`, which is an object with the prototype `Random`. This
-random number generator works with the loading and saving code to make
-sure that, when you load a saved game, the exact same random number
-requests will produce the exact same result. This means you get all
-the benefits of randomness (i.e. two separate games may have different
-results for the same action), but we can always replay a game
-exactly. Dealing with random actions is a difficult issue in testing
-any interactive fiction game. This approach solves that problem. You
-should, therefore, *never* use Javascript's built-in random number
-generate (`Math.random`), only ever use the one provided by Undum.
-
-Finally, Undum also provides your code timing information in
-`System.time`, which is the number of seconds (and fractional seconds)
-elapsed since the player began the game. You can use this timing
-information to implement puzzles in your game (such as asking the
-player to complete a series of tasks in a specified amount of
-time). This timing system coordinates with the loading and saving
-system to make sure that, when you save and load the game, the timing
-picks up where it left off. Feel free to make decisions in your code
-based on the current value of `System.time`, but never use
-Javascript's `Date` object.
-
-If you do not follow these restrictions, then it is likely that saved
-games will not load correctly. A player may save their game at one
-point and find most of their progress wiped out when they load it
-again.
-
-If your game has elements that should not be triggered while Undum is
-replaying a saved game, for example sound effects or popup notifications,
-you can use `undum.isInteractive()` to test whether the game is being
-played normally (returns `true`) or being loaded from a save game
-(returns `false`).
-
-
-# Translation and Internationalization
-
-Undum provides support for translations and internationalization.
-In particular, if you feel you want to translate Undum, then a lot
-of work has already been done for you. I am very grateful to Oreolek
-for this assistance. He translated the Russian version within days
-of the code being released, and advised on the tools that would
-make translation easier.
-
-To write a game in another language, you need only to write the game
-content in that language. The identifiers you use in the game (to
-represent situations, actions, qualities and quality groups) must use
-only unaccented lower case latin letters and numbers, but the text you
-generate can contain any content you choose. Including right to left
-content or ideographs.
-
-Undum itself has a small number of error messages and pieces of text
-that it uses. These include the default names for the
-FudgeAdjectivesQuality values. These strings are all found at the end
-of the `undum.js` file. They can be overridden. Simply define a new
-language file for your language (e.g. `lang/gk.js`) and override the
-appropriate strings. In your HTML file, after importing `undum.js`,
-import you strings file. For example, the end of the Russian
-translation of the tutorial (`tutorial.ru.html`) has:
-
-    <script type="text/javascript" src="media/js/undum.js"></script>
-    <script type="text/javascript" src="media/js/lang/ru.js"></script>
-
-These translation strings are given as an object mapping the string
-name to the translated strings. This object is given as part of the
-`undum.translation` object, with a property name equal to the language
-name. So, for example, the UK English translation might begin:
-
-    undum.lanuage["en-UK"] = {
-        no_group_definition: "Couldn't find a group definition for {id}.",
-
-Within the translation strings, data to be incorporated later is given
-in curly braces.
-
-
-## Language Codes
-
-Undum uses a simplified version of the IETF standards for language
-code. For our purposes this consists of three parts, only the first of
-which is required: `language-Script-REGION` where `language` is a two
-letter lower-case ISO language code, `Script` is a four letter
-title-case script identifier, and `REGION` is a two letter country or
-region code, all capitalized. The script is omitted when it is the
-default script for a language and locale. You would specify a script
-if you were using romaji (Latin letters) to write Japanese, but not if
-you were writing it in Kanji and kana.
-
-The major virtue of this standard is that it allows fall through when
-a translation is not available. For example a translation into
-Brazillian Portuguese `pt-BR` might be different to one into Angolan
-Portuguese `pt-AO`, but there may be some strings they have in
-common. This allows a translator to create a base file for just plain
-Portuguese `pt`, then each country's dialect can define its own file
-that just overrides a few of the strings.
-
-
-## Filename Conventions
-
-It is only a convention, but for all files that occur in language
-specific versions, I have used the filename convention of placing the
-language code before the extension, e.g. `filename.lang.extension`. The
-game file is similar `filename.game.lang.js`. You are free to use any
-format you choose, of course, but if you want to contribute back to
-the trunk, please follow this convention, to save having to rename
-things and connect up the links later.
-
-
-## API
-
-The translation system provides a simple API based on the `Globalite`
-package of Nicolas Merouze (the implementation is unique to Undum). It
-adds a `l()` method to the Javascript `String` prototype. This method
-has the signature `l(data)`, where data can be any object mapping
-strings to other strings.
-
-The method attempts to figure out what the current language is by
-looking at the `lang` attribute of the top level HTML tag (you'll
-notice in the tutorial games this is defined in all cases, you should
-do the same). It then tries to find a matching object containing
-translations in `undum.language`. If it finds such an object, then it
-looks up the original string in that object to find a translation. It
-then merges any data passed into the `l` method into the string,
-before returning the result.
-
-The translation look-up honors the IETF rules for language fallback,
-so (continuing the previous example) if your game file is in Brazilian
-Portuguese `pt-BR`, and a translation isn't found, then generic
-Portuguese translation `pt` is also checked. Finally, if no valid
-translation is found, then the default version is used. Since Undum
-was written in English, this default version is the English
-version. This is purely by my convenience, and isn't part of the IETF
-spec!
-
-
-# Changelog
-
-## 2011-05-27
-
-- Added `System.writeBefore` to do out of order insertion. (credit:
-  ekyrath)
-
-- Added an optional selector to `System.write` and
-  `System.writeBefore` to support out of order insertion. (credit:
-  ekyrath)
-
-- Removed the use of `__defineGetter__`, so that the core code now
-  works on IE7 (thanks for the bug report juhana and bloomengine).
-
-## 2011-08-18
-
-- Added support for functions in the `content` and `header` of a
-  `SimpleSituation` (credit: David Eyk).
