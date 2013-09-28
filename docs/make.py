@@ -11,7 +11,7 @@ from HTMLParser import HTMLParser
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SRC_DIR = os.path.join(BASE_DIR, 'src')
-OUT_DIR = os.path.join(BASE_DIR, 'out')
+OUT_DIR = os.path.join(BASE_DIR, 'out', 'doc')
 
 class TOCParser(HTMLParser):
     def __init__(self, tags=['h1', 'h2', 'h3']):
