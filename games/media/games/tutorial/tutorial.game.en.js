@@ -79,7 +79,7 @@ undum.game.situations = {
         <em>video</em> tags to include rich media.</p>\
         \
         <p class='transient'>Make sure you've carried out the action above,\
-        then <a href='hub'>return to the topic list.</a></p>",
+        then <a href='hub'>return to the topic list</a>.</p>",
         {
             actions: {
                 'do-something': "<p>You carried out the action, well done.\
@@ -116,8 +116,9 @@ undum.game.situations = {
         done by completely removing the content from previous pages.\
         That prevents you going back and reading your story, however.</p>\
         \
-        <p class='transient'>The 'Links' topic has more about these links,\
-        let's return to the <a href='hub'>topic list</a>.</p>",
+        <p class='transient'>The 'Different Kinds of Links' topic has more\
+        about these links.\
+        Let's return to the <a href='hub'>topic list</a>.</p>",
         {
             heading: "Disappearing Content",
             diplayOrder: 2,

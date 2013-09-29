@@ -164,7 +164,7 @@
           by the <em>enter</em> method of the 'situations' situation.
         </p>
         <p class='transient'>
-          Lets <a href='todo'>move on again</a>.
+          Let's <a href='todo'>move on again</a>.
         </p>
       </div>
 
@@ -209,11 +209,11 @@
       <div id="implicit" class="situation" data-tags="topic"
            data-heading="Implicit Choices" data-display-order="7"
            data-choices="#example">
-        <p>When you're writing and Undum game, you often need certain
+        <p>When you're writing an Undum game, you often need certain
           options to be available only when certain conditions hold. You
           might have an option to remove a secret panel in a haunted
           house, but that should only be visible if the character knows
-          where it is. If options are avilable in lots of situations, it
+          where it is. If options are available in lots of situations, it
           can be very difficult to keep track of what options are
           allowed, and to produce just the right list of choices.</p>
         <p>To help with this, Undum can generate a list of situation
@@ -222,10 +222,10 @@
           easily ask for links to all situations with the 'in-hallway'
           tag, for example. Secondly, situations can have
           a <em>canView</em> method, which gets to decide whether that
-          situation is valid as a link. That method can look at the
+          situation should appear. That method can look at the
           current state of the character to decide whether to appear
-          or not. Thirdly, SimpleSituations have a <em>choices</em>
-          option. If it is set to one or more tags, it handles the buiding
+          or not. Thirdly, <em>SimpleSituation<em>s have a <em>choices</em>
+          option. If it is set to one or more tags, it handles the building
           of the choice list.</p>
         <p>You've seen this already in the topic list. The topic list
           is generated automatically. All of the situations in the topic
