@@ -147,19 +147,21 @@
          you want to load from your game code. See the
          tutorial.game.js file for details of how this is used. -->
     <div id="content_library">
-      <div id="s_rooms">
+      <div id="s_situations">
         <h1>Situations</h1>
         <p>
           In Undum, all interaction takes place in a situation. You
           can think of it either as a 'Room' in traditional
           interactive fiction (although it is less flexible than
           that), or as a 'Page' in a Choose Your Own Adventure book
-          (though it is more flexible than that). At any point in
-          time, the character is in exactly one situation, and that
-          situation is responsible for everything that happens to
+          (though it is more flexible than that).
+        </p>
+        <p>
+          At any point, the character is in exactly one situation, and
+          that situation is responsible for everything that happens to
           them. Situations are chunks of code that generate the output
           you are reading here. For example, this text was generated
-          by the <em>enter</em> method of the first situation.
+          by the <em>enter</em> method of the 'situations' situation.
         </p>
         <p class='transient'>
           Lets <a href='todo'>move on again</a>.
@@ -192,8 +194,50 @@
           the game to see the correction.
         </p>
         <p class='transient'>
-          Time for the <a href='last'>last section</a>.
+          Let's return to the <a href='hub'>topic list</a>.
         </p>
+      </div>
+
+      <!-- Some situations defined entirely in the HTML -->
+      <div id="hub" class="situation" data-choices="#topic"
+           data-option-text="View Topic List">
+        <h1 class="transient">Topics</h1>
+        <p class="transient">Choose a topic to find out about next. If
+          in doubt, go through the topics in order.</p>
+      </div>
+
+      <div id="implicit" class="situation" data-tags="topic"
+           data-heading="Implicit Choices" data-display-order="7"
+           data-choices="#example">
+        <p>When you're writing and Undum game, you often need certain
+          options to be available only when certain conditions hold. You
+          might have an option to remove a secret panel in a haunted
+          house, but that should only be visible if the character knows
+          where it is. If options are avilable in lots of situations, it
+          can be very difficult to keep track of what options are
+          allowed, and to produce just the right list of choices.</p>
+        <p>To help with this, Undum can generate a list of situation
+          links for you. It does this in three steps. Firstly, each
+          situation can be given one or more tags, this allows you to
+          easily ask for links to all situations with the 'in-hallway'
+          tag, for example. Secondly, situations can have
+          a <em>canView</em> method, which gets to decide whether that
+          situation is valid as a link. That method can look at the
+          current state of the character to decide whether to appear
+          or not. Thirdly, SimpleSituations have a <em>choices</em>
+          option. If it is set to one or more tags, it handles the buiding
+          of the choice list.</p>
+        <p>You've seen this already in the topic list. The topic list
+          is generated automatically. All of the situations in the topic
+          list are always available, however.
+          <span class="transient">So here is an example of
+          automatic options that may change:</span></p>
+      </div>
+
+      <div id="example-choices" class="situation" data-choices="#example">
+        <p class="transient">You can return to the
+          <a href='hub'>Topic List</a> or choose another option from
+          this example:</p>
       </div>
     </div>
 

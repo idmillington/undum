@@ -147,6 +147,7 @@ ul {
 ul.options {
     border: 2px solid #876;
     padding: 0;
+    margin-top: 0.5em;
     margin-bottom: 0.7em;
     list-style-type: none;
     border-radius: 4px;
