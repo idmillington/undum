@@ -36,7 +36,7 @@ def package():
     """Create an archive with the site content in it."""
     # Start with the docs.
     with lcd(DOC_OUT_DIR):
-        local("tar -cf %s *.html media" % TAR)
+        local("tar -cf %s *.html media doc" % TAR)
 
     # Add games.
     with lcd(ROOT_DIR):
