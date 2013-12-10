@@ -134,6 +134,7 @@ framework.
 
 ## License
 
-The code is distributed under the MIT license. This permits you to
-modify and use it, even for commercial use. A copy of the MIT license
-is found in the LICENSE file.
+The code, documentation, styles, design and images are all distributed
+under the MIT license. This permits you to modify and use them, even
+for commercial use. A copy of the MIT license is found in the LICENSE
+file.
