@@ -57,7 +57,7 @@ development. It also has excellent Javascript debugging tools.
 
 ## Getting Started
 
-1. Download Undum. Use the 'download source' link in the top right of
+1. Download Undum. Use the 'download zip' link in the right column of
    this page.
 
 2. Unzip Undum somewhere on your hard-drive.
@@ -137,4 +137,3 @@ framework.
 The code is distributed under the MIT license. This permits you to
 modify and use it, even for commercial use. A copy of the MIT license
 is found in the LICENSE file.
-
