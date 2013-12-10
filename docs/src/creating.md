@@ -42,10 +42,10 @@ The sample HTML file provided shows the key points to edit. They are:
 * The top-left panel title and summary (you can leave this as an
   explanation of Undum, or change it to be more game-specific).
 
-* The copyright message. Please note that there are two copyright
-  lines, the second one is the acknowledgment that your game is based
-  on Undum. You must leave the second line unchanged, under the terms
-  of use of Undum.
+* The copyright message. Please note that there is also a message
+  that acknowledges your game is based on Undum. You can remove this
+  entirely, but if you do leave it in place, that helps people
+  find the software and perhaps write their own game.
 
 * The path to your game definition file. By convention, game
   definition files are named `yourgamename.game.js`.
