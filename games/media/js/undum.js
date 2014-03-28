@@ -1961,7 +1961,7 @@
         // API
         String.prototype.l = function(args) {
             // Get lang attribute from html tag.
-            var lang = $("html").attr("lang");
+            var lang = $("html").attr("lang") || "";
 
             // Find the localized form.
             var localized = localize(lang, this);
