@@ -1820,7 +1820,7 @@
 
         // Any point that an option list appears, its options are its
         // first links.
-        $("ul.options li, #menu li").live('click', function(event) {
+        $("ul.options li, #menu li").on('click', function(event) {
             // Make option clicks pass through to their first link.
             var link = $("a", this);
             if (link.length > 0) {
