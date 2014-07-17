@@ -36,9 +36,9 @@ body {
     padding: 2.0em;
     margin: auto;
     max-width: 18em;
-    -moz-box-shadow: 0 0 16px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0 0 16px rgba(0,0,0,0.75);
-    box-shadow: 0 0 16px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.4);
+    box-shadow: 0 0 4px rgba(0,0,0,0.4);
     position: relative;
 }
 #title h1 {
