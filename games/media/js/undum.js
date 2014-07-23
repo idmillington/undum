@@ -4,7 +4,7 @@
 // define the content of the game.
 // ---------------------------------------------------------------------------
 
-(function() {
+(function($) {
     // -----------------------------------------------------------------------
     // Internal Infrastructure Implementations [NB: These have to be
     // at the top, because we use them below, but you can safely
@@ -135,7 +135,7 @@
      * tags: a list of tags for this situation, which can be used for
      *     implicit situation selection. The tags can also be given as
      *     space, tab or comma separated tags in a string. Note that,
-     *     when calling getSituationIdChoices, tags are prefixed with
+     *     when calling `getSituationIdChoices`, tags are prefixed with
      *     a hash, but that should not be the case here. Just use the
      *     plain tag name.
      *
@@ -238,7 +238,7 @@
         }
     };
     /* Returns the priority, frequency and displayOrder for this situation,
-     * when being selected using system.getSituationIdChoices. */
+     * when being selected using `system.getSituationIdChoices`. */
     Situation.prototype.choiceData = function(character, system, situation) {
         return {
             priority: this._priority,
@@ -268,26 +268,27 @@
      *
      * choices: A list of situation ids and tags that, if given, will
      *     be used to compile an implicit option block using
-     *     getSituationIdChoices (see that function for more details
+     *     `getSituationIdChoices` (see that function for more details
      *     of how this works). Tags in this list should be prefixed
      *     with a hash # symbol, to distinguish them from situation
-     *     ids.
+     *     ids. If just a single tag or id is needed, it can be passed
+     *     in as a string without wrapping into a list.
      *
-     * minChoices: If choices is given, and an implicit choice block
+     * minChoices: If `choices` is given, and an implicit choice block
      *     should be compiled, set this option to require at least
      *     this number of options to be displayed. See
-     *     getSituationIdChoices for a description of the algorithm by
+     *     `getSituationIdChoices` for a description of the algorithm by
      *     which this happens. If you do not specify the `choices`
      *     option, then this option will be ignored.
      *
-     * maxChoices: If choices is given, and an implicit choice block
+     * maxChoices: If `choices` is given, and an implicit choice block
      *     should be compiled, set this option to require no more than
      *     this number of options to be displayed. See
-     *     getSituationIdChoices for a description of the algorithm by
-     *     which this happens. If you do not specify the `choices`
+     *     `getSituationIdChoices` for a description of the algorithm
+     *     by which this happens. If you do not specify the `choices`
      *     option, then this option will be ignored.
      *
-     * The remaining options in the opts parameter are the same as for
+     * The remaining options in the `opts` parameter are the same as for
      * the base Situation.
      */
     var SimpleSituation = function(content, opts) {
@@ -689,20 +690,22 @@
      *
      * This function is a complex and powerful way of compiling
      * implicit situation choices. You give it a list of situation ids
-     * and situation tags. Tags should be prefixed with a hash # to
-     * differentiate them from situation ids. The function then
-     * considers all matching situations in descending priority order,
-     * calling their canView functions and filtering out any that
-     * should not be shown, given the current state. Without
-     * additional parameters the function returns a list of the
-     * situation ids at the highest level of priority that has any
-     * valid results. So, for example, if a tag #places matches three
-     * situations, one with priority 2, and two with priority 3, and
-     * all of them can be viewed in the current context, then only the
-     * two with priority 3 will be returned. This allows you to have
-     * high-priority situations that trump any lower situations when
-     * they are valid, such as situations that force the player to go
-     * to one destination if the player is out of money, for example.
+     * and situation tags (if a single id or tag is needed just that
+     * string can be given, it doesn't need to be wrapped in a
+     * list). Tags should be prefixed with a hash # to differentiate
+     * them from situation ids. The function then considers all
+     * matching situations in descending priority order, calling their
+     * canView functions and filtering out any that should not be
+     * shown, given the current state. Without additional parameters
+     * the function returns a list of the situation ids at the highest
+     * level of priority that has any valid results. So, for example,
+     * if a tag #places matches three situations, one with priority 2,
+     * and two with priority 3, and all of them can be viewed in the
+     * current context, then only the two with priority 3 will be
+     * returned. This allows you to have high-priority situations that
+     * trump any lower situations when they are valid, such as
+     * situations that force the player to go to one destination if
+     * the player is out of money, for example.
      *
      * If a minChoices value is given, then the function will attempt
      * to return at least that many results. If not enough results are
@@ -736,13 +739,18 @@
      * Before this function returns its result, it sorts the
      * situations in increasing order of their displayOrder values.
      */
-    System.prototype.getSituationIdChoices = function(listOfIdsOrTags,
+    System.prototype.getSituationIdChoices = function(listOfOrOneIdsOrTags,
                                                       minChoices, maxChoices)
     {
+        // First check if we have a single string for the id or tag.
+        if ($.type(listOfOrOneIdsOrTags) == 'string') {
+            listOfOrOneIdsOrTags = [listOfOrOneIdsOrTags];
+        }
+
         // First we build a list of all candidate ids.
         var allIds = {};
-        for (var i = 0; i < listOfIdsOrTags.length; ++i) {
-            var tagOrId = listOfIdsOrTags[i];
+        for (var i = 0; i < listOfOrOneIdsOrTags.length; ++i) {
+            var tagOrId = listOfOrOneIdsOrTags[i];
             if (tagOrId.substr(0, 1) == '#') {
                 var ids = getSituationIdsWithTag(tagOrId.substr(1));
                 for (var j = 0; j < ids.length; ++j) {
@@ -2213,4 +2221,4 @@
     // preferred language.
     undum.language[""] = en;
     undum.language["en"] = en;
-})();
+}(jQuery));

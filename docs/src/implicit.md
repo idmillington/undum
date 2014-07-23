@@ -66,6 +66,12 @@ can even mix tags and explicit situation ids:
 
     system.getSituationIdChoices(['#chapter', 'introduction', '#endmatter'])
 
+When you only need to pass one tag to `System.getSituationIdChoices`
+you can do so without using a list, so the first example above could
+be equally written:
+
+    system.getSituationIdChoices('#chapter')
+
 
 ## Ordering Choices
 
@@ -191,3 +197,8 @@ generate the list and `System.writeChoices` to generate the HTML. To
 use this, simply pass in the list of ids and tags as the `choices`
 option. You can additionally specify `minChoices` and `maxChoices` if
 you need them.
+
+As for `System.getSituationIdChoices`, if you are only using a single
+tag or id, you can give this as a string, rather than a single element
+list.
+
