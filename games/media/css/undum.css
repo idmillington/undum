@@ -19,8 +19,6 @@ body {
 /* The title block */
 #title, #title .label, #content, .tools {
     border-radius: 2px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
 }
 #title {
     max-width: 28em;
@@ -36,9 +34,8 @@ body {
     padding: 2.0em;
     margin: auto;
     max-width: 18em;
-    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.4);
     -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.4);
-    box-shadow: 0 0 4px rgba(0,0,0,0.4);
+            box-shadow: 0 0 4px rgba(0,0,0,0.4);
     position: relative;
 }
 #title h1 {
@@ -110,9 +107,8 @@ span.drop + p {
 }
 p {
     margin: 0;
-    transition: text-indent 0.25s ease;
-    -moz-transition: text-indent 0.25s ease;
     -webkit-transition: text-indent 0.25s ease;
+            transition: text-indent 0.25s ease;
 }
 hr {
     border: none;
@@ -151,8 +147,6 @@ ul.options {
     margin-bottom: 0.7em;
     list-style-type: none;
     border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
 }
 ul.options li {
     border-bottom: 1px solid #876;
@@ -248,8 +242,6 @@ img.float_left {
     padding: 0.3em 1.0em;
     cursor: pointer;
     border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
 }
 .buttons button:hover {
     background: #987;
@@ -334,8 +326,6 @@ img.float_left {
     width: 27.7em;
     clear: both;
     border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
 }
 .progress_bar_color {
     background: #987;

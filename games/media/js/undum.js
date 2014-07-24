@@ -167,7 +167,7 @@
             this._frequency =
                 (opts.frequency !== undefined) ? opts.frequency : 1;
             this._displayOrder =
-                (opts.displayOrder != undefined) ? opts.displayOrder : 1;
+                (opts.displayOrder !== undefined) ? opts.displayOrder : 1;
 
             // Tag are not stored with an underscore, because they are
             // accessed directy. They should not be context sensitive
@@ -175,7 +175,7 @@
             // manipulation).
             if (opts.tags !== undefined) {
                 if ($.isArray(opts.tags)) {
-                    this.tags = opts.tags
+                    this.tags = opts.tags;
                 } else {
                     this.tags = opts.tags.split(/[ \t,]+/);
                 }
@@ -244,7 +244,7 @@
             priority: this._priority,
             frequency: this._frequency,
             displayOrder: this._displayOrder
-        }
+        };
     };
 
     /* A simple situation has a block of content that it displays when
@@ -412,7 +412,7 @@
     };
     NonZeroIntegerQuality.inherits(IntegerQuality);
     NonZeroIntegerQuality.prototype.format = function(character, value) {
-        if (value == 0) {
+        if (value === 0) {
             return null;
         } else {
             return IntegerQuality.prototype.format.call(
@@ -659,7 +659,7 @@
      * return an ordered list of valid viewable situation ids.
      */
     System.prototype.writeChoices = function(listOfIds, elementSelector) {
-        if (listOfIds.length == 0) return;
+        if (listOfIds.length === 0) return;
 
         var currentSituation = getCurrentSituation();
         var $options = $("<ul>").addClass("options");
@@ -670,7 +670,7 @@
 
             var optionText = situation.optionText(character, this,
                                                   currentSituation);
-            if (!optionText) optionText = "choice".l({number:i+1})
+            if (!optionText) optionText = "choice".l({number:i+1});
             var $option = $("<li>");
             var $a;
             if (situation.canChoose(character, this, currentSituation)) {
@@ -742,6 +742,9 @@
     System.prototype.getSituationIdChoices = function(listOfOrOneIdsOrTags,
                                                       minChoices, maxChoices)
     {
+        var datum;
+        var i;
+
         // First check if we have a single string for the id or tag.
         if ($.type(listOfOrOneIdsOrTags) == 'string') {
             listOfOrOneIdsOrTags = [listOfOrOneIdsOrTags];
@@ -749,7 +752,7 @@
 
         // First we build a list of all candidate ids.
         var allIds = {};
-        for (var i = 0; i < listOfOrOneIdsOrTags.length; ++i) {
+        for (i = 0; i < listOfOrOneIdsOrTags.length; ++i) {
             var tagOrId = listOfOrOneIdsOrTags[i];
             if (tagOrId.substr(0, 1) == '#') {
                 var ids = getSituationIdsWithTag(tagOrId.substr(1));
@@ -786,8 +789,8 @@
         var candidatesAtLastPriority = [];
         var lastPriority;
         // In descending priority order.
-        for (var i = 0; i < viewableSituationData.length; ++i) {
-            var datum = viewableSituationData[i];
+        for (i = 0; i < viewableSituationData.length; ++i) {
+            datum = viewableSituationData[i];
             if (datum.priority != lastPriority) {
                 if (lastPriority !== undefined) {
                     // We've dropped a priority group, see if we have enough
@@ -816,8 +819,8 @@
         } else {
             // We have to sample the candidates, using their relative frequency.
             var candidatesToInclude = maxChoices - committed.length;
-            for (var i = 0; i < candidatesAtLastPriority.length; ++i) {
-                var datum = candidatesAtLastPriority[i];
+            for (i = 0; i < candidatesAtLastPriority.length; ++i) {
+                datum = candidatesAtLastPriority[i];
                 datum._frequencyValue = this.rnd.random() / datum.frequency;
             }
             candidatesToInclude.sort(function(a, b) {
@@ -834,7 +837,7 @@
 
         // And return as a list of ids only.
         var result = [];
-        for (var i = 0; i < committed.length; ++i) {
+        for (i = 0; i < committed.length; ++i) {
             result.push(committed[i].id);
         }
         return result;
@@ -1207,7 +1210,7 @@
 
     /* The stack of links, resulting from the last action, still be to
      * resolved. */
-    var linkStack = null
+    var linkStack = null;
 
     // -----------------------------------------------------------------------
     // Utility Functions
@@ -1304,10 +1307,11 @@
          * visible.) */
         var nextel = output.last().next();
         var scrollPoint;
-        if (!nextel.length)
+        if (!nextel.length) {
             scrollPoint = $("#content").height() + $("#title").height() + 60;
-        else
+        } else {
             scrollPoint = nextel.offset().top - $(window).height();
+        }
         if (scrollPoint > output.offset().top)
             scrollPoint = output.offset().top;
         scrollStack[scrollStack.length-1] = scrollPoint;
@@ -1316,7 +1320,7 @@
     /* Gets the unique id used to identify saved games. */
     var getSaveId = function() {
         return 'undum_'+game.id+"_"+game.version;
-    }
+    };
 
     /* Adds the quality blocks to the character tools. */
     var showQualities = function() {
@@ -1440,7 +1444,7 @@
     var scrollStack = [];
     var pendingFirstWrite = false;
     var startOutputTransaction = function() {
-        if (scrollStack.length == 0) {
+        if (scrollStack.length === 0) {
             pendingFirstWrite = true;
         }
         // The default is "all the way down".
@@ -1458,7 +1462,7 @@
     };
     var endOutputTransaction = function() {
         var scrollPoint = scrollStack.pop();
-        if (scrollStack.length == 0 && scrollPoint != null) {
+        if (scrollStack.length === 0 && scrollPoint !== null) {
             if (interactive && !mobile) {
                 $("body, html").animate({scrollTop: scrollPoint}, 500);
             }
@@ -1644,7 +1648,7 @@
 
     /* Erases the character in local storage. This is permanent! */
     var doErase = function(force) {
-        var saveId = getSaveId()
+        var saveId = getSaveId();
         if (localStorage[saveId]) {
             if (force || confirm("erase_message".l())) {
                 delete localStorage[saveId];
@@ -1845,7 +1849,7 @@
             if (wasMobile != mobile) {
                 var showing = !$(".click_message").is(":visible");
                 if (mobile) {
-                    var menu = $("#menu")
+                    var menu = $("#menu");
                     if (showing) {
                         $("#toolbar").show();
                         menu.show();
@@ -1933,8 +1937,8 @@
         /* Compiles a list of fallback languages to try if the given code
          * doesn't have the message we need. Caches it for future use. */
         var getCodesToTry = function(languageCode) {
-            var codeArray;
-            if (codeArray = codesToTry[languageCode]) return codeArray;
+            var codeArray = codesToTry[languageCode];
+            if (codeArray) return codeArray;
 
             codeArray = [];
             if (languageCode in undum.language) {
@@ -1961,7 +1965,8 @@
             var languageCodes = getCodesToTry(languageCode);
             for (var i = 0; i < languageCodes.length; i++) {
                 thisCode = languageCodes[i];
-                if (localized = lookup(thisCode, message)) return localized;
+                localized = lookup(thisCode, message);
+                if (localized) return localized;
             }
             return message;
         };
@@ -2118,7 +2123,7 @@
      * error, it will be overridden in each Random object when the
      * seed has been correctly configured. */
     Random.prototype.random = function() {
-        throw new {
+        throw {
             name:"RandomError",
             message: "random_error".l()
         };
@@ -2183,6 +2188,7 @@
                 break;
             case '%':
                 sides = 100;
+                break;
             default:
                 sides = parseInt(match[2], 10);
                 break;
