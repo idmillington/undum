@@ -199,10 +199,11 @@ img.float_left {
 
 #tools_wrapper {
     position: fixed;
+    width: 100%;
     max-width: 56em;
     top: 2.2em;
-    left: 0.4em;
-    right: 0.4em;
+    left: 0;
+    right: 0;
     margin: 0 auto;
     display: none; /* Shown by Javascript */
 }
@@ -217,11 +218,12 @@ img.float_left {
     line-height: 1.5em;
 }
 .tools.left {
-    left: 0;
+    left: 0.4em;
 }
 .tools.right {
-    right: 0;
+    right: 0.4em;
 }
+
 .tools h1 {
     font-size: 1.0em;
     font-weight: normal;
