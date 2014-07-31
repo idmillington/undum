@@ -1274,6 +1274,7 @@
                 displayOrder: parse($situation.attr("data-display-order")),
                 tags: parseList($situation.attr("data-tags"), false),
                 // Simple Situation content.
+		exit: parseFn($situation.attr("data-exit")),
                 heading: $situation.attr("data-heading"),
                 choices: parseList($situation.attr("data-choices"), true),
                 minChoices: parse($situation.attr("data-min-choices")),
