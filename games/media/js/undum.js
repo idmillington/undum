@@ -874,10 +874,13 @@
         if (!interactive) return;
 
         // Work out how to display the values.
-        var newDisplay = newValue.toString();
+        var newDisplay;
         var qualityDefinition = game.qualities[quality];
         if (qualityDefinition) {
             newDisplay = qualityDefinition.format(character, newValue);
+        } else {
+            // We shouldn't display qualities that have no definition.
+            return;
         }
 
         // Add the data block, if we need it.
@@ -1392,14 +1395,17 @@
     var addQualityBlock = function(qualityId) {
         // Make sure we want to display this quality.
         var qualityDefinition = game.qualities[qualityId];
-        if (!qualityDefinition) return null;
+        if (!qualityDefinition) {
+          throw new Error("Can't display a quality that hasn't been defined: "+
+                          qualityId);
+        }
 
         // Work out how the value should be displayed.
         var name = qualityDefinition.title;
         var val = qualityDefinition.format(
             character, character.qualities[qualityId]
         );
-        if (val === null) return;
+        if (val === null) return null;
 
         // Create the quality output.
         var qualityBlock = $("#ui_library #quality").clone();
