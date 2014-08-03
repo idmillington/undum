@@ -1586,7 +1586,7 @@
             //  Remove links and transient sections.
             $('#content a').each(function(index, element) {
                 var a = $(element);
-                if (a.hasClass('sticky')) return;
+                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?)/) return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
             if (interactive) {
@@ -1628,15 +1628,15 @@
         // Wire up the links for regular <a> tags.
         output.find("a").each(function(index, element) {
             var a = $(element);
-            if (!a.hasClass("raw")) {
-                var href = a.attr('href');
+            var href = a.attr('href');
+            if (!a.hasClass("raw")|| href.match(/[?&]raw[=&]?/)) {
                 if (href.match(linkRe)) {
                     a.click(function(event) {
                         event.preventDefault();
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (a.hasClass("once")) {
+                        if (a.hasClass("once") || href.match(/[?&]once[=&]?/) {
                             system.clearLinks(href);
                         }
 
