@@ -1478,7 +1478,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
+    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?(\?.+)?$/;
     var processLink = function(code) {
         // Check if we should do this now, or if processing is already
         // underway.
@@ -1586,7 +1586,8 @@
             //  Remove links and transient sections.
             $('#content a').each(function(index, element) {
                 var a = $(element);
-                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?)/) return;
+                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?/))
+                    return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
             var contentToHide = $('#content .transient, #content ul.options');
@@ -1639,7 +1640,7 @@
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (a.hasClass("once") || href.match(/[?&]once[=&]?/) {
+                        if (a.hasClass("once") || href.match(/[?&]once[=&]?/)) {
                             system.clearLinks(href);
                         }
 
