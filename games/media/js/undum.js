@@ -563,6 +563,9 @@
      */
     var System = function() {
         this.rnd = null;
+        this.options = {
+          repeatable_links: true
+        }
         this.time = 0;
     };
 
@@ -1636,8 +1639,9 @@
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (a.hasClass("once")) {
-                            system.clearLinks(href);
+                        if (system.options.repeatable_links == false
+                          || (system.options.repeatable_links == true && a.hasClass("once"))) {
+                          system.clearLinks(href);
                         }
 
                         processClick(href);
