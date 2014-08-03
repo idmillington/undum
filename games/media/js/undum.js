@@ -1478,7 +1478,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
+    var linkRe = /^([-\_a-z0-9]+|\.)(\/([-\_0-9a-z]+))?$/;
     var processLink = function(code) {
         // Check if we should do this now, or if processing is already
         // underway.
