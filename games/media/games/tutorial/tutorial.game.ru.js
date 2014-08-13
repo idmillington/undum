@@ -1,4 +1,4 @@
-// Перевод на русский: Oreolek, 2010
+// Перевод на русский: Oreolek, 2013
 // ---------------------------------------------------------------------------
 // Отредактируйте этот файл, чтобы описать вашу игру. Он должен иметь не
 // менее четырёх разделов данных: undum.game.situations, undum.game.start,
@@ -9,15 +9,34 @@
  * Я использую UUID, но вы можеет использовать всё что гарантированно
  * уникально (URL, которым вы владеете, или вариацию вашего адреса 
  * e-mail, например).*/
-undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce072";
+undum.game.id = "349baf43-9ade-49a8-86d0-24e3de3ce042";
 
+/* A string indicating what version of the game this is. Versions are
+ * used to control saved-games. If you change the content of a game,
+ * the saved games are unlikely to work. Changing this version number
+ * prevents Undum from trying to load the saved-game and crashing. */
 undum.game.version = "1.0";
 
 /* Ситуации, в которых может быть игра. Каждая имеет уникальный ID. */
+
+// Строки локализации
+undum.language["ru"]["start_title"] = "Знакомство с Undum";
+undum.language["ru"]["situations_title"] = "Из чего сделаны игры Undum";
+undum.language["ru"]["links_title"] = "Смена наполнения";
+undum.language["ru"]["sticky_title"] = "Разные виды ссылок";
+undum.language["en"]["qualities_title"] = "Qualities and the Character";
+undum.language["ru"]["qualities_title"] = "Качества и персонаж";
+undum.language["en"]["progress_title"] = "Showing a Progress Bar";
+undum.language["ru"]["progress_title"] = "Отображение прогресса";
+undum.language["en"]["saving_title"] = "Saving and Loading";
+undum.language["ru"]["saving_title"] = "Сохранение и загрузка";
+undum.language["en"]["last_title"] = "Finish the Tutorial";
+undum.language["ru"]["last_title"] = "Закончить обучение";
+
 undum.game.situations = {
     start: new undum.SimpleSituation(
-        "<h1>Знакомство с Undum</h1>\
-        <img src='media/games/tutorial/woodcut1.png' class='float_right'>\
+        "<h1>"+"start_title".l()+"</h1>\
+        <img src='tutorial/woodcut1.png' class='float_right'>\
         <p>Добро пожаловать в обучающую игру по Undum. Undum - это инструмент для написания\
         гипертекстовой интерактивной литературы. Он обладает некоторыми уникальными возможностями\
         и визуальным дизайном, который поддерживает повествующие игры.</p>\
@@ -30,15 +49,21 @@ undum.game.situations = {
         и представить более интересные элементы игры.</p>\
         \
         <p class='transient'>А сейчас давайте продолжим обучение.\
-        <a href='rooms'>Нажмите на эту ссылку</a>, чтобы продвинуться дальше.</p>"
+        <a href='hub'>Нажмите на эту ссылку</a>, чтобы продвинуться дальше.</p>"
     ),
+    // NB: Ситуация 'hub', основной список тем, задана полностью в HTML, и не редактируется вручную
+    // через словарь game.situations в этом файле.
+
     // Для разнообразия, здесь мы задаём ситуацию, используя высокоуровневый тип Situation.
     // Это прекрасный подход, чтобы сгенерировать текст, просто найдя его в HTML документе.
     // Для статичного текста в этом больше смысла, чем записывать его просто так.
-    rooms: new undum.Situation({
+    situations: new undum.Situation({
         enter: function(character, system, from) {
-            system.write($("#s_rooms").html());
-        }
+            system.write($("#s_situations").html());
+        },
+        tags: ["topic"],
+        optionText: "situations_title".l(),
+        displayOrder: 1
     }),
     todo: new undum.SimpleSituation(
         "<p>В ситуации может произойти две вещи. Либо персонаж\
@@ -48,7 +73,7 @@ undum.game.situations = {
         все они возвращают персонажа обратно в ту же ситуацию.</p>\
         \
         <p>Когда вы создаёте свою игру, используйте ситуации, чтобы отразить\
-        изменения в том, что может сделать персонаж. Так, вы можете изменить ситуацию если персонаж\
+        изменения в том, что може сделать персонаж. Так, вы можете изменить ситуацию если персонаж\
         тянет рычаг, чтобы открыть люк, например. Действия\
         предназначены для ситуаций, где персонаж может изучать вещи более пристально\
         , а может быть улучшить свою магию, выпив зелья.\
@@ -76,8 +101,7 @@ undum.game.situations = {
         }
     ),
     links: new undum.SimpleSituation(
-        "<h1>Смена наполнения</h1>\
-        <p>Между каждым кусочком нового текста Undum вставляет отчётливую линию\
+        "<p>Между каждым кусочком нового текста Undum вставляет отчётливую линию\
         на полях. Она позволяет вам быстро увидеть всё, что было выдано\
         в качестве результата вашего последнего клика.\
         Это очень удобно для маленьких устройств, или когда появилось\
@@ -96,18 +120,23 @@ undum.game.situations = {
         и может быть применён к параграфам, div'ам или просто\
         span'ам<span class='transient'> (как вот этот)</span>.</p>\
         \
-        <p>Также вы могли заметить, что, когда вы перемещаетесь в другую ситуацию, все ссылки\
+        <p>также вы могли заметить, что, когда вы перемещаетесь в другую ситуацию, все ссылки\
         в предыдущей превращаются в обычный текст. Это сделано для того, чтобы не дать вам\
         отступить и попробовать предыдущие варианты ответа, когда вы уже выбрали один из них.\
-        В других H-IF системах это делается при помощи полной очистки предыдущих страниц.\
+        В других системах гипертекстовой интерактивной литературы это делается при помощи полной очистки предыдущих страниц.\
         Но это не позволяет вам вернуться и перечитать вашу историю.</p>\
         \
-        <p class='transient'>Давайте узнаем больше о ссылках и посмотри, как <a href='sticky'>изменить</a> это поведение.</p>"
+        <p class='transient'>Тема \""+"sticky_title".l()+"\" содержит больше информации об этих ссылках.\
+        Вернёмся к <a href='hub'>списку тем</a>.</p>.",
+        {
+            heading: "links_title".l(),
+            diplayOrder: 2,
+            tags: ["topic"]
+        }
     ),
     sticky: new undum.SimpleSituation(
-        "<h1>Ссылки</h1>\
-        <p>В undum существует три типа ссылок. Мы уже видели первые два:\
-        ссылки смены ситуаций и ссылки, вызывающие действие. Когда вы\
+        "<p>В Undum существует три типа ссылок. Мы уже видели первые два:\
+        ссылки смены ситцаций и ссылки, вызывающие действие. Когда вы\
         включаете ссылку в ваш текст, undum распознаёт её и оформляет\
         подобающим образом. Если вы создаёте ссылку с атрибутом HTML <em>href</em>,\
         содержащим только имя ('зал', например), то она отправит персонажа\
@@ -117,11 +146,11 @@ undum.game.situations = {
         любом случае, если персонаж уже находится в этой ситуации, то её метод <em>enter</em>\
         ещё раз вызываться не будет.</p>\
         \
-        <img src='media/games/tutorial/woodcut2.png' class='float_left'>\
+        <img src='tutorial/woodcut2.png' class='float_left'>\
         <p>Наконец, третий тип ссылок - это обычная гиперссылка. Если ваша\
         ссылка не состоит из одного элемента или пары элементов, как описано выше, то\
         Undum догадается, что вы имели в виду обычную гиперссылку. Например, \
-        <a href='http://www.bbc.co.uk/russian/' class='sticky'>как в этом случае.</a>\
+        <a href='http://www.bbc.co.uk/russian/' class='sticky' target='_blank'>как в этом случае.</a>\
         Если ваша ссылка всё-таки <em>выглядит</em> как ссылка Undum, то вы\
         всё ещё можете заставить Undum не интерпретировать её как ситуацию или действие, добавив\
         CSS класс <em>raw</em> к тегу HTML <em>a.</em>\
@@ -134,7 +163,12 @@ undum.game.situations = {
         CSS: <em>sticky</em>. Когда вы\
         <a href='oneshot'>покинете эту ситуацию</a>, вы заметите, что внешняя ссылка осталась активной.\
         Это позволяет вам предлагать ссылки, которые останутся рабочими в течение всего рассказа,\
-        например, ссылка заклинания телепортации домой.</p>"
+        например, ссылка заклинания телепортации домой.</p>",
+        {
+            tags: ["topic"],
+            displayOrder: 3,
+            heading: "sticky_title".l()
+        }
     ),
     oneshot: new undum.SimpleSituation(
         "<p>Ещё одна последняя настройка ссылок. Если вы назначите ссылке CSS класс\
@@ -150,7 +184,7 @@ undum.game.situations = {
         будут удалены, так что вам не придётся заботиться о игроке, который найдёт способ\
         ещё раз вызвать действие.</p>\
         <p class='transient'>После того, как вы нажмёте на ссылку, мы \
-        <a href='qualities'>продолжим.</a></p>",
+        <a href='hub'>продолжим.</a></p>",
         {
             actions: {
                 "one-time-action": "<p>Как я уже говорил, однократные действия\
@@ -161,8 +195,7 @@ undum.game.situations = {
         }
     ),
     qualities: new undum.SimpleSituation(
-        "<h1>Качества</h1>\
-        <p>Хватит о ситуациях, давайте поговорим о персонаже. Персонаж описывается\
+        "<p>Хватит о ситуациях, давайте поговорим о персонаже. Персонаж описывается\
         при помощи серии <em>качеств.</em> Это численные значения, которые могут описать\
         всё от врождённых способностей до количества ресурсов,подконтрольных персонажу.\
         Качества показаны в блоке справа от текста.</p>\
@@ -174,6 +207,9 @@ undum.game.situations = {
         Также вы можете получить повышение Силы, выполнив\
         <a href='./skill-boost'>это действие</a> столько раз, сколько захочется.</p>",
         {
+            heading: "qualities_title".l(),
+            tags: ["topic"],
+            displayOrder: 4,
             actions: {
                 "skill-boost": function(character, system, action) {
                     system.setQuality("skill", character.qualities.skill+1);
@@ -226,8 +262,8 @@ undum.game.situations = {
         Он также может содержать ссылки Undum, так что это - ещё одно место, куда\
         вы можете поместить действия, которые персонаж может выполнять в течение долгого периода времени.\
         </p>\
-        <p class='transient'>Давайте продолжим к \
-        <a href='progress'>следующей ситуации.</a> А пока вы это сделаете, я сменю\
+        <p class='transient'>Давайте вернёмся к <a href='hub'>списку.</a>\
+        А пока вы это сделаете, я сменю\
         текст персонажа. Заметьте, как он подсвечивается, в точности как и качество,\
         когда изменяется.</p>",
         {
@@ -239,13 +275,15 @@ undum.game.situations = {
         }
     ),
     progress: new undum.SimpleSituation(
-        "<h1>Отображение Прогресса</h1>\
-        <p>Иногда вы хотите сделать изменение качества более заметным событием.\
+        "<p>Иногда вы хотите сделать изменение качества более заметным событием.\
         Вы можете сделать это, анимировав его. Если вы\
         <a href='./boost-stamina-action'>поднимете вашу Ловкость</a>,\
         то вы увидите, что Ловкость изменяется как обычно в панели персонажа.\
         Но вы также увидите появление и анимацию полоски прогресса чуть ниже.</p>",
         {
+            tags: ["topic"],
+            heading: "progress_title".l(),
+            displayOrder: 5,
             actions: {
                 // Здесь я иду по неявному пути - ссылка выдаёт действие,
                 // которое затем использует doLink, чтобы напрямую изменить
@@ -269,41 +307,87 @@ undum.game.situations = {
         одно из них. Например, вы можете захотеть показать прогресс персонажа к следующему уровню - \
         имея уровень персонажа качеством, конечно.</p>\
         \
-        <img src='media/games/tutorial/woodcut3.png' class='float_right'>\
+        <img src='tutorial/woodcut3.png' class='float_right'>\
         <p>После нескольких секунд, полоса прогресса исчезает, чтобы оставить\
         внимание на тексте. Undum не сделан для игр, где нужно большое управление\
         статистиками. Если вы хотите, чтобы изменение было частью постоянной\
         записи игры, напишите его в тексте.</p>\
         \
-        <p>А сейчас мы почти у конца дороги. Но пока что вы шли по этому обучению\
-        линейно - от одной ситуации до другой, без единого выбора.\
-        Undum сделан, чтобы поддерживать ветвящиеся и сливающиеся рассказы.\
-        <span class='transient'>В качестве маленькой иллюстрации\
-        этого, выберите сейчас между направлением по <a href='one'>варианту\
-        один</a> и по <a href='two'>варианту два.</a></span></p>"
-    ),
-    one: new undum.SimpleSituation(
-        "<h1>Вариант Один</h1>\
-        <p>Вы выбрали первый вариант, и возможно, он лучший, так как вариант два\
-        написан на плохо зарифмованном коптском.\
-        </p>\
-        <p>Отсюда остался всего лишь <a href='saving'>маленький шаг</a> до последних\
-        кусочков текста в этом обучении.</p>"
-    ),
-    "two": new undum.SimpleSituation(
-        "<h1>Вариант Два</h1>\
-        <p>Вы выбрали второй вариант, и он также мой любимый. \
-        Я нахожу раздражительными фотографии, сопровождающие первый выбор.\
-        Ногти на пальцах не должны гнуться таким образом...</p>\
-        <p>Отсюда остался всего лишь <a href='saving'>маленький шаг</a> до последних\
-        кусочков текста в этом обучении.</p>"
+        <p class='transient'>Давайте почитаем про <a href='hub'>что-нибудь ещё.</a></p>"
     ),
     // Опять, мы получаем текст из HTML файла.
     "saving": new undum.Situation({
         enter: function(character, system, from) {
             system.write($("#s_saving").html());
-        }
+        },
+        tags: ["topic"],
+        displayOrder: 6,
+        optionText: "saving_title".l(),
     }),
+    "implicit-boost": new undum.SimpleSituation(
+        "<p>Ваша Удача была увеличена<span class='transient'>, проверьте список \
+        ссылок, вдруг они изменились?</span>.</p>",
+        {
+            tags: ["example"],
+            enter: function(character, system, from) {
+                system.animateQuality("luck", character.qualities.luck+1)
+                system.doLink('example-choices');
+            },
+            optionText: "Увеличить вашу Удачу",
+            displayOrder: 1,
+            canView: function(character, system, host) {
+                return character.qualities.luck < 4;
+            }
+        }
+    ),
+    "implicit-drop": new undum.SimpleSituation(
+        "<p>Ваша Удача была уменьшена<span class='transient'>, проверьте список \
+        ссылок, вдруг они изменились?</span>.</p>",
+        {
+            tags: ["example"],
+            enter: function(character, system, from) {
+                system.animateQuality("luck", character.qualities.luck-1)
+                system.doLink('example-choices');
+            },
+            optionText: "Уменьшить вашу Удачу",
+            displayOrder: 2,
+            canView: function(character, system, host) {
+                return character.qualities.luck > -4;
+            }
+        }
+    ),
+    "high-luck-only": new undum.SimpleSituation(
+        "<p>Ваша Удача выше чем 'нормально'. Ссылка на эту ситуацию не появилась бы, \
+        если бы вам она была меньше.</p>",
+        {
+            tags: ["example"],
+            enter: function(character, system, from) {
+                system.doLink('example-choices');
+            },
+            optionText: "Выбор Большой Удачи",
+            displayOrder: 3,
+            canView: function(character, system, host) {
+                return character.qualities.luck > 0;
+            }
+        }
+    ),
+    "low-luck-only": new undum.SimpleSituation(
+        "<p>Ваша Удача ниже, чем 'нормально'. Ссылка на эту ситуацию появляется \
+        в любом случае, но вы можете выбрать её только если вы сбросите Удачу.\
+        Это проверяет метод <em>canChoose</em>.</p>",
+        {
+            tags: ["example"],
+            enter: function(character, system, from) {
+                system.doLink('example-choices');
+            },
+            optionText: "Выбор Низкой Удачи (треубет низкую Удачу для нажатия)",
+            displayOrder: 3,
+            canChoose: function(character, system, host) {
+                return character.qualities.luck < 0;
+            }
+        }
+    ),
+
     "last": new undum.SimpleSituation(
         "<h1>Куда теперь</h1>\
         <p>Итак, это всё. Мы показали весь Undum. Эта ситуация - конечная, поскольку\
@@ -314,6 +398,9 @@ undum.game.situations = {
         Настало время для вас вскрыть файл с игрой и написать свою собственную историю.</p>\
         <h1>Конец</h1>",
         {
+            tags: ["topic"],
+            optionText: "last_title".l(),
+            displayOrder: 8,
             enter: function(character, system, from) {
                 system.setQuality("inspiration", 1);
                 system.setCharacterText(

@@ -6,22 +6,26 @@
     <title>Undum</title>
     <!-- Конец названия игры -->
 
-    <link href="http://fonts.googleapis.com/css?family=Tangerline" rel="stylesheet" type="text/css">
-
     <!-- Это стиль оформления вашей игры, измените его если вам хочется. -->
     <link rel="stylesheet" href="media/css/undum.css" media="screen">
 
+    <!-- Поддержка переносных устройств. -->
     <meta name="viewport" content="user-scalable=no, width=device-width">
     <link rel="apple-touch-icon" href="media/img/iphone/icon.png">
     <link rel="apple-touch-startup-image" href="media/img/iphone/splash.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--[if !IE]>-->
-    <link media="only screen and (max-width: 640px)" rel="stylesheet" type="text/css" href="media/css/undum-mobile.css">
+    <link media="only screen and (max-width: 640px)"
+          rel="stylesheet" type="text/css" href="media/css/undum-mobile.css">
     <!--<![endif]-->
   </head>
   <body>
+
+    <!-- Это меню для мобильных устройств. 
+    На широких экранах постоянно присутствует вся информация, это меню на них скрыто. -->
     <div id="toolbar">
+      <!-- Краткая версия заголовка, для панели на мобильных устройствах. -->
       <h1>Undum</h1>
       <div class="nav">
         <a href="#" class="button" id="menu-button">Меню</a>
@@ -36,19 +40,19 @@
     <div id="page">
 
       <div id="tools_wrapper">
-        <div id="info_panel" class="tools left">
+        <div id="info_panel" class="tools left hyphenate">
 
-          <!-- Предыстория игры; отредактируйте это. -->
+          <!-- Информация об игре, предыстория; отредактируйте это. -->
           <h1>Undum</h1>
           <p>
             Undum - это чисто клиентский (client-side) игровой движок для повествовательной интерактивной литературы.
             Он создан для HTML&#x200A;5 и CSS&#x200A;3. Вы можете прочитать о нём и скачать исходный код
-            <a href="http://github.com/idmillington/undum">здесь</a>.
+            <a href="https://github.com/oreolek/undum">здесь</a>.
           </p>
           <!-- Конец предыстории -->
 
           <div class='buttons'>
-            <button id="save">Сохранить</button><button id="erase">Стереть</button>
+            <button id="save">Запомнить</button><button id="erase">Забыть</button>
           </div>
         </div>
 
@@ -56,7 +60,7 @@
           <h1>Персонаж</h1>
           <div id="character">
             <div id="character_text">
-              <div id="character_text_content"></div>
+              <div id="character_text_content" class="hyphenate"></div>
             </div>
             <div id="qualities"></div>
           </div>
@@ -68,33 +72,28 @@
           <div class="label">
 
             <!-- Приветствие игры; отредактируйте это -->
-            <h1>Обучение Undum <span class='fancy'>&amp;</span><br>
-              Интерактивный Пример</h1>
-            <h2>Автор: I. D. Millington<br>
-            Переводчик: Oreolek</h2>
+            <h1><span class="fancy">Undum</span></h1>
+            <h2>Движок гипертекстовых игр</h2>
             <!-- Конец приветствия -->
-            <noscript><p class="noscript_message">This game requires 
-              Javascript.</p></noscript>
+            <noscript><p class="noscript_message">Эта игра требует включённого Javascript.</p></noscript>
             <p class="click_message">Нажмите, чтобы начать</p>
           </div>
         </div>
 
         <div id="content_wrapper">
-          <div id="content">
+          <div id="content" class="hyphenate">
           </div>
           <a name="end_of_content"></a>
         </div>
 
         <div id="legal">
           <!-- Ваш копирайт; отредактируйте это -->
-          <p>Содержимое, дополнительное программное обеспечение и дизайн &copy; 2010 IDM.</p>
+          <p>Содержимое, дополнительное программное обеспечение и дизайн &copy; <a href="../index.html#CREDITS">авторы Undum.</a></p>
           <!-- Конец вашего копирайта -->
 
-          <!-- Эта линия копирайта должна остаться в вашем финальном файле. -->
+          <!-- Нам будет приятно, если вы оставите эту ссылку в своей игре. -->
           <p>
-            Программное обеспечение и дизайн &copy; 2010 IDM. Undum доступен
-            <a href="http://github.com/idmillington/undum">здесь</a>.
-            Производные работы должны включать это сообщение о копирайте и ссылку.
+            Создано с использованием <a href="http://undum.com">Undum.</a>
           </p>
         </div>
       </div>
@@ -132,13 +131,13 @@
          не хотите хранить в коде игры. Посмотрите файл tutorial.game.js для того,чтобы понять,
          как это используется. -->
     <div id="content_library">
-      <div id="s_rooms">
+      <div id="s_situations">
         <h1>Ситуации</h1>
         <p>В Undum, любое взаимодействие происходит в ситуации. Вы можете думать о ситуации
           либо как о 'Комнате' (Room) в традиционной интерактивной литературе (хотя
           этот подход не так гибок), или как о 'Странице' в книге-игре. В любой момент времени,
           персонаж находится точно в одной ситуации, и эта ситуация отвечает за всё,
-          что происходит с ним.</p>
+          что происхожит с ним.</p>
         <p>Ситуации - это кусочки кода, которые генерируют вывод - то есть то, что вы сейчас читаете.
         Например, этот текст был сгенерирован методом <em>enter</em> первой ситуации.
         </p>
@@ -171,18 +170,60 @@
           всю игру, чтобы увидеть изменения.
         </p>
         <p class='transient'>
-          Настало время для <a href='last'>последней секции.</a>
+          Давайте вернёмся к <a href='hub'>списку тем</a>.
         </p>
+      </div>
+
+      <!-- Некоторые ситуации объявлены полностью в HTML -->
+      <div id="hub" class="situation" data-choices="#topic"
+           data-option-text="Список тем" data-show-visited='false'>
+        <h1 class="transient">Темы</h1>
+        <p class="transient">Выберите тему, о которой вы хотите узнать подробнее. Если вы сомневаетесь, пройдите по порядку.</p>
+      </div>
+
+      <div id="implicit" class="situation" data-tags="topic"
+           data-heading="Неявный выбор" data-display-order="7"
+           data-choices="#example">
+        <p>Когда вы пишете игру на Undum, вам может понадобиться сделать так,
+          чтобы некоторые возможности появлялись только при соблюдении определённых
+          условий. У вас может быть возможность снять секретную панель в старинном
+          доме с привидениями, но она должна быть доступна только если персонаж знает, где
+          она находится. </p>
+        <p>Если возможности доступны в нескольких ситуациях, за ними будет трудно следить,
+          чтобы нарисовать список из именно доступных вариантов выбора.</p>
+        <p>Чтобы помочь, Undum может составлять списки ссылок на ситуации за вас.
+          Он делает это в три шага. Сначала, каждой ситуации вы назначаете одну или
+          больше меток (тегов). Это позволит вам, например, попросить список ситуаций
+           с меткой <em>"в коридоре".</em></p>
+        <p>Во-вторых, ситуации имеют метод <em>canView,</em> который решает, может
+          ли эта ситуация появляться в списках. Этот метод может следить за сложными
+          зависимостями, по-своему оценивать текущее состояние игры.</p>
+        <p>Наконец, ситуации <em>SimpleSituation</em> имеют опцию <em>choices</em>.
+          Если вы запишете в неё одну или несколько меток, то построение списков выбора
+          будет полностью автоматизировано.</p>
+        <p>Вы уже видели это в списке тем. Список тем генерируется автоматически.
+          В нём включена опция скрытия тем, которые вы уже посещали. 
+          <span class="transient">Давайте посмотрим на более сложный пример автоматического
+          списка, который может меняться:</span></p>
+      </div>
+
+      <div id="example-choices" class="situation" data-choices="#example">
+        <p class="transient">Вы можете вернуться к <a href='hub'>списку тем</a> или выбрать другую
+        ссылку из этого примера:</p>
       </div>
     </div>
 
     <!-- Загружаем необходимые библиотеки -->
     <script type="text/javascript" src="media/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/hyphenator/4.2.0/hyphenator.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/hyphenator/4.2.0/patterns/ru.js"></script>
     <script type="text/javascript" src="media/js/undum.js"></script>
     <script type="text/javascript" src="media/js/lang/ru.js"></script>
-
+    <script type="text/javascript">
+        Hyphenator.run();
+     </script>
+    
     <!-- Задайте здесь путь к главному файлу с вашей игрой. -->
-    <script type="text/javascript"
-            src="media/games/tutorial/tutorial.game.ru.js"></script>
+    <script type="text/javascript" src="media/games/tutorial/tutorial.game.ru.js"></script>
   </body>
 </html>
