@@ -1478,7 +1478,7 @@
 
     /* This gets called when a link needs to be followed, regardless
      * of whether it was user action that initiated it. */
-    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?$/;
+    var linkRe = /^([-a-z0-9]+|\.)(\/([-0-9a-z]+))?(\?.+)?$/;
     var processLink = function(code) {
         // Check if we should do this now, or if processing is already
         // underway.
@@ -1586,22 +1586,26 @@
             //  Remove links and transient sections.
             $('#content a').each(function(index, element) {
                 var a = $(element);
-                if (a.hasClass('sticky')) return;
+                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?/))
+                    return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
+            var contentToHide = $('#content .transient, #content ul.options');
+            contentToHide.add($("#content a").filter(function(){
+                return this.attr("href").match(/[?&]transient[=&]?/);
+            }));
             if (interactive) {
                 if (mobile) {
-                    $('#content .transient, #content ul.options').
-                        fadeOut(2000);
+                  contentToHide.fadeOut(2000);
                 } else {
-                    $('#content .transient, #content ul.options').
-                        animate({opacity: 0}, 1500).
-                        slideUp(500, function() {
-                            $(this).remove();
-                        });
+                  contentToHide.
+                    animate({opacity: 0}, 1500).
+                    slideUp(500, function() {
+                      $(this).remove();
+                    });
                 }
             } else {
-                $('#content .transient, #content ul.options').remove();
+                contentToHide.remove();
             }
         }
 
@@ -1628,15 +1632,15 @@
         // Wire up the links for regular <a> tags.
         output.find("a").each(function(index, element) {
             var a = $(element);
-            if (!a.hasClass("raw")) {
-                var href = a.attr('href');
+            var href = a.attr('href');
+            if (!a.hasClass("raw")|| href.match(/[?&]raw[=&]?/)) {
                 if (href.match(linkRe)) {
                     a.click(function(event) {
                         event.preventDefault();
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (a.hasClass("once")) {
+                        if (a.hasClass("once") || href.match(/[?&]once[=&]?/)) {
                             system.clearLinks(href);
                         }
 
