@@ -310,6 +310,7 @@
                 system.writeHeading(this.heading);
             }
         }
+        if (this._enter) this._enter(character, system, from);
         if (this.content) {
             if ($.isFunction(this.content)) {
                 system.write(this.content());
@@ -323,7 +324,6 @@
                                                        this.maxChoices);
             system.writeChoices(choices);
         }
-        if (this._enter) this._enter(character, system, from);
     };
     SimpleSituation.prototype.act = function(character, system, action) {
         var response = this.actions[action];
