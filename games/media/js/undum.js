@@ -885,7 +885,7 @@
 
         // Add the data block, if we need it.
         var qualityBlock = $("#q_"+quality);
-        if (qualityBlock.size() <= 0) {
+        if (qualityBlock.length <= 0) {
             if (newDisplay === null) return;
             qualityBlock = addQualityBlock(quality).hide().fadeIn(500);
         } else {
@@ -898,7 +898,7 @@
                 // it is the last quality in the group.
                 var toRemove = null;
                 var groupBlock = qualityBlock.parents('.quality_group');
-                if (groupBlock.find('.quality').size() <= 1) {
+                if (groupBlock.find('.quality').length <= 1) {
                     toRemove = groupBlock;
                 } else {
                     toRemove = qualityBlock;
@@ -1336,7 +1336,7 @@
     /* Fades in and out a highlight on the given element. */
     var showHighlight = function(domElement) {
         var highlight = domElement.find(".highlight");
-        if (highlight.size() <= 0) {
+        if (highlight.length <= 0) {
             highlight = $('<div>').addClass('highlight');
             domElement.append(highlight);
         }
@@ -1353,7 +1353,7 @@
     var insertAtCorrectPosition = function(parent, newItem) {
         var newPriority = newItem.attr('data-priority');
         var children = parent.children();
-        for (var i = 0; i < children.size(); i++) {
+        for (var i = 0; i < children.length; i++) {
             var child = children.eq(i);
             if (newPriority < child.attr('data-priority')) {
                 child.before(newItem);
@@ -1426,7 +1426,7 @@
             var group = game.qualityGroups[groupId];
             assert(group, "no_group_definition".l({id: groupId}));
             groupBlock = $("#g_"+groupId);
-            if (groupBlock.size() <= 0) {
+            if (groupBlock.length <= 0) {
                 groupBlock = addGroupBlock(groupId);
             }
         }
