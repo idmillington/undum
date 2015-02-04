@@ -1,0 +1,29 @@
+{
+  "name": "undum",
+  "version": "2.0",
+  "homepage": "http://undum.com/",
+  "authors": [
+    "Ian Millington <idmillington@googlemail.com>"
+  ],
+  "description": "A client-side framework for narrative hypertext interactive fiction",
+  "main": "games/media/js/undum.js",
+  "keywords": [
+    "framework",
+    "game",
+    "choose-your-own"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "docs",
+    "site",
+    "test_webservers"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  }
+}
