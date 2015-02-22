@@ -623,6 +623,33 @@
         doWrite(content, elementSelector, 'prepend', 'before');
     };
 
+    /* Outputs regular content to the page. The content supplied must
+     * be valid "Display Content".
+     *
+     * When a selector is not specified, this behaves identically to
+     * System.prototype.write. If you supply a selector, the content
+     * appears as a child node at the end of the content of the
+     * element that matches that selector.
+     */
+
+    System.prototype.writeInto = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'append', 'append');
+    };
+
+    /* Replaces content with the content supplied, which must be valid
+     * "Display Content".
+     *
+     * When a selector is not specified, this replaces the entire
+     * content of the page. Otherwise, it replaces the element matched
+     * with the selector. This replaces the entire element, including
+     * the matched tags, so ideally the content supplied should fit
+     * in its place in the DOM with the same kind of display element.
+     */
+
+    System.prototype.replaceWith = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'replaceWith', 'replaceWith');
+    };
+
     /* Carries out the given situation change or action, as if it were
      * in a link that has been clicked. This allows you to do
      * procedural transitions. You might have an action that builds up
