@@ -1344,7 +1344,13 @@
         }
         if (scrollPoint > output.offset().top)
             scrollPoint = output.offset().top;
-        scrollStack[scrollStack.length-1] = scrollPoint;
+        /* We add a fifth of the window height to this point, so that the
+         * element won't be placed too close to the bottom edge of the
+         * viewport. If we overshoot the viewport, we'll just go down to
+         * the bottom - desirable behaviour anyway, especially if we are
+         * already there. */
+        scrollStack[scrollStack.length-1] =
+            (scrollPoint + ($(window).height() * 0.2));
     };
 
     /* Gets the unique id used to identify saved games. */
