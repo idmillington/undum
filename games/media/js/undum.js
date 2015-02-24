@@ -1657,7 +1657,7 @@
         var output = $(content);
 
         // Wire up the links for regular <a> tags.
-        output.find("a").each(function(index, element) {
+        output.find("a").addBack("a").each(function(index, element) {
             var a = $(element);
             var href = a.attr('href');
             if (!a.hasClass("raw")|| href.match(/[?&]raw[=&]?/)) {
