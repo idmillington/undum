@@ -476,7 +476,8 @@
             val = this.values.length - 1;
         }
         if (!this.useBonuses) mod = "";
-        return this.values[val] + mod;
+        if (this.values[val] === null) return null;
+        return this.values[val] + mod; // Type coercion
     };
 
     /* A specialization of WordScaleQuality that uses the FUDGE RPG's
