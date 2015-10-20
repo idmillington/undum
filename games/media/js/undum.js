@@ -1619,8 +1619,9 @@
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
             var contentToHide = $('#content .transient, #content ul.options');
+            var that = this;
             contentToHide.add($("#content a").filter(function(){
-                return this.attr("href").match(/[?&]transient[=&]?/);
+                return that.attr("href").match(/[?&]transient[=&]?/);
             }));
             if (interactive) {
                 if (mobile) {
