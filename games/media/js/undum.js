@@ -695,6 +695,10 @@
             var situationId = listOfIds[i];
             var situation = game.situations[situationId];
             assert(situation, "unknown_situation".l({id:situationId}));
+            if (situation == currentSituation)
+            {
+                continue;
+            }
 
             var optionText = situation.optionText(character, this,
                                                   currentSituation);
