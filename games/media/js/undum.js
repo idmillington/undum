@@ -1623,12 +1623,17 @@
                 return $(this).attr("href").match(/[?&]transient[=&]?/);
             }));
             if (interactive) {
+				// Get fade out speed of options on mobile variable.
+                var mobileHide = game.mobileHide;
                 if (mobile) {
-                  contentToHide.fadeOut(2000);
+                  contentToHide.fadeOut(mobileHide);
                 } else {
+				// Get fate out speed of options, and slide up speed variables.
+                var fadeSpeed = game.fadeSpeed;
+				var slideUpSpeed = game.slideUpSpeed;
                   contentToHide.
-                    animate({opacity: 0}, 1500).
-                    slideUp(500, function() {
+                    animate({opacity: 0}, fadeSpeed).
+                    slideUp(slideUpSpeed, function() {
                       $(this).remove();
                     });
                 }
