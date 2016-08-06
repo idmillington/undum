@@ -90,7 +90,7 @@ undum.game.situations = {
         }
     ),
     links: new undum.SimpleSituation(
-        "<p>Between each chunk of new text, Undum inserts a discrete line\
+        "<p>Between each chunk of new text, Undum inserts a discreet line\
         in the margin. This allows you to see at a glance everything that\
         has been output as a result of your last click.\
         It is particularly useful for small devices, or when\
