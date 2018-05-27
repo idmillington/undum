@@ -4,10 +4,10 @@ try:
     import markdown
     import jinja2
 except ImportError:
-    print "You must have the Markdown and Jinja2 python libraries installed."
+    print("You must have the Markdown and Jinja2 python libraries installed.")
     sys.exit(-1)
 import os.path
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SRC_DIR = os.path.join(BASE_DIR, 'src')
@@ -132,7 +132,7 @@ def build():
             # Write it out
             destination = os.path.join(OUT_DIR, "%s.html" % filename[:-3])
             open(destination, 'w').write(result)
-            print "Built: %s" % destination
+            print("Built: %s" % destination)
 
 if __name__ == '__main__':
     build()
