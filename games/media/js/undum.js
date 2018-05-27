@@ -823,10 +823,10 @@
                 datum = candidatesAtLastPriority[i];
                 datum._frequencyValue = this.rnd.random() / datum.frequency;
             }
-            candidatesToInclude.sort(function(a, b) {
+            candidatesAtLastPriority.sort(function(a, b) {
                 return a._frequencyValue - b._frequencyValue;
             });
-            var chosen = candidatesToInclude.slice(0, candidatesToInclude);
+            var chosen = candidatesAtLastPriority.slice(0, candidatesToInclude);
             committed.push.apply(committed, chosen);
         }
 
