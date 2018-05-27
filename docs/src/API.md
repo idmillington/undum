@@ -97,6 +97,22 @@ or if a selector is given, inserted before the matching element. On
 browsers that support it, the story will be scrolled to the insertion
 point.
 
+#### `writeInto(content, elementSelector)`
+
+Writes content into the element matched by `elementSelector`. When
+used without specifying a selector, this method is identical to
+`write`. When a selector is supplied, the content is written as an
+additional child node of the matched element, instead of as a new
+node just after that element, as is the case with `write`.
+
+#### `replaceWith(content, elementSelector)`
+
+Replaces an element with `content`. If `elementSelector` isn't
+supplied, this will replace the entire situation with the given
+`content`. If it is, the matched element will be replaced, including
+the matched set of tags; `content` slides in place of the matched
+element in the DOM.
+
 #### `writeChoices(listOfSituationIds)`
 
 *Since version 2*

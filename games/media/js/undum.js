@@ -476,7 +476,8 @@
             val = this.values.length - 1;
         }
         if (!this.useBonuses) mod = "";
-        return this.values[val] + mod;
+        if (this.values[val] === null) return null;
+        return this.values[val] + mod; // Type coercion
     };
 
     /* A specialization of WordScaleQuality that uses the FUDGE RPG's
@@ -621,6 +622,33 @@
      */
     System.prototype.writeBefore = function(content, elementSelector) {
         doWrite(content, elementSelector, 'prepend', 'before');
+    };
+
+    /* Outputs regular content to the page. The content supplied must
+     * be valid "Display Content".
+     *
+     * When a selector is not specified, this behaves identically to
+     * System.prototype.write. If you supply a selector, the content
+     * appears as a child node at the end of the content of the
+     * element that matches that selector.
+     */
+
+    System.prototype.writeInto = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'append', 'append');
+    };
+
+    /* Replaces content with the content supplied, which must be valid
+     * "Display Content".
+     *
+     * When a selector is not specified, this replaces the entire
+     * content of the page. Otherwise, it replaces the element matched
+     * with the selector. This replaces the entire element, including
+     * the matched tags, so ideally the content supplied should fit
+     * in its place in the DOM with the same kind of display element.
+     */
+
+    System.prototype.replaceWith = function(content, elementSelector) {
+        doWrite(content, elementSelector, 'replaceWith', 'replaceWith');
     };
 
     /* Carries out the given situation change or action, as if it were
@@ -885,7 +913,7 @@
 
         // Add the data block, if we need it.
         var qualityBlock = $("#q_"+quality);
-        if (qualityBlock.size() <= 0) {
+        if (qualityBlock.length <= 0) {
             if (newDisplay === null) return;
             qualityBlock = addQualityBlock(quality).hide().fadeIn(500);
         } else {
@@ -898,7 +926,7 @@
                 // it is the last quality in the group.
                 var toRemove = null;
                 var groupBlock = qualityBlock.parents('.quality_group');
-                if (groupBlock.find('.quality').size() <= 1) {
+                if (groupBlock.find('.quality').length <= 1) {
                     toRemove = groupBlock;
                 } else {
                     toRemove = qualityBlock;
@@ -1336,7 +1364,7 @@
     /* Fades in and out a highlight on the given element. */
     var showHighlight = function(domElement) {
         var highlight = domElement.find(".highlight");
-        if (highlight.size() <= 0) {
+        if (highlight.length <= 0) {
             highlight = $('<div>').addClass('highlight');
             domElement.append(highlight);
         }
@@ -1353,7 +1381,7 @@
     var insertAtCorrectPosition = function(parent, newItem) {
         var newPriority = newItem.attr('data-priority');
         var children = parent.children();
-        for (var i = 0; i < children.size(); i++) {
+        for (var i = 0; i < children.length; i++) {
             var child = children.eq(i);
             if (newPriority < child.attr('data-priority')) {
                 child.before(newItem);
@@ -1426,7 +1454,7 @@
             var group = game.qualityGroups[groupId];
             assert(group, "no_group_definition".l({id: groupId}));
             groupBlock = $("#g_"+groupId);
-            if (groupBlock.size() <= 0) {
+            if (groupBlock.length <= 0) {
                 groupBlock = addGroupBlock(groupId);
             }
         }
@@ -1592,7 +1620,7 @@
             });
             var contentToHide = $('#content .transient, #content ul.options');
             contentToHide.add($("#content a").filter(function(){
-                return this.attr("href").match(/[?&]transient[=&]?/);
+                return $(this).attr("href").match(/[?&]transient[=&]?/);
             }));
             if (interactive) {
                 if (mobile) {
