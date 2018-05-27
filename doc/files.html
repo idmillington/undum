@@ -1,0 +1,220 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: Loading and Saving</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_0'><a href='#h_1'>Loading and Saving</a></li>
+          
+          <li class='level_0'><a href='#h_2'>Writing with Saving / Loading in Mind</a></li>
+          
+          <li class='level_1'><a href='#h_3'>Random Numbers</a></li>
+          
+          <li class='level_1'><a href='#h_4'>Timing</a></li>
+          
+          <li class='level_1'><a href='#h_5'>Detecting Replay When Loading</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<h1 id="h_1">Loading and Saving</h1>
+<p>There is no API for you to manually access loading and saving
+functionality. The load and save functions are triggered by the
+buttons on the user interface. But the way loading and saving work
+does have a big impact on the way you write your code.</p>
+<p>Undum makes a big feature of the fact that you can scroll back through
+the story you've helped create. To save your character's progress you
+would have to save not only the current situation and the character's
+qualities, but also all the text that has been generated up to that
+point. This would not be a problem in a downloaded game, because your
+hard-drive is plenty big enough. Unfortunately in a browser game,
+there is a limit on how much data you can store. Worse, this data
+limit is per-domain. So if you hosted 10 Undum games on a server, the
+saved games from all ten would have to fit into the limited
+space. This makes it impractical to save the complete text history.</p>
+<p>Instead Undum saves all the actions you've taken as a player. It
+doesn't save the character's qualities or any other information, just
+the actions. It expects to be able to rebuild the complete text, and
+the complete current state of the character, by playing back these
+actions when the file is loaded. We call this determinism, because the
+current state of the character and the content needs to be determined
+from just the actions they take.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_2">Writing with Saving / Loading in Mind</h1></div>
+<p>This means that you must take care to write all your code in a way
+that will generate <em>exactly</em> the same results if the game was played
+again in the same way.</p>
+<p>There are two major limitations to this, firstly it means you can't
+use random events, and secondly you can't use timed events. Both of
+these are such serious limitations that Undum provides ways around
+them.</p>
+<p>If you do not follow these restrictions, then it is likely that saved
+games will not load correctly. A player may save their game at one
+point and find most of their progress wiped out when they load it
+again.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3">Random Numbers</h2></div>
+<p>Undum provides your code with a random number generator in
+<code>System.rng</code>, which is an object with the prototype <code>Random</code>. This
+random number generator works with the loading and saving code to make
+sure that, when you load a saved game, the exact same random number
+requests will produce the exact same result. This means you get all
+the benefits of randomness (i.e. two separate games may have different
+results for the same action), but we can always replay a game
+exactly. Dealing with random actions is a difficult issue in testing
+any interactive fiction game. This approach solves that problem. You
+should, therefore, <em>never</em> use Javascript's built-in random number
+generate (<code>Math.random</code>), only ever use the one provided by Undum.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_4">Timing</h2></div>
+<p>Finally, Undum also provides your code timing information in
+<code>System.time</code>, which is the number of seconds (and fractional seconds)
+elapsed since the player began the game. You can use this timing
+information to implement puzzles in your game (such as asking the
+player to complete a series of tasks in a specified amount of
+time). This timing system coordinates with the loading and saving
+system to make sure that, when you save and load the game, the timing
+picks up where it left off. Feel free to make decisions in your code
+based on the current value of <code>System.time</code>, but never use
+Javascript's <code>Date</code> object.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_5">Detecting Replay When Loading</h2></div>
+<p>If your game has elements that should not be triggered while Undum is
+replaying a saved game, for example sound effects or popup notifications,
+you can use <code>undum.isInteractive()</code> to test whether the game is being
+played normally (returns <code>true</code>) or being loaded from a save game
+(returns <code>false</code>).</p>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

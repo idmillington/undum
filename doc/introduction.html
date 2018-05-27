@@ -120,7 +120,7 @@
   <body>
     <div id="content">
       <div id="title">
-        <h1>Undum Documentation: {{title}}</h1>
+        <h1>Undum Documentation: Introduction</h1>
       </div>
       <div id="toc">
         <ul class='toc'>
@@ -129,13 +129,58 @@
         </ul>
         <h2>Contents</h2>
         <ul class='toc'>
-          {% for level,id,text in toc %}
-          <li class='level_{{level}}'><a href='{{id}}'>{{text}}</a></li>
-          {% endfor %}
+          
+          <li class='level_0'><a href='#h_1'>High Level Overview</a></li>
+          
+          <li class='level_1'><a href='#h_2'>Situations</a></li>
+          
+          <li class='level_1'><a href='#h_3'>Actions</a></li>
+          
+          <li class='level_1'><a href='#h_4'>Qualities</a></li>
+          
+          <li class='level_1'><a href='#h_5'>Other Concepts</a></li>
+          
         </ul>
       </div>
       <div id="body">
-        {{ content }}
+        
+<h1 id="h_1">High Level Overview</h1>
+<p>Undum games are based around three concepts: Situations, Actions and
+Qualities.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_2">Situations</h2></div>
+<p>A situation is a chunk of code that is responsible for adding content
+to the screen and responding to user interaction. All user interaction
+is performed by clicking links in the content.</p>
+<p>Often a link will change the current situation, in which case another
+situation is loaded, can write to the screen, and can begin responding
+to user interaction. When a situation changes, all links that were
+previously available are removed, so that the player can't unfairly go
+back and try alternative options after committing to one. It is
+possible to override this behavior, see the section on 'Sticky',
+below.</p>
+<p>There is always exactly one active situation. These situations, and
+the links between them, form the structure of the game.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3">Actions</h2></div>
+<p>A situation may offer the player a series of actions to perform. These
+actions are internal to that situation and normally do not cause the
+situation to change. Actions may output more content, including new
+links for the user to select.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_4">Qualities</h2></div>
+<p>Qualities represent the current state of the character. Internally
+they are all numeric values, able to take on any decimal value,
+positive or negative.  They have no meaning to Undum - they are given
+meaning by your code as you perform calculations or make decisions
+based on their value.</p>
+<p>Qualities display themselves to the user through a formatting
+function, which can turn the number into any kind of indicator: a
+progress bar, a symbol, a word, an integer, and so on. So as far as
+the user is concerned, qualities can represent any kind of value.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_5">Other Concepts</h2></div>
+<p>There are a handful of other elements to an Undum game, but they are
+very much in a supporting role. Quality groups allow you to display a
+set of qualities under a common heading; and character text is a short
+chunk of HTML that you can use to summarize a character's qualities,
+or to give hints.</p>
       </div>
       <div id="legal">
         <p>

@@ -1,0 +1,782 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: Javascript API</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_0'><a href='#h_1'>Character</a></li>
+          
+          <li class='level_0'><a href='#h_2'>System</a></li>
+          
+          <li class='level_1'><a href='#h_3'>Random</a></li>
+          
+          <li class='level_0'><a href='#h_4'>Situation</a></li>
+          
+          <li class='level_1'><a href='#h_5'>SimpleSituation</a></li>
+          
+          <li class='level_0'><a href='#h_6'>QualityDefinition</a></li>
+          
+          <li class='level_1'><a href='#h_7'>IntegerQuality</a></li>
+          
+          <li class='level_1'><a href='#h_8'>NonZeroIntegerQuality</a></li>
+          
+          <li class='level_1'><a href='#h_9'>NumericQuality</a></li>
+          
+          <li class='level_1'><a href='#h_10'>WordScaleQuality</a></li>
+          
+          <li class='level_1'><a href='#h_11'>FudgeAdjectivesQuality</a></li>
+          
+          <li class='level_1'><a href='#h_12'>OnOffQuality</a></li>
+          
+          <li class='level_1'><a href='#h_13'>YesNoQuality</a></li>
+          
+          <li class='level_0'><a href='#h_14'>QualityGroup</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<h1 id="h_1"><code>Character</code></h1>
+<p>The character is created for you, but is passed into most of the
+functions that you define. It consists of an object with no methods
+and two properties:</p>
+<h4><code>qualities</code></h4>
+<p>The qualities object maps quality identifiers to their current
+value. Your code finds the current value associated with a quality by
+reading from this object, for example:</p>
+<pre><code>var gold = character.qualities.gold;
+</code></pre>
+<p>To set a quality, you have two choices. If you know the quality you
+want to set will not appear in the user interface, then you can set it
+directly:</p>
+<pre><code>character.qualities.gold += 1;
+</code></pre>
+<p>If it does appear on-screen, then this approach will mean that the
+character panel doesn't update, and the screen will be out of sync
+with the actual value. Instead it is better to use the <code>System</code> method
+<code>setQuality</code>, which also updates the UI:</p>
+<pre><code>system.setQuality('gold', character.qualities.gold+1);
+</code></pre>
+<p>It is fine to use <code>setQuality</code> if the quality isn't visible, making
+this the preferred option for all quality modifications.</p>
+<h4><code>sandbox</code></h4>
+<p>Not every bit of data you want to associate with a character fits
+nicely into a quality. The sandbox is a general storage space for any
+further data you want to store in the course of your game, for
+example:</p>
+<pre><code>character.sandbox.roomsSearched.push('bathroom');
+</code></pre>
+<p>Sandbox data is never visible to the user, so you can use any data
+structures you like here, to any depth.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_2"><code>System</code></h1></div>
+<p>The system represents the interface between your code and the
+user-interface.  You don't create your own <code>System</code> object, it is
+passed into your code.</p>
+<h4><code>clearContent(elementSelector)</code></h4>
+<p><em>Since version 2</em></p>
+<p>Removes all content from the page, clearing the main content area.</p>
+<p>Although Undum is designed to keep the flow of the narrative on one
+page, sometimes you do need to start a new page, and this allows you
+to do so.</p>
+<p>The <code>elementSelector</code> is options. If you give it, then the DOM element
+matching the selector is cleared, rather than the whole document.</p>
+<h4><code>write(content, elementSelector)</code></h4>
+<p>Writes new content to the main flow of the story. The content you pass
+in must be either valid DOM elements already, or else be a string
+containing text in Display Content format.</p>
+<p>The <code>elementSelector</code> is optional. If you provide it, then the new
+content will be added after the DOM element in the document that
+matches the selector. This allows you to do out-of-order addition of
+content. Simply add a paragraph with an id in your game, then later
+you can give this id as a selector to write, and the new content will
+be inserted immediately following that paragraph, regardless of how
+much extra content has been added since that point. If no selector is
+given then <code>#content</code> is used, i.e. the content is added at the end of
+the document. The <code>writeBefore</code> method inserts content at the start of
+the document, or before a selector.</p>
+<p>The story will scroll to the start of the insertion point. If you do
+not wish to animate this scrolling, but just jump right there, you can
+switch off jQuery's animation system by adding <code>jQuery.fx.off=true</code> to
+your initialization code. This is particularly useful when debugging.</p>
+<h4><code>writeHeading(content, elementSelector)</code></h4>
+<p>Writes new content into the story and formats it as a heading. This
+method work exactly as <code>write</code>, but wraps the content you provide into
+a <code>h1</code> html tag.</p>
+<h4><code>writeBefore(content, elementSelector)</code></h4>
+<p>Writes content into the story. This method is identical to <code>write</code>,
+above, except that the content is written at the start of the story,
+or if a selector is given, inserted before the matching element. On
+browsers that support it, the story will be scrolled to the insertion
+point.</p>
+<h4><code>writeInto(content, elementSelector)</code></h4>
+<p>Writes content into the element matched by <code>elementSelector</code>. When
+used without specifying a selector, this method is identical to
+<code>write</code>. When a selector is supplied, the content is written as an
+additional child node of the matched element, instead of as a new
+node just after that element, as is the case with <code>write</code>.</p>
+<h4><code>replaceWith(content, elementSelector)</code></h4>
+<p>Replaces an element with <code>content</code>. If <code>elementSelector</code> isn't
+supplied, this will replace the entire situation with the given
+<code>content</code>. If it is, the matched element will be replaced, including
+the matched set of tags; <code>content</code> slides in place of the matched
+element in the DOM.</p>
+<h4><code>writeChoices(listOfSituationIds)</code></h4>
+<p><em>Since version 2</em></p>
+<p>Creates a standard block of choices, one for each of the given
+situation ids. The text used in the links will be whatever is returned
+by the situation's <code>optionText</code> method. In addition, if the
+situation's <code>canChoose</code> method returns <code>false</code>, then the option will
+be displayed, but will not be clickable.</p>
+<h4><code>getSituationIdChoices(listOfIdsOrTags, minChoices, maxChoices)</code></h4>
+<p><em>Since version 2</em></p>
+<p>This function is a complex and powerful way of compiling implicit
+situation choices. You give it a list of situation ids and situation
+tags. Tags should be prefixed with a hash # to differentiate them from
+situation ids. The function then considers all matching situations in
+descending priority order, calling their canView functions and
+filtering out any that should not be shown, given the current
+state. Without additional parameters the function returns a list of
+the situation ids at the highest level of priority that has any valid
+results. So, for example, if a tag #places matches three situations,
+one with priority 2, and two with priority 3, and all of them can be
+viewed in the current context, then only the two with priority 3 will
+be returned. This allows you to have high-priority situations that
+trump any lower situations when they are valid, such as situations
+that force the player to go to one destination if the player is out of
+money, for example.</p>
+<p>If a <code>minChoices</code> value is given, then the function will attempt to
+return at least that many results. If not enough results are available
+at the highest priority, then lower priorities will be considered in
+turn, until enough situations are found. In the example above, if we
+had a minChoices of three, then all three situations would be
+returned, even though they have different priorities. If you need to
+return all valid situations, regardless of their priorities, set
+minChoices to a large number, such as <code>Number.MAX_VALUE</code>, and leave
+maxChoices undefined.</p>
+<p>If a <code>maxChoices</code> value is given, then the function will not return any
+more than the given number of results. If there are more than this
+number of results possible, then the highest priority resuls will be
+guaranteed to be returned, but the lowest priority group will have to
+fight it out for the remaining places. In this case, a random sample
+is chosen, taking into account the frequency of each situation. So a
+situation with a frequency of 100 will be chosen 100 times more often
+than a situation with a frequency of 1, if there is one space
+available. Often these frequencies have to be taken as a guideline,
+and the actual probabilities will only be approximate. Consider three
+situations with frequencies of 1, 1, 100, competing for two
+spaces. The 100-frequency situation will be chosen almost every time,
+but for the other space, one of the 1-frequency situations must be
+chosen. So the actual probabilities will be roughly 50%, 50%,
+100%. When selecting more than one result, frequencies can only be a
+guide.</p>
+<p>Before this function returns its result, it sorts the situations in
+increasing order of their <code>displayOrder</code> properties.</p>
+<h4><code>doLink(URL)</code></h4>
+<p>Carries out the action associated with the given URL, as if it had
+been the <code>href</code> of a HTML link that the user clicked. This allows you
+to procedurally change situation and carry out actions from your code.</p>
+<h4><code>rnd</code></h4>
+<p>This holds a general purpose random number generator. It is an object
+derived from the <code>Random</code> prototype, so see <code>Random</code> below for details
+on its API.</p>
+<h4><code>time</code></h4>
+<p>This is a numeric value holding the current time, in seconds, since
+the player began playing the game. This value is correctly propagated
+across saves, so it is the only way you should track timing. In
+particular you should never call <code>new Date()</code> and use that value to
+determine the outcome of any event. You can use the current date to
+display the current date, for example, but not to control what actions
+or situations are available. See the section on Loading and Saving for
+more details of why this is important.</p>
+<h4><code>setQuality(qualityId, newValue)</code></h4>
+<p>Sets the character's given quality to the given value. This function
+also updates the character panel, animating the change in value if
+that is necessary. Do not directly set quality values in the
+character, because the user-interface will not detect and reflect
+those changes.</p>
+<h4><code>animateQuality(qualityId, newValue, options)</code></h4>
+<p>Like <code>setQuality</code>, this function changes the current value of the
+given quality. In addition, however, it displays a progress bar that
+shows to the user how the value has changed. The <code>options</code> parameter
+should be an object containing options for how the bar should
+display. The available options are:</p>
+<ul>
+<li>
+<p><code>from</code>: The proportion along the progress bar where the animation
+   starts. Defaults to 0, valid range is 0-1.</p>
+</li>
+<li>
+<p><code>to</code>: The proportion along the progress bar where the animation
+   ends. Defaults to 1, valid range is 0-1.</p>
+</li>
+<li>
+<p><code>showValue</code>: If <code>true</code> (the default) then the new value of the
+   quality is displayed above the progress bar.</p>
+</li>
+<li>
+<p><code>displayValue</code>: If this is given, and <code>showValue</code> is <code>true</code>, then
+   the given value is used above the progress bar. If this isn't
+   given, and <code>showValue</code> is <code>true</code>, then the display value will be
+   calculated from the <code>QualityDefinition</code>, as normal. This option is
+   useful for qualities that don't have a definition, because they
+   don't normally appear in the UI.</p>
+</li>
+<li>
+<p><code>title</code>: The title of the progress bar. If this is not given, then
+   the title of the quality is used. As for <code>displayValue</code> this is
+   primarily used when the progress bar doesn't have a
+   <code>QualityDefinition</code>, and therefore doesn't have a title.</p>
+</li>
+<li>
+<p><code>leftLabel</code>, <code>rightLabel</code>: Underneath the progress bar you can place
+   two labels at the left and right extent of the track. These can
+   help to give scale to the bar. So if the bar signifies going from
+   10.2 to 10.5, you might label the left and right extents with "10"
+   and "11" respectively and have the <code>from</code> and <code>to</code> value be 0.2 and
+   0.5 respectively. If these are not given, then the labels will be
+   omitted.</p>
+</li>
+</ul>
+<h4><code>setCharacterText(content)</code></h4>
+<p>Sets the block of character text that appears in the character
+panel. As for the <code>write</code> method, this text should be either valid DOM
+elements, or a string meeting the Display Content requirements.</p>
+<h4><code>clearLinks(URL)</code></h4>
+<p>Call this function with an Undum link URL (e.g. <code>ballroom</code>, or
+<code>ballroom/open-cabinet</code>). It will remove all occurrences of that link
+from the page. This is equivalent to what happens when you change
+situation, or when you click a link marked with the <code>once</code> CSS
+class. It allows you to control what options are available
+dynamically, from your code.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3"><code>Random</code></h2></div>
+<p>The <code>Random</code> object provides a set of tools for simple random number
+generation, in a way that is guaranteed to work with the Loading and
+Saving functionality in Undum. An instance of <code>Random</code> is provided in
+the <code>rnd</code> property of the <code>System</code> object, so you will never need to
+create your own. It has the following methods:</p>
+<h4><code>random()</code></h4>
+<p>Generates a random number between 0 and 1, where 0 is inclusive, and 1
+is exclusive. You can use this to check against known probabilities,
+such as:</p>
+<pre><code>if (system.rnd.random() > 0.5) {
+    ...
+}
+</code></pre>
+<p>To check for a 50/50 chance.</p>
+<h4><code>randomInt(min, max)</code></h4>
+<p>Return a random number between the given two values, where both values
+are inclusive. So <code>randomInt(2,3)</code> generates either 2 or 3.</p>
+<h4><code>dice(n, dx, plus)</code></h4>
+<p>Rolls <em>n</em> dice with <em>dx</em> sides and adds <em>plus</em> to the result. This
+allows you to easily get results for rolls from regular RPG-style
+games, such as 3d6+2. The <code>plus</code> parameter may be negative or
+positive.</p>
+<h4><code>aveDice(n, plus)</code></h4>
+<p>Rolls <em>n</em> averaging dice, and adds <em>plus</em> to the result. Averaging dice
+are a special type of d6 with sides marked [2,3,3,4,4,5]. They represent
+the fact that most people are fairly average, and results should not lie
+at the extremes.</p>
+<h4><code>diceString(definition)</code></h4>
+<p>Rolls dice according to the given definition string. The string should
+be of the form xdy+z, where the x component and z component are
+optional. This rolls x dice of with y sides, and adds z to the result,
+the z component can also be negative: xdy-z. The y component can be
+either a number of sides, or can be the special values 'F', for a
+fudge die (with 3 sides, +,0,-), '%' for a 100 sided die, or 'A' for
+an averaging die (with sides 2,3,3,4,4,5).</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_4"><code>Situation</code></h1></div>
+<p>The <code>Situation</code> object is the prototype of all the situations in your
+game. It can be used directly, or through its more common derived
+type, <code>SimpleSituation</code>. The base <code>Situation</code> gives you maximum
+flexibility, but <code>SimpleSituation</code> provides more functionality and can
+produce terser code.</p>
+<h4><code>new Situation(options)</code></h4>
+<p>Creates a new situation. The options array can specify your
+implementation for any or all of the following methods of this class:</p>
+<ul>
+<li><code>enter</code></li>
+<li><code>exit</code></li>
+<li><code>act</code></li>
+<li><code>optionText</code></li>
+<li><code>canView</code></li>
+<li><code>canChoose</code></li>
+</ul>
+<p>(see below for explanations of those methods). This allows
+you to easily create situations that override certain behaviors with
+code such as:</p>
+<pre><code>Situation({
+    enter: function(character, system, from) {
+        ... your implementation ...
+    }
+});
+</code></pre>
+<p>without having to subclass <code>Situation</code> to provide your own
+implementations.</p>
+<p>In addition the following options can be passed in.</p>
+<ul>
+<li>
+<p><code>tags</code>: A list of tags with which to label this situation. These are
+primarily used to generate implicit lists of choices with
+<code>System.getSituationIdChoices</code>. Tags are arbitrary strings. You can
+pass a list of strings, or a single string. If you pass a single
+string, it will be split at spaces, commas and tabs to form a list of
+tags. For this reason, tags normally do not contain spaces, commas or
+tabs (though if you pass in a list, and don't expect Undum to do the
+splitting for you, you can include any characters you like in a tag).</p>
+</li>
+<li>
+<p><code>optionText</code> (as a string): If given as a string, rather than a
+function, this text will be returned whenever <code>optionText(...)</code> is
+called.</p>
+</li>
+<li>
+<p><code>displayOrder</code>: A numeric value, defaults to 1. When displaying
+lists of implicitly generated choices, the options be displayed in
+increasing value of this parameter.</p>
+</li>
+<li>
+<p><code>priority</code>: Can be any number, defaults to 1. When generating lists
+of choices implicitly, situations are considered in descending
+priority order. If higher priority situations can be displayed, lower
+priority situations will be hidden. See <code>System.getSituationIdChoices</code>
+for details of the algorithm.</p>
+</li>
+<li>
+<p><code>frequency</code>: Any number, defaults to 1. When generating lists of
+implicit choices, where there are more choices available that slots to
+display them, situations will be chosen randomly, with a probability
+based on this value. See <code>System.getSituationIdChoices</code> for details of
+the algorithm.</p>
+</li>
+</ul>
+<h4><code>enter(character, system, from)</code></h4>
+<p>This is called when Undum enters a situation. The <code>character</code> and
+<code>system</code> are instances of <code>Character</code> and <code>System</code> as described
+above. The <code>from</code> parameter is a string containing the situation
+identifier for the situation that we're arriving from.</p>
+<p>This method is the most commonly overridden. It is commonly used to
+describe the current situation (by sending content to
+<code>system.write()</code>) and to update the character (by calling
+<code>system.setQuality()</code> or by changing data in the character's <code>sandbox</code>
+object)..</p>
+<h4><code>exit(character, system, to)</code></h4>
+<p>This method takes the same <code>character</code> and <code>system</code> parameters as
+<code>enter</code>. Its third parameter, <code>to</code>, is a string containing the
+identifier of the situation we're exiting to.</p>
+<h4><code>act(character, system, action)</code></h4>
+<p>This method again takes the same <code>character</code> and <code>system</code> parameters
+as before. Its third parameter is a string containing the action
+identifier corresponding to the link the player clicked. It is common
+to use an <code>if</code> statement or a <code>switch</code> to query this action identifier
+and decide what to do accordingly. For situations in which many
+different actions are possible, consider using the <code>SimpleSituation</code>
+prototype, which provides this switching behavior for you.</p>
+<h4><code>optionText(character, system, hostSituation)</code></h4>
+<p>This method is called by <code>System.writeChoices</code> to generate a label for
+links to this situation. The <code>hostSituation</code> is the situation that has
+asked for the choices to be displayed.</p>
+<h4><code>canView(character, system, hostSituation)</code></h4>
+<p>This method is called by <code>System.getSituationIdChoices</code> to determine
+whether this situation can be part of a list of choices in the current
+game state. It should return true or false.</p>
+<h4><code>canChoose(character, system, hostSituation)</code></h4>
+<p>This method is called by <code>System.writeChoices</code> to determine whether a
+link should be added to allow the user to enter this situation. If
+not, the choice will still appear, but will not be clickable.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_5">SimpleSituation</h2></div>
+<p>This prototype builds on the basic <code>Situation</code>, providing tools to
+make it easy to output content in the <code>enter</code> method, and to switch
+between different functions depending on the action identifier passed
+into the <code>act</code> method. The <code>exit</code> method of <code>SimpleSituation</code> is
+exactly as for the base type <code>Situation</code>.</p>
+<h4><code>new SimpleSituation(content, options)</code></h4>
+<p>Creates a new simple situation that will display the given content
+when its <code>enter</code> method is called. The given options dictionary
+provides further control of the behavior of this type. Valid options
+are:</p>
+<ul>
+<li>
+<p><code>enter</code>: Providing an enter function in the <code>options</code> parameter
+   allows you to add additional behavior to the enter method. Your
+   custom function will be called <em>in addition to</em> and <em>after</em> the
+   default content is written to the screen. You cannot override
+   <code>SimpleSituation</code>'s <code>enter</code> method by providing this function. To
+   override the method, you would have to create a derived type. If
+   you provide an <code>enter</code> function, it should have the same form as
+   <code>Situation.enter</code>.</p>
+</li>
+<li>
+<p><code>act</code>: Pass in a function to add additional behavior to the act
+   method. As for <code>enter</code>, your method is called <em>in addition to</em> and
+   <em>after</em> the built-in functionality.</p>
+</li>
+<li>
+<p><code>exit</code>: Because <code>SimpleSituation</code> has no default behavior for
+   <code>exit</code>, any function you pass in here will be the only exit
+   behavior for the object you are creating.</p>
+</li>
+<li>
+<p><code>heading</code>: The <code>content</code> that you specify will be written out
+   verbatim.  You can include headings in this content. Often it is
+   more convenient to pass in just the text in the <code>content</code>
+   parameter. In that case you may define this <code>heading</code> parameter to
+   display a heading before the text. Unlike <code>content</code>, this doesn't
+   need to conform to the Display Content requirements.</p>
+</li>
+<li>
+<p><code>actions</code>: This should be an object that maps action identifiers to
+   responses. A response should be either some Display Content to
+   write to the screen, or a function that will process that
+   request. These functions should have the same signature as the
+   <code>Situation.act</code> method. Each function will only be called if the
+   situation receives a call to <code>act</code> with its corresponding
+   identifier. This allows you to simply define functions that only
+   get called when particular actions happen.</p>
+</li>
+<li>
+<p><code>choices</code>: An optional list of tags and situation-ids, with tags
+  prefixed by a has symbol to distinguish them from situation ids. If
+  given, this will cause the SimpleSituation to output an implicit block
+  of choices after the content.</p>
+</li>
+<li>
+<p><code>minChoices</code>: If you have given a <code>choices</code> definition, you can set
+  this to an integer value to change the number of choices that will
+  appear. See <code>System.getSituationIdChoices</code> for more information on
+  how this affects the output.</p>
+</li>
+<li>
+<p><code>maxChoices</code>: If you have given a <code>choices</code> definition, you can set
+  this to an integer value to change the number of choices that will
+  appear. See <code>System.getSituationIdChoices</code> for more information on
+  how this affects the output.</p>
+</li>
+</ul>
+<p>An example <code>SimpleSituation</code> definition might be:</p>
+<pre><code>new SimpleSituation(
+    "<p>...content...</p>",
+    {
+        heading: "Title",
+        actions: {
+            listen: function(character, system, action) {
+                if (character.qualities.hearing > 5) {
+                    system.write("<p>You hear a tinkling inside.</p>");
+                } else {
+                    system.write("<p>You hear nothing.</p>");
+                }
+            },
+            search: "<p>You find nothing.</p>"
+        }
+    }
+);
+</code></pre>
+<p>notice how the <code>listen</code> function is responsible for its own output,
+where the <code>search</code> property is a string in Display Content format,
+ready for output.</p>
+<h4>Functions in <code>SimpleSituation</code></h4>
+<p>Both the <code>content</code> and the <code>heading</code> of a simple situation can be
+provided either as plain text, or as a function. If you provide a
+function, then it will be called with no arguments, and it should
+return a string to use for the output. This enables <code>SimpleSituation</code>
+to be used with other formatting and templating systems.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_6">QualityDefinition</h1></div>
+<p>Quality definitions tell Undum how and where to display a quality in
+the character panel. Each quality definition has one method, <code>format</code>,
+which is responsible for converting a numeric quality value into a
+displayable quantity.</p>
+<p>You define your qualities in your <code>undum.game.qualities</code> property.</p>
+<h4><code>new QualityDefinition(title, options)</code></h4>
+<p>Creates a new <code>QualityDefinition</code>. It is rare to call this constructor
+yourself, most often one of the derived types of <code>QualityDefinition</code>
+are used. They are defined below.</p>
+<p>The <code>title</code> should be a string, and can contain HTML. It is used to
+label the quality in the character panel. It can be any string, it
+doesn't have to be in Display Content format.</p>
+<p>Options are passed in in the <code>options</code> parameter. The following
+options are available.</p>
+<ul>
+<li>
+<p><code>priority</code>: A string used to sort qualities within their
+   groups. When the system displays a list of qualities they will be
+   sorted by this string. If you don't give a priority, then the title
+   will be used, so you'll get alphabetic order. Normally you either
+   don't give a priority, or else use a priority string containing
+   0-padded numbers (e.g. "00001").</p>
+</li>
+<li>
+<p><code>group</code>: The identifier of a group in which to display this
+   parameter. If a group is given, then it must be defined in your
+   <code>undum.game.qualityGroups</code> property.</p>
+</li>
+<li>
+<p><code>extraClasses</code>: These classes will be attached to the <code><div></code> tag
+   that surrounds the quality when it is displayed. A common use for
+   this is to add icons representing the quality. In your CSS define a
+   class for each icon, then pass those classes into the appropriate
+   quality definitions.</p>
+</li>
+</ul>
+<h4><code>format(character, value)</code></h4>
+<p>This is called by Undum to get a human readable string representing
+the given quality value for the given character. The method may return
+an empty string if the value has no need to be displayed, or it may
+return <code>null</code> if the quantity itself shouldn't be displayed. The
+difference here is significant. If your <code>QualityDefinition</code> returns
+the empty string, then the quality will appear in the character panel,
+but it will have no value marked. If it returns <code>null</code>, then it will
+be removed from the character panel entirely.</p>
+<p>Most commonly the <code>character</code> parameter is ignored, but in your own
+derived types you can take advantage of being able to access other
+information about the character.</p>
+<p>You may call this function yourself, but there is commonly no need. It
+will be called by Undum any time the corresponding quality needs to be
+displayed.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_7"><code>IntegerQuality</code></h2></div>
+<p>This is a derived type of <code>QualityDefinition</code> that displays the
+quality value by rounding it down to the nearest integer. This is
+ideal for most numeric statistics.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_8"><code>NonZeroIntegerQuality</code></h2></div>
+<p>This is a derived type of <code>IntegerQuality</code> that only displays its
+value when it is non-zero. If it is non-zero then it formats in the
+same way as <code>IntegerQuality</code>. Whereas <code>IntegerQuality</code> whould show
+zero values as '0', this type of quality displays nothing.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_9"><code>NumericQuality</code></h2></div>
+<p>This is a derived type of <code>QualityDefinition</code> that displays the
+quality value directly, as a full floating point value.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_10"><code>WordScaleQuality</code></h2></div>
+<p>Sometimes you want qualities displayed in words rather than
+numbers. This is a derived type of <code>QualityDefinition</code> that allows you
+to define words corresponding to possible quality values.</p>
+<h4><code>new WordScaleQuality(title, words, options)</code></h4>
+<p>The <code>title</code> parameter is exactly as for <code>QualityDefinition</code>.</p>
+<p>The <code>words</code> parameter determines what words will be used. It should be
+an array of strings. By default the first string will be used to
+represent a value of zero (after rounding down), and the second string
+a value of 1, and so on to the end of the array. Values outside the
+array are treated differently depending on the value of <code>useBonuses</code>
+in the <code>options</code> parameter.</p>
+<p>The <code>options</code> parameter supports the same three options as
+<code>QualityDefinition</code>. It also takes the following additional
+parameters:</p>
+<ul>
+<li>
+<p><code>offset</code>: With offset=0 (the default), a quantity value of 0 will
+   map to the first word, and so on. If offset is non-zero then the
+   value given will correspond to the first word in the list. So if
+   offset=4, then the first word in the list will be used for value=4,
+   the second for value=5. You can specify a non-integer offset value,
+   in this case the offset is applied <em>before</em> the value is rounded
+   down.</p>
+</li>
+<li>
+<p><code>useBonuses</code>: If this is true (the default), then values outside the
+   range of words will be constructed from the word and a numeric
+   bonus. So with offset=0 and five words, the last of which is
+   'amazing', a score of six would give 'amazing+1'.  if this is
+   false, then the bonus would be omitted, so anything beyond
+   'amazing' is still 'amazing'.</p>
+</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_11"><code>FudgeAdjectivesQuality</code></h2></div>
+<p>This is a derived type of <code>WordScaleQuality</code> that doesn't require you
+to specify the words you wish to use. It uses the word scale from the
+Fudge RPG: "terrible", "poor", "mediocre", "fair", "good", "great" and
+"superb".</p>
+<h4><code>new FudgeAdjectivesQuality(title, options)</code></h4>
+<p>The parameters <code>title</code> and <code>options</code> are as for the <code>WordScaleQuality</code>
+constructor. The <code>offset</code> option defaults to -3, however (in
+<code>WordScaleQuality</code> it defaults to 0), making "fair" the display value
+for 0.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_12"><code>OnOffQuality</code></h2></div>
+<p>An <code>OnOffQuality</code> returns <code>null</code> from its <code>format</code> method
+(i.e. removes itself from the character panel) when the corresponding
+quality value is zero. Otherwise it returns the empty string (i.e. it
+is shown in the panel, but doesn't have a value label). See
+<code>QualityDisplay.format</code> above for more details on this distinction.</p>
+<h4><code>new OnOffQuality(title, options)</code></h4>
+<p>The constructor for this type is the same as for <code>QualityDefinition</code>
+from which it is derived. It accepts one extra option:</p>
+<ul>
+<li><code>onDisplay</code>: If given, then rather than displaying the empty string,
+   it displays the given string when its corresponding value is
+   non-zero. This can be used to display a check-mark, for example
+   (<code>{onDisplay:"&#10003;"}</code>), or even a HTML <code>img</code> tag.</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_13">YesNoQuality</h2></div>
+<p>A <code>YesNoQuality</code> displays one of two strings depending whether its
+value is zero or not.</p>
+<h4><code>new YesNoQuality(title, options)</code></h4>
+<p>The constructor for this type is the same as for <code>QualityDefinition</code>
+from which it is derived. It accepts two extra options:</p>
+<ul>
+<li><code>yesDisplay</code>, <code>noDisplay</code>: Either or both of these may be given. If
+   they are given, then they should be set to a string, which will be
+   used to indicate non-zero or zero values, respectively. By default
+   "yes" and "no" are used.</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_14"><code>QualityGroup</code></h1></div>
+<p>A quality group defines a set of qualities that should be displayed
+together in the character panel, under an optional subheading. You
+could use quality groups to distinguish between qualities representing
+a character's innate abilities and their equipment, for example.</p>
+<p>You define your quality groups in your <code>undum.game.qualityGroups</code>
+property.</p>
+<h4><code>new QualityGroup(title, options)</code></h4>
+<p>Constructs a new quality group that will have the given <code>title</code> for a
+subheading. The title may be <code>null</code>, indicating that this group does
+not need a heading.</p>
+<p>The <code>options</code> parameter should be an object with the given optional
+parameters:</p>
+<ul>
+<li>
+<p><code>priority</code>: A string used to sort quality groups. When the system
+   displays more than one quality group, they will be sorted by this
+   string. If you don't give a priority, then the title will be used,
+   so you'll get alphabetic order. Normally you either don't give a
+   priority, or else use a priority string containing 0-padded numbers
+   (e.g. "00001").</p>
+</li>
+<li>
+<p><code>extraClasses</code>: These classes will be attached to the <code><div></code> tag
+   that surrounds the entire quality group when it is displayed. You
+   can use this in addition to your CSS to radically change the way
+   certain qualities are displayed.</p>
+</li>
+</ul>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

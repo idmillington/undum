@@ -1,0 +1,407 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: Creating an Undum Game</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_0'><a href='#h_1'>File Structure</a></li>
+          
+          <li class='level_1'><a href='#h_2'>The HTML File</a></li>
+          
+          <li class='level_1'><a href='#h_3'>The Game Definition File</a></li>
+          
+          <li class='level_2'><a href='#h_4'>Identifiers</a></li>
+          
+          <li class='level_2'><a href='#h_5'>Game ID</a></li>
+          
+          <li class='level_2'><a href='#h_6'>Version Number</a></li>
+          
+          <li class='level_2'><a href='#h_7'>Situation List</a></li>
+          
+          <li class='level_2'><a href='#h_8'>Starting Situation</a></li>
+          
+          <li class='level_2'><a href='#h_9'>Qualities</a></li>
+          
+          <li class='level_2'><a href='#h_10'>Quality Groups</a></li>
+          
+          <li class='level_2'><a href='#h_11'>Initialization Function</a></li>
+          
+          <li class='level_2'><a href='#h_12'>Global Event Functions</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<h1 id="h_1">File Structure</h1>
+<p>An Undum game consists of a single HTML file. This imports the game
+engine and any supporting files. It also provides the structure needed
+for Undum to place content correctly on-screen.</p>
+<p>The Undum engine consists of a single Javascript file, <code>undum.js</code>. In
+order to work, however, it needs supporting files. It requires the
+jQuery library (http://jquery.com) to be already imported, and it
+requires a game definition file to be imported after it.</p>
+<p>The normal pattern of imports in the HTML file is therefore:</p>
+<pre><code><script type="text/javascript" src="media/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="media/js/undum.js"></script>
+<script type="text/javascript" src="media/js/mygame.game.js"></script>
+</code></pre>
+<p>By convention, the Javascript files are held in a <code>media/js</code>
+directory, but this is not enforced, you can arrange these files as
+you like, as long as you update the references to match.</p>
+<p>In addition to the Javascript files, Undum expects the HTML file that
+imports it to have a particular structure. Although there is a good
+deal of flexibility, if you need it, you should start with the HTML
+file that is provided.</p>
+<p>Finally, the HTML file will include a CSS file that controls the look
+and feel of the page. There are some elements in the CSS file which
+are used by Undum, and so, as for the HTML page, you should start with
+the CSS files provided.  In most cases you will be able to leave the
+CSS file untouched, or else just tweak colors and image imports to
+match your game's style.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_2">The HTML File</h2></div>
+<p>The sample HTML file provided shows the key points to edit. They are:</p>
+<ul>
+<li>
+<p>The game's title.</p>
+</li>
+<li>
+<p>The top-left panel title and summary (you can leave this as an
+  explanation of Undum, or change it to be more game-specific).</p>
+</li>
+<li>
+<p>The copyright message. Please note that there is also a message
+  that acknowledges your game is based on Undum. You can remove this
+  entirely, but if you do leave it in place, that helps people
+  find the software and perhaps write their own game.</p>
+</li>
+<li>
+<p>The path to your game definition file. By convention, game
+  definition files are named <code>yourgamename.game.js</code>.</p>
+</li>
+</ul>
+<p>In addition, from v.2 onwards, Undum supports defining Situations
+entirely within HTML. These situations are scanned and added to
+Situations defined in your Javascript Game Definition file, allowing
+you to have the best of both worlds. HTML Situations are discussed in
+the page on the <a href="./HTML.html">HTML API</a>.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3">The Game Definition File</h2></div>
+<p>The game definition file where you create your game. To define a game
+you must provide the following data:</p>
+<ul>
+<li>
+<p>A unique ID for the game, which is used to make sure saved games
+  don't get confused.</p>
+</li>
+<li>
+<p>A version number that allows you to manage upgrades to your
+  content.</p>
+</li>
+<li>
+<p>All the Situations that make up your game.</p>
+</li>
+<li>
+<p>The identifier of the situation that starts the game.</p>
+</li>
+</ul>
+<p>In addition it is very common to provide the following data:</p>
+<ul>
+<li>
+<p>Descriptions of each quality your game will use, and how that should
+  be displayed to the player.</p>
+</li>
+<li>
+<p>Definitions of what groups of qualities should appear in the
+  character panel and what headings to use to label them.</p>
+</li>
+<li>
+<p>An Initialization function that sets up the game ready for
+  playing. This is where you typically assign any starting qualities
+  to the character, or set their initial character text.</p>
+</li>
+</ul>
+<p>And finally, there are a range of other data you can provide:</p>
+<ul>
+<li>
+<p>Functions to be called whenever any situation is entered, or exited.</p>
+</li>
+<li>
+<p>Functions to be called before or after any action is carried out.</p>
+</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_4">Identifiers</h3></div>
+<p>Identifiers are small snippets of text that allow you to refer to
+something in Undum. There are two types of identifier. The Game
+identifier represents your whole game, and has its own particular
+requirements (described below).</p>
+<p>Lots of other things in Undum have identifiers (Situations, Actions,
+Qualities, Quality Groups), and they all have the same
+requirements. These identifiers must consist of Latin lower-case
+letters (i.e. a-z, no accents), hyphens, and the digits 0-9 only.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_5">Game ID</h3></div>
+<p>The game identifier should be a string that is unlikely to be used in
+other games. You could use a UUID (my preference), or you could use a
+variation on your email <code>mygame-myname@mydomain.com</code>, or a URL you
+control <code>http://mydomain.com/undum-games/mygame</code>. If and when Undum
+games end up being re-distributable (as I hope they will), having a
+universally unique identifier will mean that saved games don't clash.</p>
+<p>As stated previously, the game identifier doesn't have the same
+requirements as any other identifier in Undum, you can use any
+characters to make up your game ID.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_6">Version Number</h3></div>
+<p>The version number is a string of text that indicates what version of
+the content is in the file. There is no set format for this version
+text, so you can use any scheme that suits you. I have used the
+"major.minor" approach.</p>
+<p>Like the Game ID, this value is used to make sure that saved games
+don't clash. If you change you content, then previous saved games may
+not work correctly. By updating the version number, you allow the
+player to be notified of this directly, rather than suffering a
+silent crash. The effect of this is that you don't need to update the
+version number if you make a change to something that doesn't alter
+the structure of the game. If you just change some text, for example,
+or add an extra action that merely outputs a piece of description.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_7">Situation List</h3></div>
+<p>Situations are defined in a Javascript object, placed in the
+<code>undum.game.situations</code> property. Situations in the object use their
+situation identifier as a property name, and a <code>Situation</code> object as
+its value.  For example:</p>
+<pre><code>undum.game.situations = {
+    doorway: new Situation(...),
+    lobby: new SimpleSituation(...),
+    lobby-upstairs-closed: new MyCustomSituation(...),
+    ... etc ...
+};
+</code></pre>
+<p>The situation objects are described more fully below.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_8">Starting Situation</h3></div>
+<p>This is placed in the <code>undum.game.start</code> property. It should consist
+of the situation identifier as a string. It must be given.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_9">Qualities</h3></div>
+<p>Qualities don't have to be displayed to the user. They can just
+function as internal properties for use by your code. Qualities that
+will never be displayed don't need to be declared, you can just set
+them when you need them (we'll look at the API for setting qualities
+below).</p>
+<p>Often you want the quality to be displayed, however, and so you need
+to tell Undum to display the quality, and how it should be
+formatted. The <code>QualityDefinition</code> object does that. Any quality that
+doesn't have a corresponding quality definition will be invisible to
+the player.</p>
+<p>Quality definitions are placed in an object in the
+<code>undum.game.qualities</code> property. Within this object, the property
+names are the quality identifiers, and the values they contain are
+<code>QualityDefinition</code> objects. For example:</p>
+<pre><code>undum.game.qualities = {
+    investigation: new IntegerQuality("Investigation", ...),
+    "found-mr-black": new OnOffQuality("Found Mr. Black", ...),
+    ... etc ...
+};
+</code></pre>
+<p>There are a number of <code>QualityDefinition</code> constructors defined which
+automatically format in common ways, you can also define your own and
+take complete control of the output. We'll return to discussion of the
+API, below.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_10">Quality Groups</h3></div>
+<p>Qualities can be assigned to groups, and displayed under a common
+heading in the character panel. To define groups, place an object in
+the <code>undum.game.qualityGroups</code> property. This object should have
+properties which are the group identifiers, and values that are
+<code>QualityGroup</code> objects.  For example:</p>
+<pre><code>undum.game.qualityGroups = {
+    stats: new QualityGroup(...),
+    clues: new QualityGroup(...),
+    equipment: new QualityGroup(...)
+}
+</code></pre>
+<p>A common source of puzzlement is that you don't use this data
+structure to define which qualities belong in which group. Instead,
+each quality that you want to assign to a group, should be given the
+identifier of the group it belongs to. So your <code>undum.game.qualities</code>
+property will look something like:</p>
+<pre><code>undum.game.qualities = {
+    investigation: new IntegerQuality("Investigation", {group:'stats'}),
+    "found-mr-black": new OnOffQuality("Found Mr. Black", {group:'clues'}),
+    ... etc ...
+};
+</code></pre>
+<p>Again, see the API documentation below for more details about what you
+can pass into these constructors.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_11">Initialization Function</h3></div>
+<p>Your initialization function should be placed in the <code>undum.game.init</code>
+property. Normally its job is to configure the character at the start
+of the game. For example:</p>
+<pre><code>undum.game.init = function(character, system) {
+    character.qualities.investigating = 0;
+    character.qualities.money = 100;
+    ... etc ...
+    system.setCharacterText(...);
+};
+</code></pre>
+<p>Initialization functions can, but normally doesn't, output
+text. Instead the starting situation is tasked with outputting the
+initial content.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h3 id="h_12">Global Event Functions</h3></div>
+<p>Most of the time you want Situations to handle user
+interaction. Occasionally, however, you have to handle something that
+spans situations. It would be inconvenient to duplicate the same code
+in every situation. So Undum provides a set of hooks for you to
+respond globally to user interaction. There are five of these:
+<code>enter</code>, <code>afterEnter</code>, <code>exit</code>, <code>beforeAction</code> and <code>afterAction</code>. You 
+can define functions in your game file using the properties: 
+<code>undum.game.enter</code>, <code>undum.game.afterEnter</code>,
+<code>undum.game.exit</code>, <code>undum.game.beforeAction</code>, and
+<code>undum.game.afterAction</code>.</p>
+<p>The <code>enter</code>, <code>afterEnter</code>, and <code>exit</code> functions look like this:</p>
+<pre><code>undum.game.enter = function(character, system, from, to) {
+    ...
+};
+</code></pre>
+<p>where <code>from</code> and <code>to</code> are the identifiers of the situations being left
+and entered, respectively. And the <code>beforeAction</code> and <code>afterAction</code>
+functions look like this:</p>
+<pre><code>undum.game.beforeAction = function(character, system, situation, action) {
+    ...
+};
+</code></pre>
+<p>where <code>situation</code> is the current situation identifier, and <code>action</code> is
+the identifier of the action being carried out.</p>
+<p>These functions intentionally look like the <code>enter</code>, <code>exit</code> and <code>act</code>
+methods of the <code>Situation</code> object. These are described in more detail
+in the API reference.</p>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

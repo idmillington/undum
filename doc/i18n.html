@@ -1,0 +1,232 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: Translation and Internationalization</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_1'><a href='#h_1'>Language Codes</a></li>
+          
+          <li class='level_1'><a href='#h_2'>Filename Conventions</a></li>
+          
+          <li class='level_1'><a href='#h_3'>API</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<p>Undum provides support for translations and internationalization.
+In particular, if you feel you want to translate Undum, then a lot
+of work has already been done for you. I am very grateful to Oreolek
+for this assistance. He translated the Russian version within days
+of the code being released, and advised on the tools that would
+make translation easier.</p>
+<p>To write a game in another language, you need only to write the game
+content in that language. The identifiers you use in the game (to
+represent situations, actions, qualities and quality groups) must use
+only unaccented lower case latin letters and numbers, but the text you
+generate can contain any content you choose. Including right to left
+content or ideographs.</p>
+<p>Undum itself has a small number of error messages and pieces of text
+that it uses. These include the default names for the
+FudgeAdjectivesQuality values. These strings are all found at the end
+of the <code>undum.js</code> file. They can be overridden. Simply define a new
+language file for your language (e.g. <code>lang/gk.js</code>) and override the
+appropriate strings. In your HTML file, after importing <code>undum.js</code>,
+import you strings file. For example, the end of the Russian
+translation of the tutorial (<code>tutorial.ru.html</code>) has:</p>
+<pre><code><script type="text/javascript" src="media/js/undum.js"></script>
+<script type="text/javascript" src="media/js/lang/ru.js"></script>
+</code></pre>
+<p>These translation strings are given as an object mapping the string
+name to the translated strings. This object is given as part of the
+<code>undum.translation</code> object, with a property name equal to the language
+name. So, for example, the UK English translation might begin:</p>
+<pre><code>undum.lanuage["en-UK"] = {
+    no_group_definition: "Couldn't find a group definition for {id}.",
+</code></pre>
+<p>Within the translation strings, data to be incorporated later is given
+in curly braces.</p>
+<h2 id="h_1">Language Codes</h2>
+<p>Undum uses a simplified version of the IETF standards for language
+code. For our purposes this consists of three parts, only the first of
+which is required: <code>language-Script-REGION</code> where <code>language</code> is a two
+letter lower-case ISO language code, <code>Script</code> is a four letter
+title-case script identifier, and <code>REGION</code> is a two letter country or
+region code, all capitalized. The script is omitted when it is the
+default script for a language and locale. You would specify a script
+if you were using romaji (Latin letters) to write Japanese, but not if
+you were writing it in Kanji and kana.</p>
+<p>The major virtue of this standard is that it allows fall through when
+a translation is not available. For example a translation into
+Brazillian Portuguese <code>pt-BR</code> might be different to one into Angolan
+Portuguese <code>pt-AO</code>, but there may be some strings they have in
+common. This allows a translator to create a base file for just plain
+Portuguese <code>pt</code>, then each country's dialect can define its own file
+that just overrides a few of the strings.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_2">Filename Conventions</h2></div>
+<p>It is only a convention, but for all files that occur in language
+specific versions, I have used the filename convention of placing the
+language code before the extension, e.g. <code>filename.lang.extension</code>. The
+game file is similar <code>filename.game.lang.js</code>. You are free to use any
+format you choose, of course, but if you want to contribute back to
+the trunk, please follow this convention, to save having to rename
+things and connect up the links later.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3">API</h2></div>
+<p>The translation system provides a simple API based on the <code>Globalite</code>
+package of Nicolas Merouze (the implementation is unique to Undum). It
+adds a <code>l()</code> method to the Javascript <code>String</code> prototype. This method
+has the signature <code>l(data)</code>, where data can be any object mapping
+strings to other strings.</p>
+<p>The method attempts to figure out what the current language is by
+looking at the <code>lang</code> attribute of the top level HTML tag (you'll
+notice in the tutorial games this is defined in all cases, you should
+do the same). It then tries to find a matching object containing
+translations in <code>undum.language</code>. If it finds such an object, then it
+looks up the original string in that object to find a translation. It
+then merges any data passed into the <code>l</code> method into the string,
+before returning the result.</p>
+<p>The translation look-up honors the IETF rules for language fallback,
+so (continuing the previous example) if your game file is in Brazilian
+Portuguese <code>pt-BR</code>, and a translation isn't found, then generic
+Portuguese translation <code>pt</code> is also checked. Finally, if no valid
+translation is found, then the default version is used. Since Undum
+was written in English, this default version is the English
+version. This is purely by my convenience, and isn't part of the IETF
+spec!</p>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

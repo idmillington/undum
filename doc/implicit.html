@@ -1,0 +1,323 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: New Choice System</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_0'><a href='#h_1'>New Choice System</a></li>
+          
+          <li class='level_0'><a href='#h_2'>Generating Choice HTML</a></li>
+          
+          <li class='level_0'><a href='#h_3'>Generating Choices</a></li>
+          
+          <li class='level_1'><a href='#h_4'>Generating Choices by Tags</a></li>
+          
+          <li class='level_1'><a href='#h_5'>Ordering Choices</a></li>
+          
+          <li class='level_1'><a href='#h_6'>Conditional Appearance</a></li>
+          
+          <li class='level_1'><a href='#h_7'>Priority</a></li>
+          
+          <li class='level_1'><a href='#h_8'>Maximum Choices</a></li>
+          
+          <li class='level_1'><a href='#h_9'>Minimum Choices</a></li>
+          
+          <li class='level_1'><a href='#h_10'>Choices and SimpleSituation</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<h1 id="h_1">New Choice System</h1>
+<p><em>New in Version 2</em></p>
+<p>In version one of Undum, all links from one situation to another had
+to be created manually using HTML. If you wanted a set of choices to
+offer, you had to create the links yourself, put them in the
+appropriate HTML container. If you wanted those choices to depend on
+the current state of the game (say, a choice to look behind a secret
+panel that was only visible when the panel was discovered), you had to
+code that logic yourself in HTML. This meant that, in practice, most
+Undum games were simpler, and rarely used branches that depended on
+context.</p>
+<p>In version 2 both of these issues were addressed: the ability to
+quickly build the links to new situations in the standard HTML format
+(using the <code>System.writeChoices</code> method), and the ability to generate
+a list of situations that are available, given the current state of
+the game.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_2">Generating Choice HTML</h1></div>
+<p>Thew new <code>System.writeChoices</code> method allows you to give a list of
+situation id's and have Undum generate a standard looking block of
+choices.</p>
+<p>It does this by asking each choice how it prefers to be displayed, by
+calling its <code>optionText</code> method. This allows situtions to change how
+they are displayed depending on the current state of the character.</p>
+<p>Also called is the situations <code>canChoose</code> method. This will normally
+return true, but if it returns false, the option will still be
+displayed, but not as a link, and will not be clickable. This allows
+you to show the player that an option would be available, if they did
+something else first, such as increase a quality.</p>
+<p>On its own <code>System.writeChoices</code> is still mostly manual: it finds the
+link text for you, and builds the HTML, but you still have to give it
+a set of situation ids that you want for your choices.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_3">Generating Choices</h1></div>
+<p>Undum now also provides the <code>System.getSituationIdChoices</code> method
+which automatically compiles a list of situation ids, which can then
+be passed to <code>System.writeChoices</code> for display. This method is
+powerful and complex, so we'll explore its use in increasing depth.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_4">Generating Choices by Tags</h2></div>
+<p>Situations now can have one or more tags associated with them. You can
+ask <code>System.getSituationIdChoices</code> to return the ids of any situtions
+that match a tag. This allows you to easily build decisions that you
+can extend later. You might have a 'chapter' tag, and you mark each
+situation which begins a chapter using this tag, you can then do.</p>
+<pre><code>system.getSituationIdChoices(['#chapter'])
+</code></pre>
+<p>to return all chapter choices.</p>
+<p>The way tags are processed tries to be intelligent. You can match on
+more than one tag, and any situation matching either tag will be
+returned, but each situation will be returned no more than once. You
+can even mix tags and explicit situation ids:</p>
+<pre><code>system.getSituationIdChoices(['#chapter', 'introduction', '#endmatter'])
+</code></pre>
+<p>When you only need to pass one tag to <code>System.getSituationIdChoices</code>
+you can do so without using a list, so the first example above could
+be equally written:</p>
+<pre><code>system.getSituationIdChoices('#chapter')
+</code></pre>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_5">Ordering Choices</h2></div>
+<p>Choices returned by <code>System.getSituationIdChoices</code> will be ordered
+based on a new <code>displayOrder</code> numeric property of situations. This
+allows you to make sure situations appear in a logical order,
+regardless of whether they were selected by id or by tag.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_6">Conditional Appearance</h2></div>
+<p>So far, any matched situation will always be featured in the list of
+choices. A situation can't be visible some times and not others,
+depending on the current state of the game. (As we saw with the
+<code>canChoose</code> method, we can have it be clickable only in some states).</p>
+<p>To allow situations to be totally absent in some cases, there is a new
+<code>canView</code> method on situations. This is only used by
+<code>system.getSituationIdChoices</code>, and allows a situation to opt out of
+being included, if its conditions for appearance are not met. This
+allows us to implement the secret panel from the introduction.</p>
+<p>We could have a 'go-to-the-basement' situation with tag
+'from-the-hallway' available always, while 'go-to-the-secret-room' has
+the tag 'from-the-hallway', but a canView method:</p>
+<pre><code>secretRoomSituation.canView = function(character, system, host) {
+    return character.sandbox.has_found_secret_panel;
+}
+</code></pre>
+<p>We can then call <code>system.getSituationIdChoices(['#from-the-hallway'])</code>
+and have the correct choices displayed, depending on the current state
+of the game.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_7">Priority</h2></div>
+<p>One common requirement is to have a set of choices which can be
+'overrulled' if some condition is true. So we might want the player to
+choose where on the island to go to, but if the character is injured,
+we might want to only allow the character to go to the hospital.</p>
+<p>By default, all situations have a priority of 1. If you give a
+situation a higher priority, then it will be considered first. If its
+<code>canView</code> method returns true, then the high priority situation will
+be the only one displayed.</p>
+<p>So the injury example might have</p>
+<ul>
+<li>Docks tag:location canView:always priority:1</li>
+<li>Market tag:location canView:always priority:1</li>
+<li>Hospital tag:location canView:when hits < 10 priority:2</li>
+<li>Doctor tag:location canView:when hits < 10 priority:2</li>
+</ul>
+<p>Then if the hits quality = 10, we'd see</p>
+<ul>
+<li>Docks</li>
+<li>Market</li>
+</ul>
+<p>but if the hits quality dropped to 9, we'd see just</p>
+<ul>
+<li>Hospital</li>
+<li>Doctor</li>
+</ul>
+<p>Note that any number of results can be displayed in both cases, but
+the higher priorities mask the lower ones.</p>
+<p>If you are working with choices that all have a canView function, it
+is a good idea to have a 'fallback' situation that can always be
+viewed, but has a priority of zero. This will only be visible if none
+of the others are available, and will prevent the game from ending at
+that point.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_8">Maximum Choices</h2></div>
+<p>When you ask for a list of choices, you can specify a maximum number
+to return. If more than this number of choices are available, then the
+system will select a random subset to return, to make sure you get the
+number you asked for.</p>
+<p>By default, all matching situations are equally likely to be returned,
+but you can make some situations rarer or more common by setting their
+<code>frequency</code> value. By default, this value is 1 for a situation.</p>
+<p>A situation with a frequency of 100 will be chosen 100 times more
+often than a situation with a frequency of 1, if there is one
+situation that needs selecting. In cases where more than one situation
+needs chosing, the frequencies are a little less intuitive.</p>
+<p>Consider three situations with frequencies of 1, 1, 100, competing for
+two spaces. The 100-frequency situation will be chosen almost every
+time, but for the other space, one of the 1-frequency situations must
+be chosen. So the actual probabilities will be roughly 50%, 50%, 100%,
+even though the frequencies were 1, 1, 100. When selecting more than
+one result, frequencies can only be a guide.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_9">Minimum Choices</h2></div>
+<p>Although rarely used, you can also ask for a minimum number of
+choices. This changes the way priority values work. It starts from the
+highest priority situations, as normal, but rather than returning only
+those at the highest priority level, it checks to see if that set is
+enough to meet its minimum. If not, then the next priority level down
+will be considered as well, and so on, until the minimum is reached.</p>
+<p>If a minimum and a maximum is given (the maximum being at least as
+large as the minimum), then only the lowest priority situations will
+be randomly selected for any remaining spaces, higher priority
+situations will be guaranteed to be chosen.</p>
+<p>The most common use of this parameter is to set a very high value,
+such as Number.INT_MAX, with no maximum limit. This ensures that all
+valid situations are returned, regardless of their priority level.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_10">Choices and SimpleSituation</h2></div>
+<p><code>SimpleSituation</code> provides built-in support for ending its content
+with a block of choices, using <code>System.getSituationIdChoices</code> to
+generate the list and <code>System.writeChoices</code> to generate the HTML. To
+use this, simply pass in the list of ids and tags as the <code>choices</code>
+option. You can additionally specify <code>minChoices</code> and <code>maxChoices</code> if
+you need them.</p>
+<p>As for <code>System.getSituationIdChoices</code>, if you are only using a single
+tag or id, you can give this as a string, rather than a single element
+list.</p>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

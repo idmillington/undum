@@ -1,0 +1,226 @@
+<html>
+  <head>
+    <title></title>
+    <style>
+      body {
+          font: 100%/1.5 sans-serif;
+          margin: 20px;
+      }
+      div#content {
+          margin: 0 auto;
+          width: 960px;
+          overflow: hidden;
+      }
+      #title {
+          padding: 0 10px;
+      }
+      #title h1 {
+          font-weight: normal;
+          text-align: center;
+          margin-bottom: 0.5em;
+          font-size: 2.5em;
+      }
+      #toc {
+          float: left;
+          width: 220px;
+          padding: 0 10px;
+      }
+      #body {
+          float: left;
+          width: 700px;
+          padding: 0 10px;
+      }
+      h1, h2, h3,  h4 {
+          color: #777;
+          margin: 0;
+      }
+      h1 {
+          margin-top: 0.75em;
+          padding-top: 0.75em;
+          color: #900;
+          font-size: 1.6em;
+          border-top: 1px dotted #999;
+      }
+      h1:first-child {
+          border-top: none;
+      }
+      h2 {
+          color: black;
+          font-weight: normal;
+          margin-top: 1.25em;
+          font-size: 1.4em;
+      }
+      h3 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 1em;
+          font-size: 1.3em;
+      }
+      h4 {
+          color: #666;
+          font-weight: normal;
+          margin-top: 0.75em;
+          font-size: 1.2em;
+          list-style-type: square;
+      }
+      h4:before {
+          content: "\25A0";
+          color: #bbb;
+          padding-right: 0.5em;
+      }
+      ul {
+          padding-left: 1.5em;
+      }
+      #toc {
+          padding-top: 2.4em;
+      }
+      ul.toc {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          font-size: 0.9em;
+      }
+      div.header {
+          position: relative;
+      }
+      div.top {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+      }
+      div.top a {
+          text-decoration: none;
+      }
+      li.level_0 { padding-top: 0.5em; font-weight: bold; }
+      li.level_1 { padding-left: 1em; }
+      li.level_2 { padding-left: 2em; }
+      p {
+          margin: 0 0 0.75em 0;
+      }
+      code {
+          font-size: 1.1em;
+      }
+      pre {
+          padding: 10px;
+          background: #eed;
+      }
+      a {
+          color: #900;
+      }
+      #legal {
+          float: left;
+          font-size: 0.75em;
+          padding-left: 250px;
+      }
+      #legal p {
+          margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="title">
+        <h1>Undum Documentation: Home</h1>
+      </div>
+      <div id="toc">
+        <ul class='toc'>
+          <li class='level_0'><a href="/">Undum Home</a></li>
+          <li class='level_0'><a href="/doc/index.html">Documentation Home</a></li>
+        </ul>
+        <h2>Contents</h2>
+        <ul class='toc'>
+          
+          <li class='level_0'><a href='#h_1'>Contents</a></li>
+          
+          <li class='level_1'><a href='#h_2'>High level overview</a></li>
+          
+          <li class='level_1'><a href='#h_3'>Creating an Undum Game</a></li>
+          
+          <li class='level_1'><a href='#h_4'>Implicit Choices</a></li>
+          
+          <li class='level_1'><a href='#h_5'>HTML API</a></li>
+          
+          <li class='level_1'><a href='#h_6'>Javascript API</a></li>
+          
+          <li class='level_1'><a href='#h_7'>Translation and Internationalization</a></li>
+          
+          <li class='level_1'><a href='#h_8'>Loading and Saving</a></li>
+          
+          <li class='level_0'><a href='#h_9'>Undum Changelog</a></li>
+          
+          <li class='level_1'><a href='#h_10'>2011-05-27</a></li>
+          
+          <li class='level_1'><a href='#h_11'>2011-08-18</a></li>
+          
+          <li class='level_1'><a href='#h_12'>2013-09-27</a></li>
+          
+        </ul>
+      </div>
+      <div id="body">
+        
+<h1 id="h_1">Contents</h1>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_2"><a href="./introduction.html">High level overview</a></h2></div>
+<p>Describes the concepts that go into an Undum game, and how they
+interact.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_3"><a href="./creating.html">Creating an Undum Game</a></h2></div>
+<p>Describes the files you need to create to make an Undum game, and what
+needs to go into them.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_4"><a href="./implicit.html">Implicit Choices</a></h2></div>
+<p>Version 2 of Undum includes a new framework for automatically
+generating choices for the player, based on information stored in
+situations.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_5"><a href="./HTML.html">HTML API</a></h2></div>
+<p>Undum games use HTML to output text and media, but has some
+constraints on the HTML you can use. Undum also provides built-in
+behavior tied to specific HTML classes that you can use in your
+output. In v.2, Undum also added support for defining many kinds of
+situation entirely in HTML, with no Javascript needed.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_6"><a href="./API.html">Javascript API</a></h2></div>
+<p>A complete breakdown of the API exposed to your code via
+Javascript. This details the methods that you call to output content,
+find random numbers and translate your game.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_7"><a href="./i18n.html">Translation and Internationalization</a></h2></div>
+<p>Describes Undum's core translation system, and how you can create
+games that support multiple languages.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_8"><a href="./files.html">Loading and Saving</a></h2></div>
+<p>Undum has an unusual way of supporting loading and saving of games, to
+support a wide range of browsers, sites and game styles. This document
+contains the technical details, and how this affects you as a game
+author.</p>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h1 id="h_9">Undum Changelog</h1></div>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_10">2011-05-27</h2></div>
+<ul>
+<li>
+<p>Added <code>System.writeBefore</code> to do out of order insertion. (credit:
+  ekyrath)</p>
+</li>
+<li>
+<p>Added an optional selector to <code>System.write</code> and
+  <code>System.writeBefore</code> to support out of order insertion. (credit:
+  ekyrath)</p>
+</li>
+<li>
+<p>Removed the use of <code>__defineGetter__</code>, so that the core code now
+  works on IE7 (thanks for the bug report juhana and bloomengine).</p>
+</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_11">2011-08-18</h2></div>
+<ul>
+<li>Added support for functions in the <code>content</code> and <code>header</code> of a
+  <code>SimpleSituation</code> (credit: David Eyk).</li>
+</ul>
+<div class="header"><div class="top"><a href="#title" title="Return to top">&#x25b2;</a></div><h2 id="h_12">2013-09-27</h2></div>
+<ul>
+<li>Updated to v.2, including support for <a href="./implicit.html">implicit choices</a> and <a href="./HTML.html">HTML-defined situations</a>.</li>
+</ul>
+      </div>
+      <div id="legal">
+        <p>
+          Documentation subject to the <a
+          href="http://github.com/idmillington/undum/LICENSE">Undum software
+          license.</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
