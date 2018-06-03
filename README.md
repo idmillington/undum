@@ -76,7 +76,7 @@ development. It also has excellent Javascript debugging tools.
 
 
 Reference documentation, including full API details, is at
-[http://undum.com/doc/](http://undum.com/doc/),
+[http://idmillington.github.io/undum/](http://idmillington.github.io/undum/),
 and is also included in the repository.
 
 The source code for all the files is also heavily commented, so if you
