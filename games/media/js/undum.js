@@ -1624,13 +1624,6 @@
                 game.exit(character, system, oldSituationId, newSituationId);
             }
 
-            //  Remove links and transient sections.
-            $('#content a').each(function(index, element) {
-                var a = $(element);
-                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?/))
-                    return;
-                a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
-            });
             var contentToHide = $('#content .transient, #content ul.options');
             contentToHide.add($("#content a").filter(function(){
                 return $(this).attr("href").match(/[?&]transient[=&]?/);
@@ -1653,6 +1646,13 @@
             } else {
                 contentToHide.remove();
             }
+            //  Remove links and transient sections.
+            $('#content a').each(function(index, element) {
+                var a = $(element);
+                if (a.hasClass('sticky') || a.attr("href").match(/[?&]sticky[=&]?/))
+                    return;
+                a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
+            });
         }
 
         // Move the character.
