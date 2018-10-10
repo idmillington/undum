@@ -565,7 +565,11 @@
     var System = function() {
         this.rnd = null;
         this.options = {
-          repeatable_links: true
+          all_links_once: true,
+          mobile_hide_speed: 500,
+          slide_up_speed: 500,
+          fade_speed: 1500,
+          progress_bar_speed: 1000
         }
         this.time = 0;
     };
@@ -1063,18 +1067,21 @@
         $('#content').append(bar);
 
         // Start the animation
+        var that = this;
         setTimeout(function() {
             widthElement.animate(
-                {'width': myOpts.to*totalWidth}, 1000,
+                {'width': myOpts.to*totalWidth}, that.options.progress_bar_speed,
                 function() {
                     // After a moment to allow the bar to be read, we can
                     // remove it.
                     setTimeout(function() {
                         if (mobile) {
-                            bar.fadeOut(1500, function() {$(this).remove();});
+                            bar.fadeOut(that.options.mobile_hide_speed, function() {
+                              $(this).remove();
+                            });
                         } else {
-                            bar.animate({opacity: 0}, 1500).
-                                slideUp(500, function() {
+                            bar.animate({opacity: 0}, that.options.fade_speed).
+                                slideUp(that.options.slide_up_speed, function() {
                                     $(this).remove();
                                 });
                         }
@@ -1629,17 +1636,13 @@
                 return $(this).attr("href").match(/[?&]transient[=&]?/);
             }));
             if (interactive) {
-				// Get fade out speed of options on mobile variable.
-                var mobileHide = game.mobileHide;
                 if (mobile) {
-                  contentToHide.fadeOut(mobileHide);
+                  contentToHide.fadeOut(system.options.mobile_hide_speed);
                 } else {
-				// Get fate out speed of options, and slide up speed variables.
-                var fadeSpeed = game.fadeSpeed;
-				var slideUpSpeed = game.slideUpSpeed;
+				        // Get fate out speed of options, and slide up speed variables.
                   contentToHide.
-                    animate({opacity: 0}, fadeSpeed).
-                    slideUp(slideUpSpeed, function() {
+                    animate({opacity: 0}, system.options.fade_speed).
+                    slideUp(system.options.slide_up_speed, function() {
                       $(this).remove();
                     });
                 }
@@ -1686,8 +1689,8 @@
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (system.options.repeatable_links === false
-                          || (system.options.repeatable_links === true
+                        if (system.options.all_links_once === false
+                          || (system.options.all_links_once === true
                           && (a.hasClass("once") || href.match(/[?&]once[=&]?/)))) {
                           system.clearLinks(href);
                         }
