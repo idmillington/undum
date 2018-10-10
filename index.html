@@ -102,7 +102,7 @@
            alt="Pro captu lectoris habent sua fata libelli.">
     </div>
     <script type="text/javascript"
-     src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
     </script>
     <script type="text/javascript">
     (function() {
@@ -124,11 +124,9 @@
             var pw = win.width() - MARGINS[1] - MARGINS[3];
             var ph = win.height() - MARGINS[0] - MARGINS[2];
 
-            // Find the image size.
-            var img = new Image();
-            img.src = $("#image").get(0).getAttribute('src');
-            var iw = img.width;
-            var ih = img.height;
+            // Hardcoded background image size.
+            var iw = 1583;
+            var ih = 981;
 
             // Work out the scale and offsets.
             var scale = Math.min(

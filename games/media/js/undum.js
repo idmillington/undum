@@ -564,6 +564,9 @@
      */
     var System = function() {
         this.rnd = null;
+        this.options = {
+          repeatable_links: true
+        }
         this.time = 0;
     };
 
@@ -695,6 +698,10 @@
             var situationId = listOfIds[i];
             var situation = game.situations[situationId];
             assert(situation, "unknown_situation".l({id:situationId}));
+            if (situation == currentSituation)
+            {
+                continue;
+            }
 
             var optionText = situation.optionText(character, this,
                                                   currentSituation);
@@ -1345,7 +1352,13 @@
         }
         if (scrollPoint > output.offset().top)
             scrollPoint = output.offset().top;
-        scrollStack[scrollStack.length-1] = scrollPoint;
+        /* We add a fifth of the window height to this point, so that the
+         * element won't be placed too close to the bottom edge of the
+         * viewport. If we overshoot the viewport, we'll just go down to
+         * the bottom - desirable behaviour anyway, especially if we are
+         * already there. */
+        scrollStack[scrollStack.length-1] =
+            (scrollPoint + ($(window).height() * 0.2));
     };
 
     /* Gets the unique id used to identify saved games. */
@@ -1611,6 +1624,28 @@
                 game.exit(character, system, oldSituationId, newSituationId);
             }
 
+            var contentToHide = $('#content .transient, #content ul.options');
+            contentToHide.add($("#content a").filter(function(){
+                return $(this).attr("href").match(/[?&]transient[=&]?/);
+            }));
+            if (interactive) {
+				// Get fade out speed of options on mobile variable.
+                var mobileHide = game.mobileHide;
+                if (mobile) {
+                  contentToHide.fadeOut(mobileHide);
+                } else {
+				// Get fate out speed of options, and slide up speed variables.
+                var fadeSpeed = game.fadeSpeed;
+				var slideUpSpeed = game.slideUpSpeed;
+                  contentToHide.
+                    animate({opacity: 0}, fadeSpeed).
+                    slideUp(slideUpSpeed, function() {
+                      $(this).remove();
+                    });
+                }
+            } else {
+                contentToHide.remove();
+            }
             //  Remove links and transient sections.
             $('#content a').each(function(index, element) {
                 var a = $(element);
@@ -1618,23 +1653,6 @@
                     return;
                 a.replaceWith($("<span>").addClass("ex_link").html(a.html()));
             });
-            var contentToHide = $('#content .transient, #content ul.options');
-            contentToHide.add($("#content a").filter(function(){
-                return $(this).attr("href").match(/[?&]transient[=&]?/);
-            }));
-            if (interactive) {
-                if (mobile) {
-                  contentToHide.fadeOut(2000);
-                } else {
-                  contentToHide.
-                    animate({opacity: 0}, 1500).
-                    slideUp(500, function() {
-                      $(this).remove();
-                    });
-                }
-            } else {
-                contentToHide.remove();
-            }
         }
 
         // Move the character.
@@ -1668,8 +1686,10 @@
 
                         // If we're a once-click, remove all matching
                         // links.
-                        if (a.hasClass("once") || href.match(/[?&]once[=&]?/)) {
-                            system.clearLinks(href);
+                        if (system.options.repeatable_links === false
+                          || (system.options.repeatable_links === true
+                          && (a.hasClass("once") || href.match(/[?&]once[=&]?/)))) {
+                          system.clearLinks(href);
                         }
 
                         processClick(href);
