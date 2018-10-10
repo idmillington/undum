@@ -15,6 +15,17 @@ undum.game.id = "be1c95b9-cbc7-48c6-8e6a-89837aa9113e";
  * prevents Undum from trying to load the saved-game and crashing. */
 undum.game.version = "1.0";
 
+/* A variable that changes the fade out speed of the option text on
+ * a mobile. */
+undum.game.mobileHide = 2000
+
+/* A variable that changes the options fade out speed. */
+undum.game.fadeSpeed = 1500
+
+/* A variable that changes the slide up speed after clicking on an
+ * option. */
+undum.game.slideUpSpeed = 500
+
 /* The situations that the game can be in. Each has a unique ID. */
 undum.game.situations = {
     start: new undum.SimpleSituation(
