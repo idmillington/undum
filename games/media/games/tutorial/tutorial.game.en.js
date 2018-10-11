@@ -65,7 +65,7 @@ undum.game.situations = {
     todo: new undum.SimpleSituation(
         "<p>Two things can happen in a situation. The character either\
         <a href='links'>leaves</a> the situation and enters another one, or\
-        they carry out some <a href='./do-something?once'>action</a>. Actions may\
+        they carry out some <a href='./do-something'>action</a>. Actions may\
         perform some processing, they may display some results, but\
         ultimately they put the character back into the same situation\
         again.</p>\
